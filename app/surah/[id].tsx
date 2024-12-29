@@ -41,7 +41,6 @@ export default function Surah() {
                 const surahData = await getSurahDetail(parseInt(Array.isArray(id) ? id[0] : id));
                 const tafsirData = await getTafsDetail(parseInt(Array.isArray(id) ? id[0] : id));
 
-                console.log(tafsirData.data.tafsir);
                 if (surahData && surahData.data && surahData.data.ayat) {
                     const transformedData = surahData.data.ayat.map((item: any, index: number) => ({
                         nomorAyat: item.no || index + 1, // Provide a fallback if no exists
@@ -167,7 +166,6 @@ export default function Surah() {
             setSound(newSound);
             setCurrentAyahIndex(index);
             await newSound.playAsync();
-            console.log(index);
 
             newSound.setOnPlaybackStatusUpdate(async (status) => {
                 if (status.isLoaded && status.didJustFinish) {
@@ -234,7 +232,6 @@ export default function Surah() {
                         onTafsirPress={() => {
                             // Handle tafsir press triger modal
                             setCurrentTafsir(tafsirData[item.nomorAyat - 1].teks);
-                            console.log(tafsirData[item.nomorAyat]);
                         }}
                     />
                 )}
