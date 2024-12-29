@@ -9,9 +9,23 @@ interface AyahProps {
     audioUrl?: string;
     onPlay?: () => void;
     isPlaying?: boolean;
+    isBookmarked?: boolean; // Add isBookmarked prop
+    onBookmarkPress?: () => void; 
+    onTafsirPress?: () => void;
 }
 
-const AyahCard: React.FC<AyahProps> = ({ nomorAyat, teksArab, teksIndonesia, audioUrl, onPlay, isPlaying }) => {
+const AyahCard: React.FC<AyahProps> = ({ 
+    nomorAyat, 
+    teksArab, 
+    teksIndonesia, 
+    audioUrl, 
+    onPlay, 
+    isPlaying, 
+    isBookmarked, // Receive isBookmarked prop
+    onBookmarkPress,
+    onTafsirPress
+}) => {
+   
     return (
         <View
             style={[
@@ -28,10 +42,10 @@ const AyahCard: React.FC<AyahProps> = ({ nomorAyat, teksArab, teksIndonesia, aud
                 <TouchableOpacity style={styles.button} onPress={onPlay}>
                     <Ionicons name={isPlaying ? "pause" : "play"} size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
-                    <Ionicons name="bookmark-outline" size={24} color="white" />
+                <TouchableOpacity style={styles.button} onPress={onBookmarkPress}> 
+                    <Ionicons name={isBookmarked ? "bookmark" : "bookmark-outline"} size={24} color="white" /> 
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.tafsirButton]}>
+                <TouchableOpacity style={[styles.button, styles.tafsirButton]} onPress={onTafsirPress}>
                     <Text style={styles.tafsirText}>Tafsir</Text>
                 </TouchableOpacity>
             </View>
@@ -50,6 +64,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 2,
+       
     },
     playingAyahCard: {
         // Style for the highlighted card

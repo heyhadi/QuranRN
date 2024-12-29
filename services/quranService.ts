@@ -21,3 +21,13 @@ export const getSurahDetail = async (surahNumber: number) => {
       return null; // Or throw the error if you prefer
     }
   };
+
+  export const getTafsDetail = async (tafNumber: number) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/tafsir/${tafNumber}`);
+      return response.data; // Assuming the data is directly in the response
+    } catch (error) {
+      console.error('Error fetching Tafsir detail:', error);
+      return null; // Or throw the error if you prefer
+    }
+  }

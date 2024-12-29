@@ -2,6 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { PaperProvider } from 'react-native-paper';
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { AudioProvider } from "@/components/AudioContext"; // Import the provider
@@ -51,12 +52,14 @@ function RootLayoutNav() {
     const colorScheme = useColorScheme();
 
     return (
+      <PaperProvider>
         <AudioProvider>
-            <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
+            <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
                 <Stack>
                     <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 </Stack>
             </ThemeProvider>
         </AudioProvider>
+        </PaperProvider>
     );
 }
