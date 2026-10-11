@@ -8,7 +8,7 @@ import { useTheme } from "@/components/useTheme";
 import { BISMILLAH } from "@/constants/surahPages";
 import { tajweedColorKey, type TajweedRuleId } from "@/constants/tajweed";
 import type { MushafLine, MushafWord } from "@/services/mushaf";
-import { useMushafPage, useSurahList } from "@/services/queries";
+import { useEnglishSurahMeanings, useMushafPage, useSurahList } from "@/services/queries";
 
 /** The pages have fifteen lines; a line is justified only when its words already fill most of the width. */
 export const LINES_PER_PAGE = 15;
@@ -82,20 +82,51 @@ function TextLine({ words, width, height, fontSize, tajweed, onWordPress, onRule
     );
 }
 
-/** The Surah title: the name between two brass rules that end in diamonds, like an open banner. */
+/**
+ * The Surah title as an information plate: the name in calligraphy in the middle, the Surah's ayah count and
+ * where it was revealed on one side, its Latin name and meaning on the other.
+ */
 function TitleLine({ surahNumber, width, height, fontSize }: { surahNumber: number; width: number; height: number; fontSize: number }) {
+    const { t, i18n } = useTranslation();
     const { colors, fonts } = useTheme();
     const surahs = useSurahList();
-    const name = surahs.data?.find((surah) => surah.number === surahNumber)?.nameArabic;
+    const englishMeanings = useEnglishSurahMeanings(i18n.language !== "id");
+    const surah = surahs.data?.find((entry) => entry.number === surahNumber);
+    const meaning = i18n.language !== "id" ? englishMeanings.data?.[surahNumber] ?? surah?.meaning : surah?.meaning;
+    const small = { fontFamily: fonts.body, fontSize: Math.max(10, fontSize * 0.5), lineHeight: Math.max(13, fontSize * 0.66) };
+
     return (
-        <View style={[styles.banner, { width, height }]}>
-            <View style={[styles.diamond, { backgroundColor: colors.brass }]} />
-            <View style={[styles.rule, { borderTopColor: colors.brass }]} />
-            <Text style={{ fontFamily: fonts.quranBold, fontSize: fontSize * 1.25, lineHeight: fontSize * 2.2, color: colors.brass, includeFontPadding: false, paddingHorizontal: 12 }} accessibilityRole="header">
-                {name ?? ""}
-            </Text>
-            <View style={[styles.rule, { borderTopColor: colors.brass }]} />
-            <View style={[styles.diamond, { backgroundColor: colors.brass }]} />
+        <View style={{ width, height, justifyContent: "center", paddingVertical: height * 0.06 }}>
+            <View style={[styles.plate, { backgroundColor: colors.heroBackground, borderColor: colors.heroAccent }]}>
+                <View pointerEvents="none" style={[styles.plateInner, { borderColor: colors.heroAccent }]} />
+                <View style={styles.sideLeft}>
+                    {surah ? (
+                        <>
+                            <Text style={[small, { color: colors.heroInk }]} numberOfLines={1}>
+                                {t("common.ayahCount", { count: surah.ayahCount })}
+                            </Text>
+                            <Text style={[small, { color: colors.heroInk, opacity: 0.8 }]} numberOfLines={1}>
+                                {t(`common.place.${surah.revelationPlace}`)}
+                            </Text>
+                        </>
+                    ) : null}
+                </View>
+                <Text style={{ fontFamily: fonts.quranBold, fontSize: fontSize * 1.1, lineHeight: fontSize * 2, color: colors.heroAccent, includeFontPadding: false }} accessibilityRole="header">
+                    {surah?.nameArabic ?? ""}
+                </Text>
+                <View style={styles.sideRight}>
+                    {surah ? (
+                        <>
+                            <Text style={[small, { color: colors.heroInk, textAlign: "right" }]} numberOfLines={1}>
+                                {surah.nameLatin}
+                            </Text>
+                            <Text style={[small, { color: colors.heroInk, opacity: 0.8, textAlign: "right" }]} numberOfLines={1}>
+                                {meaning ?? ""}
+                            </Text>
+                        </>
+                    ) : null}
+                </View>
+            </View>
         </View>
     );
 }
@@ -153,8 +184,9 @@ const styles = StyleSheet.create({
     centerText: { textAlign: "center" },
     natural: { flexDirection: "row-reverse", alignSelf: "flex-start" },
     line: { flexDirection: "row-reverse", alignItems: "center" },
-    banner: { flexDirection: "row", alignItems: "center", gap: 8 },
-    rule: { flex: 1, borderTopWidth: 1, opacity: 0.8 },
-    diamond: { width: 8, height: 8, transform: [{ rotate: "45deg" }] },
+    plate: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, overflow: "hidden" },
+    plateInner: { position: "absolute", top: 3, left: 3, right: 3, bottom: 3, borderWidth: StyleSheet.hairlineWidth, borderRadius: 9, opacity: 0.55 },
+    sideLeft: { flex: 1, alignItems: "flex-start", justifyContent: "center" },
+    sideRight: { flex: 1, alignItems: "flex-end", justifyContent: "center" },
 });
 
