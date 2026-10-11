@@ -1,6 +1,7 @@
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import { create } from "zustand";
-import { ayahAudioUrl, getReciter } from "@/constants/reciters";
+import { ayahAudioUrl, getReciter, type AudioQuality } from "@/constants/reciters";
+import { cachedAudioUri, prefetchAudio } from "@/services/audioCache";
 import { localAyahUri } from "@/services/audioDownloads";
 import { useSettingsStore } from "./settings";
 
@@ -106,15 +107,37 @@ export function activeReciterId(): string {
     return useAudioPlayerStore.getState().reciterOverrideId ?? useSettingsStore.getState().reciterId;
 }
 
+/** How many ayahs ahead of the one playing are fetched in the background. */
+const PREFETCH_AHEAD = 2;
+
+/**
+ * Quietly download what is about to play, so the next ayah starts at once: the next few ayahs of the queue, and
+ * the current one too when it will repeat. A downloaded Surah and anything already cached are skipped.
+ */
+function warmAudioCache(reciterId: string, quality: AudioQuality) {
+    const { queue, currentIndex } = useAudioPlayerStore.getState();
+    if (currentIndex === null) return;
+    const targets = queue.slice(currentIndex + 1, currentIndex + 1 + PREFETCH_AHEAD);
+    if (repeatsLeft > 0 && queue[currentIndex]) targets.unshift(queue[currentIndex]);
+    for (const track of targets) {
+        if (localAyahUri(reciterId, track.surahNumber, track.ayahNumber)) continue;
+        const url = ayahAudioUrl(reciterId, track.surahNumber, track.ayahNumber, quality);
+        if (cachedAudioUri(url)) continue;
+        prefetchAudio(url).catch(() => undefined);
+    }
+}
+
 function playTrack(track: Track) {
     const { playbackRate, audioQuality } = useSettingsStore.getState();
     const reciterId = activeReciterId();
     const audio = getPlayer();
     replayPending = false;
-    // A downloaded file plays without a connection; anything missing streams as usual.
-    const localUri = localAyahUri(reciterId, track.surahNumber, track.ayahNumber);
-    useAudioPlayerStore.setState({ loading: localUri === null });
-    audio.replace({ uri: localUri ?? ayahAudioUrl(reciterId, track.surahNumber, track.ayahNumber, audioQuality) });
+    // A downloaded Surah plays without a connection, then a copy kept from earlier or fetched ahead; only what is
+    // neither streams from the internet (and shows the loading spinner while it starts).
+    const url = ayahAudioUrl(reciterId, track.surahNumber, track.ayahNumber, audioQuality);
+    const savedUri = localAyahUri(reciterId, track.surahNumber, track.ayahNumber) ?? cachedAudioUri(url);
+    useAudioPlayerStore.setState({ loading: savedUri === null });
+    audio.replace({ uri: savedUri ?? url });
     audio.setPlaybackRate(playbackRate);
     audio.setActiveForLockScreen(true, {
         title: `${track.surahName} · ${track.ayahNumber}`,
@@ -122,6 +145,7 @@ function playTrack(track: Track) {
         albumTitle: "Wird",
     });
     audio.play();
+    warmAudioCache(reciterId, audioQuality);
 }
 
 /** Repeat and pause in force now: the practice session's if there is one, otherwise the player's own. */

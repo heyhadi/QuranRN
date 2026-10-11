@@ -13,6 +13,7 @@ import { useTheme } from "@/components/useTheme";
 import { defaultTafsirFor, englishTranslations, tafsirEditions } from "@/constants/editions";
 import { dataSaverCount, getReciter, reciters, styleLabel, type AudioQuality } from "@/constants/reciters";
 import { versionLabel } from "@/constants/build";
+import { cacheSizeBytes, clearAudioCache, formatBytes } from "@/services/audioCache";
 import { FEEDBACK_EMAIL, issueUrl, mailUrl, REPO_URL } from "@/constants/links";
 import { arabicFontSize } from "@/constants/theme";
 import { useSettingsStore, type LanguagePreference, type ThemePreference } from "@/store/settings";
@@ -59,6 +60,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function SettingsScreen() {
     const { t, i18n } = useTranslation();
+    const [cacheBytes, setCacheBytes] = React.useState(0);
+    React.useEffect(() => setCacheBytes(cacheSizeBytes()), []);
     const feedbackContext = { version: Constants.expoConfig?.version ?? "1.0.0", platform: Platform.OS, osVersion: String(Platform.Version), language: i18n.language };
     const { colors, spacing } = useTheme();
     const settings = useSettingsStore();
@@ -187,6 +190,28 @@ export default function SettingsScreen() {
                         <AppText variant="caption" muted>
                             {t("settings.qualityHint", { count: dataSaverCount, total: reciters.length })}
                         </AppText>
+                    </View>
+                    <View style={styles.row}>
+                        <View style={styles.flex}>
+                            <AppText variant="bodyStrong">{t("settings.audioCache")}</AppText>
+                            <AppText variant="caption" muted>
+                                {t("settings.audioCacheHint", { size: formatBytes(cacheBytes) })}
+                            </AppText>
+                        </View>
+                        <Pressable
+                            onPress={() => {
+                                clearAudioCache();
+                                setCacheBytes(cacheSizeBytes());
+                            }}
+                            disabled={cacheBytes === 0}
+                            accessibilityRole="button"
+                            accessibilityLabel={t("settings.clearCache")}
+                            style={{ opacity: cacheBytes === 0 ? 0.4 : 1 }}
+                        >
+                            <AppText variant="bodyStrong" color={colors.mushaf}>
+                                {t("settings.clearCache")}
+                            </AppText>
+                        </Pressable>
                     </View>
                 </Section>
 

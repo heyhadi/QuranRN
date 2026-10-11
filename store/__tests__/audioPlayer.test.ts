@@ -15,6 +15,10 @@ const mockPlayer = {
     },
 };
 
+const mockCachedUri = jest.fn((..._args: unknown[]): string | null => null);
+const mockPrefetch = jest.fn((..._args: unknown[]): Promise<void> => Promise.resolve());
+jest.mock("@/services/audioCache", () => ({ cachedAudioUri: (...args: unknown[]) => mockCachedUri(...args), prefetchAudio: (...args: unknown[]) => mockPrefetch(...args) }));
+
 const mockLocalUri = jest.fn((..._args: unknown[]): string | null => null);
 jest.mock("@/services/audioDownloads", () => ({ localAyahUri: (...args: unknown[]) => mockLocalUri(...args) }));
 
@@ -33,6 +37,8 @@ beforeEach(() => {
     jest.clearAllMocks();
     jest.useRealTimers();
     mockLocalUri.mockReturnValue(null);
+    mockCachedUri.mockReturnValue(null);
+    mockPrefetch.mockResolvedValue(undefined);
     mockPlayer.listener = null;
     resetAudioPlayerForTests();
     useSettingsStore.setState({ reciterId: "alafasy", playbackRate: 1 });
@@ -378,5 +384,61 @@ describe("loading", () => {
         expect(state().loading).toBe(true);
         state().stop();
         expect(state().loading).toBe(false);
+    });
+});
+
+describe("audio cache", () => {
+    const urlFor = (ayah: number) => `https://everyayah.com/data/Alafasy_128kbps/112${String(ayah).padStart(3, "0")}.mp3`;
+    const prefetched = () => mockPrefetch.mock.calls.map((call) => call[0]);
+
+    it("fetches the next two ayahs while one plays", () => {
+        state().playFrom(queue, 0);
+
+        expect(prefetched()).toEqual([urlFor(2), urlFor(3)]);
+    });
+
+    it("fetches only what is left near the end of the queue", () => {
+        state().playFrom(queue, 2);
+
+        expect(prefetched()).toEqual([]);
+    });
+
+    it("also fetches the current ayah when it will repeat", () => {
+        state().setRepeatEach(3);
+        state().playFrom(queue, 0);
+
+        expect(prefetched()).toEqual([urlFor(1), urlFor(2), urlFor(3)]);
+    });
+
+    it("skips ayahs that are downloaded or already cached", () => {
+        mockLocalUri.mockImplementation((...args) => (args[2] === 2 ? "file:///audio/112002.mp3" : null));
+        mockCachedUri.mockImplementation((url) => (url === urlFor(3) ? "file:///cache/112003.mp3" : null));
+        state().playFrom(queue, 0);
+
+        expect(prefetched()).toEqual([]);
+    });
+
+    it("plays a cached copy instead of streaming, with no loading spinner", () => {
+        mockCachedUri.mockImplementation((url) => (url === urlFor(1) ? "file:///cache/112001.mp3" : null));
+        state().playFrom(queue, 0);
+
+        expect(playingUrl()).toBe("file:///cache/112001.mp3");
+        expect(state().loading).toBe(false);
+    });
+
+    it("prefers a downloaded Surah over a cached copy", () => {
+        mockLocalUri.mockReturnValue("file:///audio/112001.mp3");
+        mockCachedUri.mockReturnValue("file:///cache/112001.mp3");
+        state().playFrom(queue, 0);
+
+        expect(playingUrl()).toBe("file:///audio/112001.mp3");
+    });
+
+    it("keeps playing when a background fetch fails", async () => {
+        mockPrefetch.mockRejectedValue(new Error("offline"));
+        state().playFrom(queue, 0);
+        await Promise.resolve();
+
+        expect(state().status).toBe("playing");
     });
 });

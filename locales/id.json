@@ -119,7 +119,10 @@
     "audioQuality": "Kualitas audio",
     "qualityStandard": "Standar",
     "qualityDataSaver": "Hemat data",
-    "qualityHint": "Hemat data memakai berkas lebih kecil, setengah data atau kurang, bila qari menyediakannya ({{count}} dari {{total}}). Qari lain tetap seperti biasa. Surah yang sudah diunduh tetap pada kualitasnya."
+    "qualityHint": "Hemat data memakai berkas lebih kecil, setengah data atau kurang, bila qari menyediakannya ({{count}} dari {{total}}). Qari lain tetap seperti biasa. Surah yang sudah diunduh tetap pada kualitasnya.",
+    "audioCache": "Cache audio",
+    "audioCacheHint": "{{size}} disimpan agar ayat berikutnya langsung mulai. Surah yang diunduh tidak disentuh.",
+    "clearCache": "Hapus"
   },
   "notFound": {
     "title": "Halaman tidak ditemukan",
