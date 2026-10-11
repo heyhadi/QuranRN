@@ -17,3 +17,12 @@ export function issueUrl(kind: "bug" | "feature", context: FeedbackContext): str
     const params = new URLSearchParams({ title: kind === "bug" ? "Problem: " : "Idea: ", body, labels: kind === "bug" ? "bug" : "enhancement" });
     return `${REPO_URL}/issues/new?${params.toString()}`;
 }
+
+export const FEEDBACK_EMAIL = "wirdquran.app@gmail.com";
+
+/** A mail link to the feedback address with the subject and the same app details filled in. */
+export function mailUrl(context: FeedbackContext): string {
+    const body = `\n\n---\nApp: Wird ${context.version}\nPlatform: ${context.platform} ${context.osVersion}\nLanguage: ${context.language}\n`;
+    // mailto: needs %20, not the "+" that URLSearchParams writes for spaces.
+    return `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent("Wird feedback")}&body=${encodeURIComponent(body)}`;
+}

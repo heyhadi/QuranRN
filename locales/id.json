@@ -112,7 +112,10 @@
     "suggestIdea": "Usul ide",
     "suggestIdeaHint": "Fitur atau perbaikan yang Anda inginkan.",
     "github": "Lihat di GitHub",
-    "feedbackNote": "Membuka GitHub di peramban, jadi butuh akun GitHub. Yang ditambahkan ke laporan hanya versi aplikasi, sistem ponsel, dan bahasa aplikasi; bukan apa yang Anda baca atau simpan."
+    "feedbackNote": "Email butuh aplikasi email di ponsel. GitHub butuh akun GitHub. Yang ditambahkan ke laporan hanya versi aplikasi, sistem ponsel, dan bahasa aplikasi; bukan apa yang Anda baca atau simpan.",
+    "sendEmail": "Kirim masukan lewat email",
+    "sendEmailHint": "Tanpa akun. Membuka aplikasi email Anda.",
+    "openFailed": "Tidak bisa dibuka. Gunakan ini:"
   },
   "notFound": {
     "title": "Halaman tidak ditemukan",

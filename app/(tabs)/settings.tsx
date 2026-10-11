@@ -3,7 +3,7 @@ import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Linking, Platform, Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
+import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { IconButton } from "@/components/ui/IconButton";
@@ -12,7 +12,7 @@ import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { useTheme } from "@/components/useTheme";
 import { defaultTafsirFor, englishTranslations, tafsirEditions } from "@/constants/editions";
 import { getReciter, styleLabel } from "@/constants/reciters";
-import { issueUrl, REPO_URL } from "@/constants/links";
+import { FEEDBACK_EMAIL, issueUrl, mailUrl, REPO_URL } from "@/constants/links";
 import { arabicFontSize } from "@/constants/theme";
 import { useSettingsStore, type LanguagePreference, type ThemePreference } from "@/store/settings";
 
@@ -176,11 +176,12 @@ export default function SettingsScreen() {
 
                 <Section title={t("settings.feedback")}>
                     {[
+                        { icon: "mail-outline" as const, title: t("settings.sendEmail"), hint: t("settings.sendEmailHint"), url: mailUrl(feedbackContext) },
                         { icon: "bug-outline" as const, title: t("settings.reportProblem"), hint: t("settings.reportProblemHint"), url: issueUrl("bug", feedbackContext) },
                         { icon: "bulb-outline" as const, title: t("settings.suggestIdea"), hint: t("settings.suggestIdeaHint"), url: issueUrl("feature", feedbackContext) },
                         { icon: "logo-github" as const, title: t("settings.github"), hint: REPO_URL.replace("https://", ""), url: REPO_URL },
                     ].map((item) => (
-                        <Pressable key={item.title} onPress={() => void Linking.openURL(item.url).catch(() => undefined)} accessibilityRole="link" accessibilityLabel={item.title} style={styles.row}>
+                        <Pressable key={item.title} onPress={() => void Linking.openURL(item.url).catch(() => Alert.alert(t("settings.openFailed"), item.url.startsWith("mailto:") ? FEEDBACK_EMAIL : item.url))} accessibilityRole="link" accessibilityLabel={item.title} style={styles.row}>
                             <Ionicons name={item.icon} size={22} color={colors.mushaf} />
                             <View style={styles.flex}>
                                 <AppText variant="bodyStrong">{item.title}</AppText>

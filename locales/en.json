@@ -112,7 +112,10 @@
     "suggestIdea": "Suggest an idea",
     "suggestIdeaHint": "A feature or a fix you would like.",
     "github": "View on GitHub",
-    "feedbackNote": "Opens GitHub in your browser, so you need a GitHub account. Only the app version, your phone's system and the app language are added to the report; nothing you read or saved."
+    "feedbackNote": "Email needs a mail app on your phone. GitHub needs a GitHub account. Only the app version, your phone's system and the app language are added to a report; nothing you read or saved.",
+    "sendEmail": "Send feedback by email",
+    "sendEmailHint": "No account needed. Opens your mail app.",
+    "openFailed": "Couldn't open it. Use this instead:"
   },
   "notFound": {
     "title": "Page not found",
