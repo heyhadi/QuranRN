@@ -1,11 +1,12 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, FlatList, Pressable, Share, StyleSheet, Switch, View, type ViewToken } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Switch, View, type ViewToken } from "react-native";
 import { Button } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import AyahCard from "@/components/AyahCard";
 import { AyahSheet } from "@/components/AyahSheet";
+import { ShareAyahSheet, type ShareAyahPayload } from "@/components/ShareAyahSheet";
 import { DownloadAudioRow } from "@/components/DownloadAudioRow";
 import { FootnoteSheet } from "@/components/FootnoteSheet";
 import { MiniPlayer } from "@/components/MiniPlayer";
@@ -165,13 +166,14 @@ export default function Surah() {
         [surah, toggleBookmark, t],
     );
 
+    const [sharePayload, setSharePayload] = useState<ShareAyahPayload | null>(null);
     const handleShare = useCallback(
         (ayah: Ayah) => {
             if (!surah) return;
             const reference = t("reader.shareSuffix", { surah: surah.nameLatin, surahNumber: surah.number, ayah: ayah.ayahNumber });
             const english = isEnglish ? englishTranslation.data?.[ayah.ayahNumber] : undefined;
             const meaning = english ? translationText(english) : ayah.translation;
-            void Share.share({ message: `${ayah.textArabic}\n\n${meaning}\n\n— ${reference}` });
+            setSharePayload({ arabic: ayah.textArabic, meaning, reference });
         },
         [surah, t, isEnglish, englishTranslation.data],
     );
@@ -301,6 +303,7 @@ export default function Surah() {
                 }}
             />
 
+            <ShareAyahSheet payload={sharePayload} onDismiss={() => setSharePayload(null)} />
             <AyahSheet ayah={sheetAyah} surahName={surah.nameLatin} initialTab={sheetTab} onDismiss={() => setSheetAyah(null)} />
             <RuleSheet ruleId={ruleId} onDismiss={() => setRuleId(null)} />
             <LegendSheet visible={legendOpen} onDismiss={() => setLegendOpen(false)} />

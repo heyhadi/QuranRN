@@ -478,5 +478,11 @@
     "suhoorBody": "Imsak pukul {{time}}, {{minutes}} menit lagi.",
     "iftarTitle": "Waktunya berbuka",
     "iftarBody": "Maghrib telah tiba. Bismillah."
+  },
+  "share": {
+    "title": "Bagikan ayat",
+    "image": "Bagikan sebagai gambar",
+    "text": "Bagikan sebagai teks",
+    "failed": "Gambar tidak bisa dibagikan. Coba lagi, atau bagikan sebagai teks."
   }
 }

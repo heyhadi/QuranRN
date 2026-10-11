@@ -478,5 +478,11 @@
     "suhoorBody": "Imsak is at {{time}}, in {{minutes}} minutes.",
     "iftarTitle": "Time to break the fast",
     "iftarBody": "Maghrib has come. Bismillah."
+  },
+  "share": {
+    "title": "Share ayah",
+    "image": "Share as image",
+    "text": "Share as text",
+    "failed": "Couldn't share the image. Try again, or share it as text."
   }
 }
