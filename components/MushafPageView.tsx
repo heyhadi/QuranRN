@@ -82,8 +82,8 @@ function TextLine({ words, width, height, fontSize, tajweed, onWordPress, onRule
     );
 }
 
-/** A header line takes this many ordinary lines of height: the plate, plus clear space under it. */
-export const HEADER_WEIGHT = 1.45;
+/** A header line takes this many ordinary lines of height: the plate, plus clear space above and below it. */
+export const HEADER_WEIGHT = 1.7;
 
 /** One eight-point star (two squares), drawn so it can sit over the end of the plate. */
 function Finial({ size, fill, line }: { size: number; fill: string; line: string }) {
@@ -105,12 +105,13 @@ function TitleLine({ surahNumber, width, height, fontSize }: { surahNumber: numb
     const surahs = useSurahList();
     const name = surahs.data?.find((surah) => surah.number === surahNumber)?.nameArabic;
     const unit = height / HEADER_WEIGHT;
-    const plateHeight = unit * 0.82;
-    const top = unit * 0.14;
+    const plateHeight = unit * 0.8;
+    // More room above than below: the plate belongs to the Surah it opens, not the one before it.
+    const top = unit * 0.5;
     const finial = plateHeight * 0.74;
 
     return (
-        // The plate sits at the top of its slot; what is left of the slot is the space under it.
+        // Clear space above the plate, the plate, then a smaller gap before the bismillah.
         <View style={{ width, height, justifyContent: "flex-start", paddingTop: top, paddingHorizontal: finial / 2 }}>
             <View style={[styles.plate, { height: plateHeight, backgroundColor: colors.heroBackground, borderColor: colors.heroAccent }]}>
                 <View pointerEvents="none" style={[styles.plateInner, { borderColor: colors.heroAccent }]} />
