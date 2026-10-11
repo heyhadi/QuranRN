@@ -49,14 +49,13 @@ export function PlateCard({ children, style, onPress, accessibilityLabel, corner
 }
 
 /**
- * The surface card with the same hand-finished feel, lighter: a hairline brass inner frame and a very
- * faint star in the corner.
+ * The surface card with the same hand-finished feel, lighter: just a hairline brass inner frame. The
+ * star stays on the main plate cards.
  */
-export function OrnateCard({ children, style, onPress, accessibilityLabel, corner = "right" }: PlateProps) {
-    const { colors, scheme } = useTheme();
+export function OrnateCard({ children, style, onPress, accessibilityLabel }: PlateProps) {
+    const { colors } = useTheme();
     return (
         <Wrapper onPress={onPress} accessibilityLabel={accessibilityLabel} style={[styles.ornate, { backgroundColor: colors.surface, borderColor: colors.line }]}>
-            <Star size={110} color={colors.brass} opacity={scheme === "dark" ? 0.1 : 0.12} style={corner === "right" ? { right: -36, top: -36 } : { left: -36, top: -36 }} />
             <View pointerEvents="none" style={[styles.innerFrame, { borderColor: colors.brass, opacity: 0.22 }]} />
             <View style={style}>{children}</View>
         </Wrapper>
