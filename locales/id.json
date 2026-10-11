@@ -115,7 +115,11 @@
     "feedbackNote": "Email butuh aplikasi email di ponsel. GitHub butuh akun GitHub. Yang ditambahkan ke laporan hanya versi aplikasi, sistem ponsel, dan bahasa aplikasi; bukan apa yang Anda baca atau simpan.",
     "sendEmail": "Kirim masukan lewat email",
     "sendEmailHint": "Tanpa akun. Membuka aplikasi email Anda.",
-    "openFailed": "Tidak bisa dibuka. Gunakan ini:"
+    "openFailed": "Tidak bisa dibuka. Gunakan ini:",
+    "audioQuality": "Kualitas audio",
+    "qualityStandard": "Standar",
+    "qualityDataSaver": "Hemat data",
+    "qualityHint": "Hemat data memakai berkas lebih kecil, setengah data atau kurang, bila qari menyediakannya ({{count}} dari {{total}}). Qari lain tetap seperti biasa. Surah yang sudah diunduh tetap pada kualitasnya."
   },
   "notFound": {
     "title": "Halaman tidak ditemukan",

@@ -1,5 +1,5 @@
 import { Directory, File, Paths } from "expo-file-system";
-import { ayahAudioUrl } from "@/constants/reciters";
+import { ayahAudioUrl, type AudioQuality } from "@/constants/reciters";
 
 // Downloaded recitation lives in the app's document folder: audio/{reciter}/{SSS}/{AAA}.mp3.
 // Anything missing is streamed as usual, so a partly downloaded Surah still plays.
@@ -32,6 +32,8 @@ interface DownloadOptions {
     reciterId: string;
     surahNumber: number;
     ayahCount: number;
+    /** Which files to fetch where a reciter has a smaller version. */
+    quality?: AudioQuality;
     /** Called after each ayah with how many are done. */
     onProgress: (done: number) => void;
     /** Checked between ayahs; return true to stop. */
@@ -42,7 +44,7 @@ interface DownloadOptions {
  * Download every ayah of a Surah that isn't on the device yet, a few at a time. A file that fails
  * is removed, so a later attempt never mistakes a half-written file for a finished one.
  */
-export async function downloadSurahAudio({ reciterId, surahNumber, ayahCount, onProgress, shouldCancel }: DownloadOptions): Promise<void> {
+export async function downloadSurahAudio({ reciterId, surahNumber, ayahCount, quality = "standard", onProgress, shouldCancel }: DownloadOptions): Promise<void> {
     const directory = surahDirectory(reciterId, surahNumber);
     if (!directory.exists) directory.create({ intermediates: true, idempotent: true });
 
@@ -54,7 +56,7 @@ export async function downloadSurahAudio({ reciterId, surahNumber, ayahCount, on
             const file = ayahFile(reciterId, surahNumber, ayah);
             if (!file.exists) {
                 try {
-                    await File.downloadFileAsync(ayahAudioUrl(reciterId, surahNumber, ayah), file);
+                    await File.downloadFileAsync(ayahAudioUrl(reciterId, surahNumber, ayah, quality), file);
                 } catch (error) {
                     if (file.exists) file.delete();
                     throw error;

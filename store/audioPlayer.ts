@@ -93,12 +93,12 @@ export function activeReciterId(): string {
 }
 
 function playTrack(track: Track) {
-    const { playbackRate } = useSettingsStore.getState();
+    const { playbackRate, audioQuality } = useSettingsStore.getState();
     const reciterId = activeReciterId();
     const audio = getPlayer();
     replayPending = false;
     // A downloaded file plays without a connection; anything missing streams as usual.
-    audio.replace({ uri: localAyahUri(reciterId, track.surahNumber, track.ayahNumber) ?? ayahAudioUrl(reciterId, track.surahNumber, track.ayahNumber) });
+    audio.replace({ uri: localAyahUri(reciterId, track.surahNumber, track.ayahNumber) ?? ayahAudioUrl(reciterId, track.surahNumber, track.ayahNumber, audioQuality) });
     audio.setPlaybackRate(playbackRate);
     audio.setActiveForLockScreen(true, {
         title: `${track.surahName} · ${track.ayahNumber}`,

@@ -1,4 +1,4 @@
-import { ayahAudioUrl, DEFAULT_RECITER_ID, getReciter, legacyReciterIds, reciters } from "../reciters";
+import { ayahAudioUrl, dataSaverCount, DEFAULT_RECITER_ID, getReciter, legacyReciterIds, reciters } from "../reciters";
 
 describe("reciter catalogue", () => {
     it("has unique ids and a valid default", () => {
@@ -38,5 +38,27 @@ describe("ayahAudioUrl", () => {
 
     it("keeps the sub-folder of the English audio translation", () => {
         expect(ayahAudioUrl("basfar-walk", 1, 2)).toBe("https://everyayah.com/data/MultiLanguage/Basfar_Walk_192kbps/001002.mp3");
+    });
+});
+
+describe("data saver", () => {
+    it("uses the smaller folder where a reciter has one", () => {
+        expect(ayahAudioUrl("alafasy", 2, 255, "dataSaver")).toBe("https://everyayah.com/data/Alafasy_64kbps/002255.mp3");
+        expect(ayahAudioUrl("sudais", 1, 1, "dataSaver")).toBe("https://everyayah.com/data/Abdurrahmaan_As-Sudais_64kbps/001001.mp3");
+    });
+
+    it("keeps the standard file for reciters without a smaller one and in standard quality", () => {
+        expect(ayahAudioUrl("muaiqly", 1, 1, "dataSaver")).toBe(ayahAudioUrl("muaiqly", 1, 1));
+        expect(ayahAudioUrl("juhany", 112, 1, "dataSaver")).toBe(ayahAudioUrl("juhany", 112, 1));
+        expect(ayahAudioUrl("alafasy", 2, 255, "standard")).toBe("https://everyayah.com/data/Alafasy_128kbps/002255.mp3");
+    });
+
+    it("only offers a smaller version that is a different, smaller folder on everyayah.com", () => {
+        for (const reciter of reciters.filter((entry) => entry.dataSaver)) {
+            expect(reciter.source.kind).toBe("everyayah");
+            expect(reciter.dataSaver).not.toBe((reciter.source as { folder: string }).folder);
+            expect(reciter.dataSaver).toMatch(/_(32|64)kbps$/);
+        }
+        expect(dataSaverCount).toBe(11);
     });
 });

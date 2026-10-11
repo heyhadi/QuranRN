@@ -7,6 +7,14 @@ beforeEach(() => {
     useSettingsStore.setState({ arabicFontSize: arabicFontSize.default, themePreference: "system", languagePreference: "system" });
 });
 
+describe("audio quality", () => {
+    it("starts on standard and can be switched to the data saver", () => {
+        useSettingsStore.setState({ audioQuality: "standard" });
+        useSettingsStore.getState().setAudioQuality("dataSaver");
+        expect(useSettingsStore.getState().audioQuality).toBe("dataSaver");
+    });
+});
+
 describe("settings store", () => {
     it("steps the Arabic size and stops at the limits", () => {
         const { stepArabicFontSize } = useSettingsStore.getState();

@@ -54,7 +54,7 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Next/previous, repeat each ayah, loop the Surah, playback speed, sleep timer
 - [x] Background playback and lock-screen controls (configured; **to be checked on a real device**)
 - [x] Download a Surah for offline listening
-- [ ] Audio quality setting: every reciter has one fixed bitrate for now
+- [x] Audio quality setting: a data saver that streams and downloads the smaller files (half the size or less) for the 11 of 27 reciters that offer one on everyayah.com, each checked against the first and last ayah and by file size. The others stay as they are
 - Not found: Islam Sobhi (no per-ayah source)
 
 ## Phase 4: Reading depth (done, except mushaf mode)

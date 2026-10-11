@@ -11,7 +11,7 @@ import { ReciterTile } from "@/components/ui/ReciterTile";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { useTheme } from "@/components/useTheme";
 import { defaultTafsirFor, englishTranslations, tafsirEditions } from "@/constants/editions";
-import { getReciter, styleLabel } from "@/constants/reciters";
+import { dataSaverCount, getReciter, reciters, styleLabel, type AudioQuality } from "@/constants/reciters";
 import { FEEDBACK_EMAIL, issueUrl, mailUrl, REPO_URL } from "@/constants/links";
 import { arabicFontSize } from "@/constants/theme";
 import { useSettingsStore, type LanguagePreference, type ThemePreference } from "@/store/settings";
@@ -172,6 +172,21 @@ export default function SettingsScreen() {
                         </View>
                         <Ionicons name="chevron-forward" size={20} color={colors.ink2} />
                     </Pressable>
+                    <View style={{ gap: spacing.sm }}>
+                        <AppText variant="bodyStrong">{t("settings.audioQuality")}</AppText>
+                        <SegmentedControl<AudioQuality>
+                            options={[
+                                { value: "standard", label: t("settings.qualityStandard") },
+                                { value: "dataSaver", label: t("settings.qualityDataSaver") },
+                            ]}
+                            value={settings.audioQuality}
+                            onChange={settings.setAudioQuality}
+                            accessibilityLabel={t("settings.audioQuality")}
+                        />
+                        <AppText variant="caption" muted>
+                            {t("settings.qualityHint", { count: dataSaverCount, total: reciters.length })}
+                        </AppText>
+                    </View>
                 </Section>
 
                 <Section title={t("settings.feedback")}>

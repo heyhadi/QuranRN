@@ -115,7 +115,11 @@
     "feedbackNote": "Email needs a mail app on your phone. GitHub needs a GitHub account. Only the app version, your phone's system and the app language are added to a report; nothing you read or saved.",
     "sendEmail": "Send feedback by email",
     "sendEmailHint": "No account needed. Opens your mail app.",
-    "openFailed": "Couldn't open it. Use this instead:"
+    "openFailed": "Couldn't open it. Use this instead:",
+    "audioQuality": "Audio quality",
+    "qualityStandard": "Standard",
+    "qualityDataSaver": "Data saver",
+    "qualityHint": "Data saver uses smaller files, half the data or less, where a reciter offers them ({{count}} of {{total}}). Other reciters stay as they are. Surahs you already downloaded keep their quality."
   },
   "notFound": {
     "title": "Page not found",
