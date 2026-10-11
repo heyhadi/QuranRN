@@ -75,10 +75,18 @@ function clearGap() {
     gapTimer = null;
 }
 
+/**
+ * While developing, Fast Refresh runs this file again with the old player still playing, which would
+ * leave two players sounding at once. Keeping the player (and its listener) on globalThis lets the new
+ * copy take the old one over instead. A shipped app only ever runs this file once, so it is unaffected.
+ */
+const shared = globalThis as typeof globalThis & { __wirdAudio?: { player: AudioPlayer; subscription?: { remove?: () => void } } };
+
 function getPlayer(): AudioPlayer {
     if (!player) {
-        player = createAudioPlayer(null);
-        player.addListener("playbackStatusUpdate", (status) => {
+        shared.__wirdAudio?.subscription?.remove?.();
+        player = shared.__wirdAudio?.player ?? createAudioPlayer(null);
+        const subscription = player.addListener("playbackStatusUpdate", (status) => {
             const store = useAudioPlayerStore.getState();
             // Follow the player's own state, but only while something is meant to be playing.
             const loadingNow = store.status === "playing" && store.loading && (!status.isLoaded || !!status.isBuffering);
@@ -87,6 +95,7 @@ function getPlayer(): AudioPlayer {
             if (store.previewReciterId || store.clipUrl) useAudioPlayerStore.setState({ previewReciterId: null, clipUrl: null });
             else store.advance();
         });
+        shared.__wirdAudio = { player, subscription };
         void setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true, interruptionMode: "doNotMix" });
     }
     return player;
