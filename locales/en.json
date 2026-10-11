@@ -119,7 +119,10 @@
     "audioQuality": "Audio quality",
     "qualityStandard": "Standard",
     "qualityDataSaver": "Data saver",
-    "qualityHint": "Data saver uses smaller files, half the data or less, where a reciter offers them ({{count}} of {{total}}). Other reciters stay as they are. Surahs you already downloaded keep their quality."
+    "qualityHint": "Data saver uses smaller files, half the data or less, where a reciter offers them ({{count}} of {{total}}). Other reciters stay as they are. Surahs you already downloaded keep their quality.",
+    "audioCache": "Audio cache",
+    "audioCacheHint": "{{size}} kept so the next ayah starts at once. Downloaded Surahs are not touched.",
+    "clearCache": "Clear"
   },
   "notFound": {
     "title": "Page not found",

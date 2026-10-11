@@ -13,20 +13,16 @@ import { useTheme } from "@/components/useTheme";
 import { firstPageOf, MUSHAF_PAGES } from "@/constants/surahPages";
 import type { TajweedRuleId } from "@/constants/tajweed";
 import { isValidMushafPage, type MushafWord } from "@/services/mushaf";
+import { listIndexOf, mushafLayout, pageAt, pagesOfSpread, SPREAD_GAP, SPREADS, spreadIndexOf } from "@/services/mushafLayout";
 import { useMushafPage, useSurahList } from "@/services/queries";
 import { useKhatamStore } from "@/store/khatam";
 import { useMushafStore } from "@/store/mushaf";
 import { useReadingProgressStore } from "@/store/readingProgress";
 import { useSettingsStore } from "@/store/settings";
 
-/** On a tablet the page stays a comfortable reading width, centred. */
-const MAX_PAGE_WIDTH = 640;
 const FOOTER = 34;
-/** Space kept clear at each side of the page. */
-const SIDE_MARGIN = 16;
 /** How long a page has to stay on screen before its ayahs count as read for the Khatam plan. */
 const READ_AFTER_MS = 2000;
-const PAGES = Array.from({ length: MUSHAF_PAGES }, (_, index) => index + 1);
 
 export default function MushafScreen() {
     const { t } = useTranslation();
@@ -58,34 +54,41 @@ export default function MushafScreen() {
     const [pageInput, setPageInput] = useState("");
     const listRef = useRef<FlatList<number>>(null);
 
-    const pageWidth = size ? Math.min(size.width, MAX_PAGE_WIDTH) - SIDE_MARGIN * 2 : 0;
-    const pageHeight = size ? size.height - FOOTER : 0;
+    // One page, or two side by side when a tablet is turned sideways; the page always keeps its proportions.
+    const layout = size ? mushafLayout(size.width, size.height, FOOTER) : null;
+    const spread = layout?.spread ?? false;
+    const pageWidth = layout?.pageWidth ?? 0;
+    const pageHeight = layout?.pageHeight ?? 0;
+    const listData = useMemo(() => Array.from({ length: spread ? SPREADS : MUSHAF_PAGES }, (_, index) => index), [spread]);
+    const [rightPage, leftPage] = spread ? pagesOfSpread(spreadIndexOf(page)) : [page, null];
 
     const goTo = useCallback(
         (target: number) => {
             if (!isValidMushafPage(target)) return;
             setPage(target);
             setSavedPage(target);
-            listRef.current?.scrollToIndex({ index: target - 1, animated: false });
+            listRef.current?.scrollToIndex({ index: listIndexOf(target, spread), animated: false });
         },
-        [setSavedPage],
+        [setSavedPage, spread],
     );
 
-    // The ayahs on the page count as read once the page has stayed on screen for a moment.
-    const current = useMushafPage(page);
+    // The pages in view (one, or both of a spread): their ayahs count as read once they have stayed on screen a moment.
+    const rightData = useMushafPage(rightPage);
+    const leftData = useMushafPage(leftPage ?? 0);
+    const visibleLines = useMemo(() => [...(rightData.data?.lines ?? []), ...(leftData.data?.lines ?? [])], [rightData.data, leftData.data]);
     const recordRead = useKhatamStore((state) => state.recordRead);
     useEffect(() => {
-        if (!current.data) return;
+        if (visibleLines.length === 0) return;
         const timer = setTimeout(() => {
             const bySurah = new Map<number, Set<number>>();
-            for (const line of current.data.lines) {
+            for (const line of visibleLines) {
                 if (line.kind !== "text") continue;
                 for (const word of line.words) bySurah.set(word.surahNumber, (bySurah.get(word.surahNumber) ?? new Set()).add(word.ayahNumber));
             }
             for (const [surah, ayahs] of bySurah) recordRead(surah, [...ayahs]);
         }, READ_AFTER_MS);
         return () => clearTimeout(timer);
-    }, [current.data, recordRead]);
+    }, [visibleLines, recordRead]);
 
     const onWordPress = useCallback((word: MushafWord) => router.push({ pathname: "/surah/[id]", params: { id: word.surahNumber, ayah: word.ayahNumber } }), [router]);
 
@@ -102,12 +105,12 @@ export default function MushafScreen() {
     // Every Surah that has ayahs on the page, in order: a page can hold the end of one Surah and the start of the next.
     const surahNumbersOnPage = useMemo(() => {
         const numbers: number[] = [];
-        for (const line of current.data?.lines ?? []) {
+        for (const line of visibleLines) {
             if (line.kind !== "text") continue;
             for (const word of line.words) if (!numbers.includes(word.surahNumber)) numbers.push(word.surahNumber);
         }
         return numbers;
-    }, [current.data]);
+    }, [visibleLines]);
     const nameOf = (number: number) => surahs.data?.find((surah) => surah.number === number)?.nameLatin;
     const surahName = surahNumbersOnPage.length === 0 ? undefined : surahNumbersOnPage.length === 1 ? nameOf(surahNumbersOnPage[0]) : `${nameOf(surahNumbersOnPage[0])} – ${nameOf(surahNumbersOnPage[surahNumbersOnPage.length - 1])}`;
 
@@ -135,8 +138,9 @@ export default function MushafScreen() {
                 {size ? (
                     // `inverted` makes the first page sit on the right and swipes run right to left, like a printed mushaf.
                     <FlatList
+                        key={spread ? "spread" : "single"}
                         ref={listRef}
-                        data={PAGES}
+                        data={listData}
                         horizontal
                         inverted
                         pagingEnabled
@@ -145,29 +149,40 @@ export default function MushafScreen() {
                         disableIntervalMomentum
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={(item) => String(item)}
-                        initialScrollIndex={startPage - 1}
+                        initialScrollIndex={listIndexOf(page, spread)}
                         getItemLayout={(_, index) => ({ length: size.width, offset: size.width * index, index })}
                         windowSize={3}
                         maxToRenderPerBatch={2}
                         initialNumToRender={1}
                         removeClippedSubviews
                         onMomentumScrollEnd={(event) => {
-                            const next = Math.round(event.nativeEvent.contentOffset.x / size.width) + 1;
-                            if (next !== page && isValidMushafPage(next)) {
+                            const next = pageAt(Math.round(event.nativeEvent.contentOffset.x / size.width), spread);
+                            if (next !== rightPage && isValidMushafPage(next)) {
                                 setPage(next);
                                 setSavedPage(next);
                             }
                         }}
-                        renderItem={({ item }) => (
-                            <View style={{ width: size.width, height: size.height, alignItems: "center" }}>
-                                <View style={{ width: pageWidth, height: pageHeight }}>
-                                    <MushafPageView pageNumber={item} width={pageWidth} height={pageHeight} tajweed={tajweedEnabled} onWordPress={onWordPress} onRulePress={setRuleId} />
+                        renderItem={({ item }) => {
+                            const [right, left] = spread ? pagesOfSpread(item) : [item + 1, null];
+                            return (
+                                <View style={{ width: size.width, height: size.height, alignItems: "center" }}>
+                                    <View style={[styles.spread, { gap: SPREAD_GAP }]}>
+                                        {[right, left].map((number) =>
+                                            number === null ? null : (
+                                                <View key={number} style={{ width: pageWidth }}>
+                                                    <View style={{ width: pageWidth, height: pageHeight }}>
+                                                        <MushafPageView pageNumber={number} width={pageWidth} height={pageHeight} tajweed={tajweedEnabled} onWordPress={onWordPress} onRulePress={setRuleId} />
+                                                    </View>
+                                                    <AppText variant="caption" muted style={styles.footer} accessibilityLabel={t("mushaf.page", { page: number })}>
+                                                        {number}
+                                                    </AppText>
+                                                </View>
+                                            ),
+                                        )}
+                                    </View>
                                 </View>
-                                <AppText variant="caption" muted style={styles.footer} accessibilityLabel={t("mushaf.page", { page: item })}>
-                                    {item}
-                                </AppText>
-                            </View>
-                        )}
+                            );
+                        }}
                     />
                 ) : null}
             </View>
@@ -226,7 +241,9 @@ const styles = StyleSheet.create({
     screen: { flex: 1 },
     body: { flex: 1 },
     flex: { flex: 1 },
-    footer: { height: FOOTER, textAlignVertical: "center", fontVariant: ["tabular-nums"] },
+    // Right to left, so the odd page of a spread sits on the right.
+    spread: { flexDirection: "row-reverse", justifyContent: "center" },
+    footer: { height: FOOTER, textAlign: "center", textAlignVertical: "center", fontVariant: ["tabular-nums"] },
     headerButtons: { flexDirection: "row", gap: 4 },
     jumpRow: { flexDirection: "row", alignItems: "center", gap: 12 },
     input: { flex: 1, fontSize: 16, paddingHorizontal: 14, paddingVertical: 10 },

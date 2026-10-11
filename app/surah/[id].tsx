@@ -278,10 +278,15 @@ export default function Surah() {
                 ListHeaderComponent={header}
                 ListFooterComponent={footer}
                 contentContainerStyle={{ paddingHorizontal: spacing.sm }}
+                // On Android, rows scrolled off screen are detached by default, which can clip a row whose height
+                // changed afterwards (as when the Arabic size is raised). Rows are cheap enough to keep attached.
+                removeClippedSubviews={false}
                 renderItem={({ item, index }) => {
                     const key = bookmarkKey(item.surahNumber, item.ayahNumber);
                     return (
                         <AyahCard
+                            // A new key with the size makes the row be measured again from scratch, so its height always fits the text.
+                            key={`${key}:${arabicSize}`}
                             ayah={item}
                             arabicSize={arabicSize}
                             tajweed={tajweedEnabled ? tajweed.data?.[item.ayahNumber] : undefined}

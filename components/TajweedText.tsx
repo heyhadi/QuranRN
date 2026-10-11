@@ -27,6 +27,7 @@ export function TajweedText({ segments, size, onRulePress }: TajweedTextProps) {
                 segment.rule ? (
                     <Text
                         key={index}
+                        allowFontScaling={false}
                         style={{ color: colors.tajweed[tajweedColorKey[segment.rule]] }}
                         onPress={onRulePress ? () => onRulePress(segment.rule!) : undefined}
                         accessibilityRole={onRulePress ? "button" : undefined}

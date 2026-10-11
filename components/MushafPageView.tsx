@@ -58,7 +58,7 @@ function TextLine({ words, width, height, fontSize, tajweed, onWordPress, onRule
                     {tajweed && word.segments
                         ? displaySegments(word.segments).map((segment, part) =>
                               segment.rule ? (
-                                  <Text key={part} style={{ color: colors.tajweed[tajweedColorKey[segment.rule]] }} onPress={() => onRulePress(segment.rule!)}>
+                                  <Text key={part} allowFontScaling={false} style={{ color: colors.tajweed[tajweedColorKey[segment.rule]] }} onPress={() => onRulePress(segment.rule!)}>
                                       {segment.text}
                                   </Text>
                               ) : (

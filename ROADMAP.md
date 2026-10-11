@@ -57,7 +57,7 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Audio quality setting: a data saver that streams and downloads the smaller files (half the size or less) for the 11 of 27 reciters that offer one on everyayah.com, each checked against the first and last ayah and by file size. The others stay as they are
 - Not found: Islam Sobhi (no per-ayah source)
 
-## Phase 4: Reading depth (done, except mushaf mode)
+## Phase 4: Reading depth (done)
 - [x] English translations (6 editions) with tappable footnotes
 - [x] Tajweed colouring for all 17 rules in the data, tap a letter for the rule, legend, and a learning screen with a real example ayah you can hear
 - [x] Tafsir sheet with 8 editions (Kemenag, Ibn Kathir, Ma'arif, Tazkirul, Muyassar, Sa'di, Tabari, Qurtubi)
@@ -81,11 +81,28 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Today tab: next prayer, daily reading goal, ayah of the day, adhkar, hifz and tasbih
 - [x] Ramadan mode: imsak and iftar countdown on Today, suhoor and iftar reminders (Umm al-Qura calendar)
 
-## Phase 7: Sharing and polish
+## Phase 7: Sharing and polish (done, except store screenshots)
 - [x] Share an ayah as an image (`react-native-view-shot`) or as text
 - [x] Accessibility: every control has a role and a label or visible text, system font scaling is capped per text style so layouts hold (a screen-reader pass on a device is still to do)
-- [x] Store listing copy in ID and EN (`docs/store-listing.md`); screenshots still to take
-- [ ] App icon, splash screen, store listing
+- [x] Store listing copy in ID and EN (`docs/store-listing.md`)
+- [x] App icon, splash and Android notification icon from one mark (`scripts/app-icons.mjs`)
+- [x] Mushaf-plate cards and framed Surah title; dark theme and transliteration on by default
+- [x] Audio data saver (smaller files for 11 of 27 reciters), loading spinner while an ayah streams
+- [x] Feedback in Settings: email and GitHub issue, with only the app version, system and language attached
+- [ ] Store screenshots in ID and EN
+
+## Phase 8: Mushaf (done)
+- [x] Mushaf page mode (see Phase 4) with a framed Surah title plate with star finials, tajweed colours and a screen title naming every Surah on the page
+
+## Phase 9: Android, tablets and audio cache (done, needs device checks)
+- [x] Coloured tajweed no longer falls apart on Android: letters keep their marks and stay joined across colour runs; nested tajweed rules are read correctly
+- [x] Arabic text no longer clipped at larger sizes on Android (rows kept attached and re-measured; Quran text ignores the phone's font scale)
+- [x] Next two ayahs fetched while one plays, kept in a 150 MB cache; cache size and Clear in Settings
+- [x] Tablet layout: centred column, sheets capped, landscape on tablets only, two-page mushaf spread
+- [x] Android notification icon (white star silhouette) instead of a square
+- [x] Development build profile for live testing on a phone; arm64-only Android builds and a rising version code; the build commit shown in Settings
+- [ ] Check on real devices: reminders, lock-screen audio card, share-as-image, iPad landscape and the mushaf spread
+- [ ] Softer look for the Adhkar and dua cards
 
 ## Later (not planned now)
 - Cloud sync / accounts
