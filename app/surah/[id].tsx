@@ -7,6 +7,7 @@ import Toast from "react-native-toast-message";
 import AyahCard from "@/components/AyahCard";
 import { AppText } from "@/components/ui/AppText";
 import { IconButton } from "@/components/ui/IconButton";
+import { MiniPlayer } from "@/components/MiniPlayer";
 import { Sheet } from "@/components/ui/Sheet";
 import { useTheme } from "@/components/useTheme";
 import { arabicFontSize } from "@/constants/theme";
@@ -47,10 +48,9 @@ export default function Surah() {
 
     const bookmarks = useBookmarksStore((state) => state.bookmarks);
     const toggleBookmark = useBookmarksStore((state) => state.toggleBookmark);
-    const { reciterId, arabicFontSize: arabicSize, showTranslation, stepArabicFontSize, setShowTranslation } = useSettingsStore();
+    const { arabicFontSize: arabicSize, showTranslation, stepArabicFontSize, setShowTranslation } = useSettingsStore();
     const playingAyah = usePlayingAyah(surahNumber);
     const toggleAudio = useAudioPlayerStore((state) => state.toggle);
-    const stopAudio = useAudioPlayerStore((state) => state.stop);
     const setLastRead = useReadingProgressStore((state) => state.setLastRead);
 
     const [tafsirAyah, setTafsirAyah] = useState<number | null>(null);
@@ -63,9 +63,9 @@ export default function Surah() {
             ayahs.map((ayah) => ({
                 surahNumber: ayah.surahNumber,
                 ayahNumber: ayah.ayahNumber,
-                url: ayah.audio[reciterId] ?? Object.values(ayah.audio)[0],
+                surahName: surah?.nameLatin ?? "",
             })),
-        [ayahs, reciterId],
+        [ayahs, surah?.nameLatin],
     );
 
     // ---- Scrolling: one helper for both "jump to ayah" and "follow the playing ayah". ----
@@ -108,13 +108,13 @@ export default function Surah() {
     }).current;
 
     useEffect(() => {
+        // Recitation keeps playing when you leave (the mini-player controls it); only the position is saved.
         return () => {
-            stopAudio();
             if (lastVisibleAyah.current !== null && surahNameRef.current) {
                 setLastRead({ surahNumber, ayahNumber: lastVisibleAyah.current, surahNameLatin: surahNameRef.current });
             }
         };
-    }, [surahNumber, stopAudio, setLastRead]);
+    }, [surahNumber, setLastRead]);
 
     const handleBookmarkPress = useCallback(
         (ayah: Ayah) => {
@@ -299,6 +299,7 @@ export default function Surah() {
                     </View>
                 </View>
             </Sheet>
+            <MiniPlayer safeBottom />
         </View>
     );
 }

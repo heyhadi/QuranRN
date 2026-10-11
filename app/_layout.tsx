@@ -132,6 +132,7 @@ function RootLayoutNav() {
                         >
                             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                             <Stack.Screen name="surah/[id]" />
+                            <Stack.Screen name="reciters" />
                         </Stack>
                         <Toast />
                     </ThemeProvider>

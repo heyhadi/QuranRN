@@ -6,9 +6,17 @@
     "ayahCount_one": "{{count}} ayat",
     "ayahCount_other": "{{count}} ayat",
     "juz": "Juz {{number}}",
-    "place": { "Mekah": "Makkiyah", "Madinah": "Madaniyah" }
+    "place": {
+      "Mekah": "Makkiyah",
+      "Madinah": "Madaniyah"
+    }
   },
-  "tabs": { "quran": "Quran", "saved": "Tersimpan", "qibla": "Kiblat", "settings": "Pengaturan" },
+  "tabs": {
+    "quran": "Quran",
+    "saved": "Tersimpan",
+    "qibla": "Kiblat",
+    "settings": "Pengaturan"
+  },
   "home": {
     "greeting": "Assalamu'alaikum",
     "continueReading": "Lanjutkan membaca",
@@ -63,9 +71,17 @@
   "settings": {
     "title": "Pengaturan",
     "appearance": "Tampilan",
-    "theme": { "system": "Sistem", "light": "Terang", "dark": "Gelap" },
+    "theme": {
+      "system": "Sistem",
+      "light": "Terang",
+      "dark": "Gelap"
+    },
     "language": "Bahasa",
-    "languageOption": { "system": "Sistem", "id": "Indonesia", "en": "English" },
+    "languageOption": {
+      "system": "Sistem",
+      "id": "Indonesia",
+      "en": "English"
+    },
     "reading": "Membaca",
     "arabicSize": "Ukuran teks Arab",
     "showTranslation": "Tampilkan terjemahan",
@@ -74,7 +90,49 @@
     "reciter": "Qari",
     "about": "Tentang",
     "version": "Versi {{version}}",
-    "credits": "Teks Al-Quran, terjemahan, tafsir, dan audio dari equran.id. Huruf Amiri oleh Khaled Hosny."
+    "credits": "Teks Al-Quran, terjemahan, tafsir, dan audio dari equran.id. Huruf Amiri oleh Khaled Hosny.",
+    "reciterRow": "Qari"
   },
-  "notFound": { "title": "Halaman tidak ditemukan", "message": "Layar ini tidak ada.", "goHome": "Ke daftar surah" }
+  "notFound": {
+    "title": "Halaman tidak ditemukan",
+    "message": "Layar ini tidak ada.",
+    "goHome": "Ke daftar surah"
+  },
+  "player": {
+    "play": "Putar",
+    "pause": "Jeda",
+    "next": "Ayat berikutnya",
+    "previous": "Ayat sebelumnya",
+    "close": "Hentikan dan tutup pemutar",
+    "options": "Opsi pemutar",
+    "openSurah": "Buka {{surah}}, ayat {{ayah}}",
+    "speed": "Kecepatan",
+    "repeat": "Ulangi setiap ayat",
+    "repeatTimes": "{{count}}×",
+    "loop": "Ulangi seluruh surah",
+    "sleep": "Pengatur waktu tidur",
+    "sleepOff": "Mati",
+    "sleepMinutes": "{{count}} mnt",
+    "sleepEnds": "Berhenti pukul {{time}}",
+    "reciter": "Qari",
+    "changeReciter": "Ganti qari"
+  },
+  "reciters": {
+    "title": "Qari",
+    "count": "{{count}} qari",
+    "search": "Cari qari",
+    "favourites": "Favorit",
+    "popular": "Populer",
+    "all": "Semua qari",
+    "none": "Tidak ada qari yang cocok dengan “{{query}}”.",
+    "filterAll": "Semua",
+    "filterEnglish": "+ Inggris",
+    "preview": "Putar contoh",
+    "stopPreview": "Hentikan contoh",
+    "favourite": "Tambahkan {{name}} ke favorit",
+    "unfavourite": "Hapus {{name}} dari favorit",
+    "selected": "Dipilih",
+    "englishAudio": "Audio Inggris",
+    "hint": "Mengganti qari saat mendengarkan tidak menghilangkan posisi Anda."
+  }
 }

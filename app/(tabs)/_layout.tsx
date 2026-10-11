@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { BottomTabBar, Tabs } from "expo-router/js-tabs";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import type { ColorValue } from "react-native";
+import { View, type ColorValue } from "react-native";
+import { MiniPlayer } from "@/components/MiniPlayer";
 import { useTheme } from "@/components/useTheme";
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -19,6 +20,12 @@ export default function TabLayout() {
 
     return (
         <Tabs
+            tabBar={(props) => (
+                <View style={{ backgroundColor: colors.surface }}>
+                    <MiniPlayer />
+                    <BottomTabBar {...props} />
+                </View>
+            )}
             screenOptions={{
                 headerShown: false,
                 tabBarActiveTintColor: colors.mushaf,

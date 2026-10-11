@@ -6,9 +6,17 @@
     "ayahCount_one": "{{count}} ayah",
     "ayahCount_other": "{{count}} ayahs",
     "juz": "Juz {{number}}",
-    "place": { "Mekah": "Meccan", "Madinah": "Medinan" }
+    "place": {
+      "Mekah": "Meccan",
+      "Madinah": "Medinan"
+    }
   },
-  "tabs": { "quran": "Quran", "saved": "Saved", "qibla": "Qibla", "settings": "Settings" },
+  "tabs": {
+    "quran": "Quran",
+    "saved": "Saved",
+    "qibla": "Qibla",
+    "settings": "Settings"
+  },
   "home": {
     "greeting": "Assalamu'alaikum",
     "continueReading": "Continue reading",
@@ -63,9 +71,17 @@
   "settings": {
     "title": "Settings",
     "appearance": "Appearance",
-    "theme": { "system": "System", "light": "Light", "dark": "Dark" },
+    "theme": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
     "language": "Language",
-    "languageOption": { "system": "System", "id": "Indonesia", "en": "English" },
+    "languageOption": {
+      "system": "System",
+      "id": "Indonesia",
+      "en": "English"
+    },
     "reading": "Reading",
     "arabicSize": "Arabic text size",
     "showTranslation": "Show translation",
@@ -74,7 +90,49 @@
     "reciter": "Reciter",
     "about": "About",
     "version": "Version {{version}}",
-    "credits": "Quran text, translation, tafsir and audio via equran.id. Amiri typeface by Khaled Hosny."
+    "credits": "Quran text, translation, tafsir and audio via equran.id. Amiri typeface by Khaled Hosny.",
+    "reciterRow": "Reciter"
   },
-  "notFound": { "title": "Page not found", "message": "This screen doesn't exist.", "goHome": "Go to the Surah list" }
+  "notFound": {
+    "title": "Page not found",
+    "message": "This screen doesn't exist.",
+    "goHome": "Go to the Surah list"
+  },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "next": "Next ayah",
+    "previous": "Previous ayah",
+    "close": "Stop and close player",
+    "options": "Player options",
+    "openSurah": "Open {{surah}}, ayah {{ayah}}",
+    "speed": "Speed",
+    "repeat": "Repeat each ayah",
+    "repeatTimes": "{{count}}×",
+    "loop": "Repeat the whole Surah",
+    "sleep": "Sleep timer",
+    "sleepOff": "Off",
+    "sleepMinutes": "{{count}} min",
+    "sleepEnds": "Stops at {{time}}",
+    "reciter": "Reciter",
+    "changeReciter": "Change reciter"
+  },
+  "reciters": {
+    "title": "Reciters",
+    "count": "{{count}} reciters",
+    "search": "Search reciters",
+    "favourites": "Favourites",
+    "popular": "Popular",
+    "all": "All reciters",
+    "none": "No reciter matches “{{query}}”.",
+    "filterAll": "All",
+    "filterEnglish": "+ English",
+    "preview": "Play a sample",
+    "stopPreview": "Stop the sample",
+    "favourite": "Add {{name}} to favourites",
+    "unfavourite": "Remove {{name}} from favourites",
+    "selected": "Selected",
+    "englishAudio": "English audio",
+    "hint": "Switching reciter while listening keeps your place."
+  }
 }

@@ -1,14 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
+import { useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { IconButton } from "@/components/ui/IconButton";
+import { ReciterTile } from "@/components/ui/ReciterTile";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { useTheme } from "@/components/useTheme";
-import { equranReciters } from "@/constants/reciters";
+import { getReciter, styleLabel } from "@/constants/reciters";
 import { arabicFontSize } from "@/constants/theme";
 import { useSettingsStore, type LanguagePreference, type ThemePreference } from "@/store/settings";
 
@@ -32,6 +34,8 @@ export default function SettingsScreen() {
     const { t } = useTranslation();
     const { colors, spacing } = useTheme();
     const settings = useSettingsStore();
+    const router = useRouter();
+    const reciter = getReciter(settings.reciterId);
 
     return (
         <SafeAreaView edges={["top"]} style={[styles.screen, { backgroundColor: colors.paper }]}>
@@ -84,24 +88,26 @@ export default function SettingsScreen() {
                 </Section>
 
                 <Section title={t("settings.audio")}>
-                    <AppText variant="bodyStrong">{t("settings.reciter")}</AppText>
-                    <View accessibilityRole="radiogroup">
-                        {equranReciters.map((reciter, index) => {
-                            const selected = reciter.id === settings.reciterId;
-                            return (
-                                <Pressable
-                                    key={reciter.id}
-                                    onPress={() => settings.setReciterId(reciter.id)}
-                                    accessibilityRole="radio"
-                                    accessibilityState={{ checked: selected }}
-                                    style={[styles.radio, index > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line }]}
-                                >
-                                    <AppText style={styles.flex}>{reciter.name}</AppText>
-                                    <Ionicons name={selected ? "radio-button-on" : "radio-button-off"} size={22} color={selected ? colors.mushaf : colors.ink2} />
-                                </Pressable>
-                            );
-                        })}
-                    </View>
+                    <Pressable
+                        onPress={() => router.push("/reciters")}
+                        accessibilityRole="button"
+                        accessibilityLabel={`${t("settings.reciter")}: ${reciter.name}`}
+                        style={styles.row}
+                    >
+                        <ReciterTile reciter={reciter} size={44} />
+                        <View style={styles.flex}>
+                            <AppText variant="label" muted>
+                                {t("settings.reciter")}
+                            </AppText>
+                            <AppText variant="bodyStrong" numberOfLines={1}>
+                                {reciter.name}
+                            </AppText>
+                            <AppText variant="caption" muted>
+                                {styleLabel(reciter)}
+                            </AppText>
+                        </View>
+                        <Ionicons name="chevron-forward" size={20} color={colors.ink2} />
+                    </Pressable>
                 </Section>
 
                 <Section title={t("settings.about")}>
@@ -123,5 +129,4 @@ const styles = StyleSheet.create({
     stepper: { flexDirection: "row", alignItems: "center", gap: 12 },
     value: { minWidth: 28, textAlign: "center", fontVariant: ["tabular-nums"] },
     sample: { textAlign: "center" },
-    radio: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: 12 },
 });
