@@ -79,12 +79,12 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Solar and Hijri dates on Home and Today
 - [x] Morning, evening and after-prayer adhkar with daily counters, and English dua (bundled from fitrahive/dua-dhikr, MIT, each with its hadith source)
 - [x] Today tab: next prayer, daily reading goal, ayah of the day, adhkar, hifz and tasbih
-- [ ] Ramadan mode (imsak/iftar reminders): imsak time is fetched; the mode itself is not built
+- [x] Ramadan mode: imsak and iftar countdown on Today, suhoor and iftar reminders (Umm al-Qura calendar)
 
 ## Phase 7: Sharing and polish
-- [ ] Share an ayah as an image (`react-native-view-shot`), copy/share as text
-- [ ] Accessibility: screen-reader labels (both languages), system font scaling
-- [ ] Store listing in ID and EN
+- [x] Share an ayah as an image (`react-native-view-shot`) or as text
+- [x] Accessibility: every control has a role and a label or visible text, system font scaling is capped per text style so layouts hold (a screen-reader pass on a device is still to do)
+- [x] Store listing copy in ID and EN (`docs/store-listing.md`); screenshots still to take
 - [ ] App icon, splash screen, store listing
 
 ## Later (not planned now)
