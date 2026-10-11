@@ -54,6 +54,8 @@ export function AppText({ variant = "body", muted, color, size, style, ...rest }
     return (
         <Text
             maxFontSizeMultiplier={maxScaleFor(variant)}
+            // Quran text has its own size setting; the phone's font scale must not change it a second time.
+            allowFontScaling={variant !== "arabic"}
             style={[variants[variant], { color: color ?? (muted ? colors.ink2 : colors.ink) }, style]}
             {...rest}
         />
