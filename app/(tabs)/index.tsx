@@ -88,7 +88,7 @@ export default function Home() {
             </View>
 
             {lastRead && !searchQuery ? (
-                <PlateCard corner="left" onPress={() => openSurah(lastRead.surahNumber, lastRead.ayahNumber)} accessibilityLabel={`${t("home.continueReading")}: ${lastRead.surahNameLatin}`} style={styles.continueCard}>
+                <PlateCard onPress={() => openSurah(lastRead.surahNumber, lastRead.ayahNumber)} accessibilityLabel={`${t("home.continueReading")}: ${lastRead.surahNameLatin}`} style={styles.continueCard}>
                     <View style={styles.continueText}>
                         <AppText variant="label" color={colors.heroAccent}>
                             {t("home.continueReading")}

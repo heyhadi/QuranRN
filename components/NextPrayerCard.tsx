@@ -22,7 +22,7 @@ export function NextPrayerCard({ next, timezone, countdown, placeholder, onPress
     const { t } = useTranslation();
     const { colors, fonts } = useTheme();
     return (
-        <PlateCard corner="left" onPress={onPress} accessibilityLabel={next ? `${t("prayer.next")}: ${t(`prayer.names.${next.name}`)}, ${t("prayer.in", { time: countdown(next.at) })}` : undefined} style={styles.content}>
+        <PlateCard onPress={onPress} accessibilityLabel={next ? `${t("prayer.next")}: ${t(`prayer.names.${next.name}`)}, ${t("prayer.in", { time: countdown(next.at) })}` : undefined} style={styles.content}>
             <View style={styles.text}>
                 <AppText variant="label" color={colors.heroAccent}>
                     {t("prayer.next")}

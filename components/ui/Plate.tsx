@@ -41,7 +41,7 @@ export function PlateCard({ children, style, onPress, accessibilityLabel, corner
     return (
         <Wrapper onPress={onPress} accessibilityLabel={accessibilityLabel} style={[styles.plate, { backgroundColor: colors.heroBackground }]}>
             <View pointerEvents="none" style={[styles.disc, corner === "right" ? { left: -60 } : { right: -60 }]} />
-            <Star size={150} color={colors.heroAccent} opacity={0.06} style={corner === "right" ? { right: -50, top: -50 } : { left: -50, top: -50 }} />
+            <Star size={150} color={colors.heroAccent} opacity={0.09} style={corner === "right" ? { right: -50, top: -50 } : { left: -50, top: -50 }} />
             <View pointerEvents="none" style={[styles.frame, { borderColor: colors.heroAccent }]} />
             <View style={style}>{children}</View>
         </Wrapper>
@@ -49,13 +49,15 @@ export function PlateCard({ children, style, onPress, accessibilityLabel, corner
 }
 
 /**
- * The surface card with the same hand-finished feel, lighter: just a hairline brass inner frame.
+ * The surface card with the same hand-finished feel, lighter: a hairline brass inner frame and a very
+ * faint star in the corner.
  */
-export function OrnateCard({ children, style, onPress, accessibilityLabel }: PlateProps) {
+export function OrnateCard({ children, style, onPress, accessibilityLabel, corner = "right" }: PlateProps) {
     const { colors, scheme } = useTheme();
     return (
         <Wrapper onPress={onPress} accessibilityLabel={accessibilityLabel} style={[styles.ornate, { backgroundColor: colors.surface, borderColor: colors.line }]}>
-            <View pointerEvents="none" style={[styles.innerFrame, { borderColor: colors.brass, opacity: scheme === "dark" ? 0.28 : 0.3 }]} />
+            <Star size={110} color={colors.brass} opacity={scheme === "dark" ? 0.1 : 0.12} style={corner === "right" ? { right: -36, top: -36 } : { left: -36, top: -36 }} />
+            <View pointerEvents="none" style={[styles.innerFrame, { borderColor: colors.brass, opacity: 0.22 }]} />
             <View style={style}>{children}</View>
         </Wrapper>
     );
