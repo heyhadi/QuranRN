@@ -489,5 +489,15 @@
     "image": "Share as image",
     "text": "Share as text",
     "failed": "Couldn't share the image. Try again, or share it as text."
+  },
+  "mushaf": {
+    "title": "Mushaf",
+    "subtitle": "Read page by page, like the printed Madani mushaf (604 pages).",
+    "page": "Page {{page}}",
+    "goTo": "Go to page",
+    "pageHint": "Page (1 to {{total}})",
+    "go": "Go",
+    "surahs": "Surahs",
+    "loadError": "This page couldn't load. It needs a connection the first time."
   }
 }

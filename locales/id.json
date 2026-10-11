@@ -489,5 +489,15 @@
     "image": "Bagikan sebagai gambar",
     "text": "Bagikan sebagai teks",
     "failed": "Gambar tidak bisa dibagikan. Coba lagi, atau bagikan sebagai teks."
+  },
+  "mushaf": {
+    "title": "Mushaf",
+    "subtitle": "Baca per halaman, seperti mushaf Madinah cetak (604 halaman).",
+    "page": "Halaman {{page}}",
+    "goTo": "Buka halaman",
+    "pageHint": "Halaman (1 sampai {{total}})",
+    "go": "Buka",
+    "surahs": "Surah",
+    "loadError": "Halaman ini tidak bisa dimuat. Perlu koneksi saat pertama kali."
   }
 }

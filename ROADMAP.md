@@ -64,7 +64,7 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Word-by-word with transliteration, meaning and per-word audio
 - [x] Optional transliteration line, notes on ayahs, bookmark collections
 - [x] Search every ayah by meaning (needs a connection)
-- [ ] Mushaf page mode (604 Madani pages): stretch goal, needs page fonts
+- [x] Mushaf page mode: all 604 Madani pages rebuilt from quran.com's line data (justified lines, Surah title banners, bismillah, ayah-end circles), tajweed colours with tap-for-rule, page jump and Surah list, reads count toward Khatam, page width capped for tablets. Tapping a word opens the ayah in the reader
 
 ## Phase 5: Habits (done, except widgets)
 - [x] Hifz mode: range, repeat 1/3/5/10, pause, practice reciter, hide and tap to reveal, mark memorized, overview

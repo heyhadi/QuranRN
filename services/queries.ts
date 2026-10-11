@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { TafsirId } from "@/constants/editions";
 import { getAsmaulHusna, getDuas } from "./duas";
 import { getFootnote, getQuranComTafsir, getTajweed, getTajweedVerse, getTranslation, getWords, searchAyahs } from "./quranCom";
+import { getMushafPage, isValidMushafPage } from "./mushaf";
 import { getEnglishSurahMeanings, getSurahDetail, getSurahList, getTafsir } from "./quranService";
 
 // Quran text, translation and tafsir don't change, so cached data never goes stale.
@@ -100,4 +101,9 @@ export function useDuas(enabled = true) {
 
 export function useAsmaulHusna() {
     return useQuery({ queryKey: ["asmaulHusna"], queryFn: getAsmaulHusna, staleTime: Infinity });
+}
+
+/** One page of the Madani mushaf, saved on the device once fetched like the Surahs. */
+export function useMushafPage(pageNumber: number) {
+    return useQuery({ queryKey: ["mushafPage", "v3", pageNumber], queryFn: () => getMushafPage(pageNumber), staleTime: Infinity, enabled: isValidMushafPage(pageNumber) });
 }
