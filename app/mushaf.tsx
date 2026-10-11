@@ -99,11 +99,17 @@ export default function MushafScreen() {
         }
     };
 
-    const firstSurahOnPage = useMemo(() => {
-        const line = current.data?.lines.find((entry) => entry.kind === "text");
-        return line && line.kind === "text" ? line.words[0].surahNumber : null;
+    // Every Surah that has ayahs on the page, in order: a page can hold the end of one Surah and the start of the next.
+    const surahNumbersOnPage = useMemo(() => {
+        const numbers: number[] = [];
+        for (const line of current.data?.lines ?? []) {
+            if (line.kind !== "text") continue;
+            for (const word of line.words) if (!numbers.includes(word.surahNumber)) numbers.push(word.surahNumber);
+        }
+        return numbers;
     }, [current.data]);
-    const surahName = firstSurahOnPage ? surahs.data?.find((surah) => surah.number === firstSurahOnPage)?.nameLatin : undefined;
+    const nameOf = (number: number) => surahs.data?.find((surah) => surah.number === number)?.nameLatin;
+    const surahName = surahNumbersOnPage.length === 0 ? undefined : surahNumbersOnPage.length === 1 ? nameOf(surahNumbersOnPage[0]) : `${nameOf(surahNumbersOnPage[0])} – ${nameOf(surahNumbersOnPage[surahNumbersOnPage.length - 1])}`;
 
     return (
         <View style={[styles.screen, { backgroundColor: colors.paper }]}>
