@@ -30,86 +30,55 @@ Everything goes through `services/`, which turns each response into the app's ow
 
 ---
 
-## Phase 1: Foundation and bug fixes
-- [x] Upgrade Expo SDK 52 → 57 (React 19.2, React Native 0.86); move `expo-av` → `expo-audio`; migrate `@react-navigation/native` imports to `expo-router/react-navigation`
-- [ ] Set up the development build (EAS / `expo prebuild`) and run on a device; MMKV 4 needs it
-- [x] Remove unused dependencies (`react-native-mmkv-storage`, AsyncStorage, `@types/axios`, axios, `expo-web-browser`, `expo-sensors`, Google Fonts packages) and Expo template leftovers
-- [x] Replace `react-native-qibla-finder` (stuck on React Native 0.74) with our own hook: `services/qibla.ts` + `components/useQiblaDirection.ts`
-- [x] Typed API layer + mappers, TanStack Query with a cache saved to MMKV
-- [x] Zustand stores saved to MMKV: bookmarks, settings, last-read (hifz/khatam progress stores come in Phase 5)
-- [x] Pass the target ayah through the route (`/surah/[id]?ayah=N`) instead of `useSetAyahIndexStore`
-- [x] Fix: bookmarks are keyed by ayah number only, so they collide across Surahs → key them by `surah:ayah`
-- [x] Fix: bookmark icon doesn't update when tapped
-- [x] Fix: a failed tafsir request breaks the Surah screen; fetch Surah and tafsir in parallel
-- [x] Fix: three scroll effects disagree on the index (off-by-one); add `onScrollToIndexFailed`
-- [x] Fix: audio keeps playing after leaving the screen; auto-advance uses stale state
-- [x] Fix: the modal is passed a string instead of a boolean; tafsir text can't scroll; `console.log` on every search keystroke
-- [x] Jest tests for stores, mappers, search, HTTP and Qibla maths (tajweed parser tests come with the parser in Phase 4)
+## Phase 1: Foundation and bug fixes (done)
+- [x] Expo SDK 57 (React 19.2, React Native 0.86), `expo-audio`, `expo-router/react-navigation`
+- [x] Development build runs on the iOS Simulator and as an Android APK built with EAS; MMKV 4 and `expo-audio` need it. Still to try on a physical iPhone
+- [x] Unused packages and Expo template leftovers removed; `react-native-qibla-finder` replaced by `services/qibla.ts` + `components/useQiblaDirection.ts`
+- [x] Typed API layer and mappers, TanStack Query with the cache saved to MMKV; Zustand stores saved to MMKV
+- [x] Target ayah passed through the route; bookmark, scroll, audio, tafsir-modal and search fixes
+- [x] Jest tests throughout (see `npm run test:ci`)
 
-## Phase 2: Design system and redesign
-- [ ] Theme tokens (colour, spacing, type), light/dark, connected to the Paper theme
-- [ ] Home: "Continue reading" card, Surah / Juz tabs, search by name, meaning or number
-- [ ] Reader: ornamental ayah markers, adjustable Arabic size, translation on/off, ayah action menu
-- [ ] Bookmarks: Arabic preview, swipe to delete
-- [ ] i18n: `i18next` + `expo-localization`, follow the device language; move every hard-coded string into `locales/{id,en}.json`. The existing UI mixes "Ayat" and "Ayah"; translate it consistently
-- [ ] Settings screen: app language, translation edition (per language), tafsir edition, theme, font size, reciter, tajweed on/off, word-by-word on/off, transliteration on/off
+## Phase 2: Design system and redesign (done)
+- [x] Theme tokens, light/dark/system, wired into Paper and navigation (`constants/theme.ts`)
+- [x] Fonts: Reem Kufi, Source Sans 3 and Amiri (Amiri Quran was dropped: it is a colour font that paints vowel marks)
+- [x] i18n (Indonesian and English): every string in `locales/*.json`, with a test that both files have the same keys
+- [x] Home: greeting with Hijri date, Continue reading, Khatam and Hifz tiles, search by name, meaning or number, Surah / Juz / Ayat modes
+- [x] Reader: mushaf-style title plate, star ayah markers, adjustable Arabic size, translation and transliteration on/off, bottom sheets
+- [x] Saved: Arabic preview, notes, collections filter, swipe to remove
+- [x] Settings: theme, language, Arabic size, translation and tafsir editions, tajweed, reciter
 
-## Phase 3: Audio
-- [ ] Global audio player + mini-player bar above the tabs (keeps playing across screens)
-- [ ] **Reciter library.** All need per-ayah files (needed for ayah highlighting, repeat and hifz mode). One `reciters.ts` catalogue maps each reciter to a URL template, so adding one is a single entry:
+## Phase 3: Audio (done, except the items below)
+- [x] Global player and mini-player above the tabs and on the reader
+- [x] Reciter library: 27 reciters with per-ayah audio, picker with search, style filters, favourites and samples (`constants/reciters.ts`)
+- [x] Switching reciter mid-Surah keeps the place; separate practice reciter for hifz (Husary Muallim)
+- [x] Next/previous, repeat each ayah, loop the Surah, playback speed, sleep timer
+- [x] Background playback and lock-screen controls (configured; **to be checked on a real device**)
+- [x] Download a Surah for offline listening
+- [ ] Audio quality setting: every reciter has one fixed bitrate for now
+- Not found: Islam Sobhi (no per-ayah source)
 
-| Reciter | Style | Source |
-|---|---|---|
-| Mishary Rashid Alafasy | Murattal | equran 05 / quran.com 7 |
-| Abdurrahman As-Sudais | Murattal | equran 03 / quran.com 3 |
-| Yasser Al-Dosari | Murattal | equran 06 / everyayah |
-| Maher Al-Muaiqly | Murattal | everyayah |
-| Saud Ash-Shuraym | Murattal | quran.com 10 / everyayah |
-| Abdul Basit Abdus Samad | Murattal **and** Mujawwad | quran.com 2 / 1 |
-| Mahmoud Khalil Al-Husary | Murattal, Mujawwad, **Muallim** (teaching pace: good for tajweed and hifz) | quran.com 6 / 12 |
-| Mohamed Siddiq Al-Minshawi | Murattal and Mujawwad | quran.com 9 / 8 |
-| Nasser Al-Qatami | Murattal | everyayah |
-| Ahmed Al-Ajamy | Murattal | everyayah |
-| Saad Al-Ghamdi | Murattal | everyayah |
-| Abu Bakr Ash-Shatri | Murattal | quran.com 4 |
-| Hani Ar-Rifai | Murattal | quran.com 5 |
-| Salah Al-Budair, Fares Abbad, Muhammad Jibreel, Ibrahim Al-Akhdar, Abdullah Basfar, Ali Al-Hudhaify | Murattal | everyayah |
-| Abdullah Al-Juhany, Abdul Muhsin Al-Qasim, Ibrahim Al-Dossari | Murattal | equran 01 / 02 / 04 |
-| **Basfar + Ibrahim Walk** | Arabic followed by **English audio translation** | everyayah `MultiLanguage/Basfar_Walk_192kbps` |
+## Phase 4: Reading depth (done, except mushaf mode)
+- [x] English translations (6 editions) with tappable footnotes
+- [x] Tajweed colouring for all 17 rules in the data, tap a letter for the rule, legend, and a learning screen with a real example ayah you can hear
+- [x] Tafsir sheet with 8 editions (Kemenag, Ibn Kathir, Ma'arif, Tazkirul, Muyassar, Sa'di, Tabari, Qurtubi)
+- [x] Word-by-word with transliteration, meaning and per-word audio
+- [x] Optional transliteration line, notes on ayahs, bookmark collections
+- [x] Search every ayah by meaning (needs a connection)
+- [ ] Mushaf page mode (604 Madani pages): stretch goal, needs page fonts
 
-  Before adding each one: confirm its files exist for all 6,236 ayahs (test the first and last ayah of every Surah; Abdul Basit Mujawwad on everyayah timed out in testing, so use quran.com's copy). Islam Sobhi is popular but I found no per-ayah source; add him only if one turns up (full-Surah playback only otherwise).
-- [ ] Reciter picker: photo, name, style chip (Murattal/Mujawwad/Muallim), 10-second sample of Al-Fatihah, favourite reciters at the top
-- [ ] Switching reciters mid-Surah continues from the current ayah
-- [ ] Optional different reciter for hifz mode (e.g. Husary Muallim) than for normal listening
-- [ ] Audio quality setting (low on mobile data / high on Wi-Fi) where the source offers several bitrates
-- [ ] Next/previous, repeat, playback speed
-- [ ] Background playback + lock-screen controls
-- [ ] Sleep timer
-- [ ] Download a Surah's audio for offline listening
+## Phase 5: Habits (done, except widgets)
+- [x] Hifz mode: range, repeat 1/3/5/10, pause, practice reciter, hide and tap to reveal, mark memorized, overview
+- [x] Khatam planner: 30/60/90/180 days, daily goal, streak, progress by Juz, new round
+- [x] Daily ayah and khatam reminders
+- [ ] Home-screen widgets: need `expo-apple-targets` and native work; not started
 
-## Phase 4: Reading depth
-- [ ] **English translation:** load the chosen quran.com translation when the language is English; render the `<sup foot_note=…>` markers as tappable footnotes (fetched from `/foot_notes/{id}`), not raw tags
-- [ ] **Tajweed colouring:** parse `<tajweed class=…>` into coloured `<Text>` spans; legend sheet explaining each rule in ID and EN (ghunnah, ikhfa, ikhfa shafawi, idgham ±ghunnah, idgham shafawi/mutajanisayn, iqlab, qalqalah, madd normal/permissible/obligatory/necessary, hamzat wasl, lam shamsiyah, silent). Tapping a coloured letter shows that rule's name and a short explanation in the user's language
-- [ ] **Tajweed learning cards:** one card per rule (ID/EN) with what it is, how to pronounce it, an example ayah with that rule highlighted, and the example's audio
-- [ ] **Tafsir upgrade:** bottom sheet with a tafsir picker grouped by language (ID: Kemenag; EN: Ibn Kathir, Ma'arif, Tazkirul; AR: Muyassar, Sa'di, Tabari…), defaults to the app language, remembers the choice, shows HTML formatting properly
-- [ ] **Word-by-word:** tap a word → transliteration + meaning in the app language + play that word's audio
-- [ ] **Transliteration line** under the Arabic text (optional), for readers who don't read Arabic script yet
-- [ ] Notes on ayahs, bookmark collections (named, coloured)
-- [ ] Search inside ayah text and translations (over the cached data)
-- [ ] Mushaf page mode (604 Madani pages); needs page-specific fonts, so this is a stretch goal
-
-## Phase 5: Habits
-- [ ] **Hifz mode:** repeat an ayah/range N times with a gap, blur/hide text with tap-to-reveal, mark ayahs memorized, progress per Surah/Juz
-- [ ] **Khatam planner:** pick a target number of days → daily portion, streak, Juz progress
-- [ ] Daily ayah notification
-- [ ] Home-screen widgets (ayah of the day, continue reading); iOS needs `expo-apple-targets`
-
-## Phase 6: Worship tools
-- [ ] Prayer times (location-based) + adhan notifications
-- [ ] Qibla: location-permission handling, custom compass using `expo-sensors` + `expo-location`
-- [ ] Morning/evening adhkar (ID + EN translation and transliteration) + tasbih counter (vibration feedback, saved counts)
-- [ ] Doa collection: equran `/api/doa` for ID, bundled Hisnul Muslim for EN; Asmaul Husna with ID and EN meanings
-- [ ] Hijri date, Ramadan mode (imsak/iftar times, event reminders)
+## Phase 6: Worship tools (done, except adhkar)
+- [x] Prayer times by location (MUIS, Kemenag, JAKIM and five more methods), next prayer countdown, adhan reminders, saved for offline use
+- [x] Qibla compass, inside the Prayer tab
+- [x] Doa (equran.id, Indonesian), Asmaul Husna (99 names, English meanings), tasbih with haptics
+- [x] Hijri date on Home
+- [ ] Morning/evening adhkar: not included, no verified source for the texts yet. Doa have Indonesian meanings only; English doa translations need a source I can verify
+- [ ] Ramadan mode (imsak/iftar reminders): imsak time is fetched; the mode itself is not built
 
 ## Phase 7: Sharing and polish
 - [ ] Share an ayah as an image (`react-native-view-shot`), copy/share as text
