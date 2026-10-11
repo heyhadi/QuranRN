@@ -58,7 +58,7 @@
     "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}",
     "download": "Unduh surah ini untuk didengarkan tanpa internet",
     "downloadWith": "Qari: {{name}}",
-    "downloading": "Mengunduh {{done}} dari {{total}}",
+    "downloading": "Mengunduh {{done}} dari {{total}} · {{percent}}%",
     "downloaded": "Terunduh · diputar tanpa internet",
     "downloadFailed": "Unduhan berhenti. Periksa koneksi internet, lalu coba lagi.",
     "removeDownload": "Hapus unduhan",
@@ -143,7 +143,8 @@
     "sleepMinutes": "{{count}} mnt",
     "sleepEnds": "Berhenti pukul {{time}}",
     "reciter": "Qari",
-    "changeReciter": "Ganti qari"
+    "changeReciter": "Ganti qari",
+    "loading": "Memuat…"
   },
   "reciters": {
     "title": "Qari",

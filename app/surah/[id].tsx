@@ -23,7 +23,7 @@ import { juzOf } from "@/services/juz";
 import { useEnglishSurahMeanings, useEnglishTranslation, useSurahDetail, useTajweed } from "@/services/queries";
 import { translationText } from "@/services/richText";
 import type { Ayah } from "@/services/types";
-import { usePlayingAyah, useAudioPlayerStore, type Track } from "@/store/audioPlayer";
+import { useIsLoading, usePlayingAyah, useAudioPlayerStore, type Track } from "@/store/audioPlayer";
 import { bookmarkKey, useBookmarksStore } from "@/store/bookmarks";
 import { useKhatamStore } from "@/store/khatam";
 import { useNotesStore } from "@/store/notes";
@@ -72,6 +72,7 @@ export default function Surah() {
     const toggleBookmark = useBookmarksStore((state) => state.toggleBookmark);
     const notes = useNotesStore((state) => state.notes);
     const playingAyah = usePlayingAyah(surahNumber);
+    const audioLoading = useIsLoading();
     const toggleAudio = useAudioPlayerStore((state) => state.toggle);
     const setLastRead = useReadingProgressStore((state) => state.setLastRead);
     const recordRead = useKhatamStore((state) => state.recordRead);
@@ -269,7 +270,7 @@ export default function Surah() {
             <FlatList
                 ref={listRef}
                 data={ayahs}
-                extraData={{ bookmarks, notes, playingAyah, arabicSize, showTranslation, showTransliteration, tajweedEnabled, tajweed: tajweed.data, english: englishTranslation.data }}
+                extraData={{ bookmarks, notes, playingAyah, audioLoading, arabicSize, showTranslation, showTransliteration, tajweedEnabled, tajweed: tajweed.data, english: englishTranslation.data }}
                 keyExtractor={(item) => bookmarkKey(item.surahNumber, item.ayahNumber)}
                 onScrollToIndexFailed={handleScrollToIndexFailed}
                 onViewableItemsChanged={onViewableItemsChanged}
@@ -290,6 +291,7 @@ export default function Surah() {
                             isBookmarked={key in bookmarks}
                             hasNote={key in notes}
                             isPlaying={playingAyah === item.ayahNumber}
+                            isLoading={audioLoading && playingAyah === item.ayahNumber}
                             onPlay={() => toggleAudio(queue, index)}
                             onBookmarkPress={() => handleBookmarkPress(item)}
                             onWordsPress={() => openSheet(item, "words")}

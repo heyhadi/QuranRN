@@ -38,7 +38,7 @@ export function DownloadAudioRow({ surahNumber, ayahCount }: DownloadAudioRowPro
                 <View style={styles.text}>
                     <AppText variant="bodyStrong">{isDownloaded ? t("reader.downloaded") : t("reader.download")}</AppText>
                     <AppText variant="caption" muted>
-                        {running ? t("reader.downloading", { done: active.done, total: active.total }) : t("reader.downloadWith", { name: reciter.name })}
+                        {running ? t("reader.downloading", { done: active.done, total: active.total, percent: Math.round((active.done / active.total) * 100) }) : t("reader.downloadWith", { name: reciter.name })}
                     </AppText>
                 </View>
                 <Pressable onPress={action.onPress} accessibilityRole="button" accessibilityLabel={action.label} hitSlop={8} style={styles.button}>

@@ -58,7 +58,7 @@
     "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}",
     "download": "Download this Surah for offline listening",
     "downloadWith": "Reciter: {{name}}",
-    "downloading": "Downloading {{done}} of {{total}}",
+    "downloading": "Downloading {{done}} of {{total}} · {{percent}}%",
     "downloaded": "Downloaded · plays without internet",
     "downloadFailed": "Download stopped. Check your connection and try again.",
     "removeDownload": "Remove download",
@@ -143,7 +143,8 @@
     "sleepMinutes": "{{count}} min",
     "sleepEnds": "Stops at {{time}}",
     "reciter": "Reciter",
-    "changeReciter": "Change reciter"
+    "changeReciter": "Change reciter",
+    "loading": "Loading…"
   },
   "reciters": {
     "title": "Reciters",

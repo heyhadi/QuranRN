@@ -17,6 +17,8 @@ interface AudioPlayerState {
     /** Index into `queue` of the ayah playing now, or null when stopped. */
     currentIndex: number | null;
     status: PlaybackStatus;
+    /** True while a streamed ayah is still loading or buffering, so the screen can show it. */
+    loading: boolean;
     /** How many times each ayah plays before moving on (1 = once). Hifz mode raises this. */
     repeatEach: number;
     /** Silence between repeats, in milliseconds. */
@@ -77,8 +79,11 @@ function getPlayer(): AudioPlayer {
     if (!player) {
         player = createAudioPlayer(null);
         player.addListener("playbackStatusUpdate", (status) => {
-            if (!status.didJustFinish) return;
             const store = useAudioPlayerStore.getState();
+            // Follow the player's own state, but only while something is meant to be playing.
+            const loadingNow = store.status === "playing" && store.loading && (!status.isLoaded || !!status.isBuffering);
+            if (store.loading && !loadingNow && status.isLoaded && !status.isBuffering) useAudioPlayerStore.setState({ loading: false });
+            if (!status.didJustFinish) return;
             if (store.previewReciterId || store.clipUrl) useAudioPlayerStore.setState({ previewReciterId: null, clipUrl: null });
             else store.advance();
         });
@@ -98,7 +103,9 @@ function playTrack(track: Track) {
     const audio = getPlayer();
     replayPending = false;
     // A downloaded file plays without a connection; anything missing streams as usual.
-    audio.replace({ uri: localAyahUri(reciterId, track.surahNumber, track.ayahNumber) ?? ayahAudioUrl(reciterId, track.surahNumber, track.ayahNumber, audioQuality) });
+    const localUri = localAyahUri(reciterId, track.surahNumber, track.ayahNumber);
+    useAudioPlayerStore.setState({ loading: localUri === null });
+    audio.replace({ uri: localUri ?? ayahAudioUrl(reciterId, track.surahNumber, track.ayahNumber, audioQuality) });
     audio.setPlaybackRate(playbackRate);
     audio.setActiveForLockScreen(true, {
         title: `${track.surahName} · ${track.ayahNumber}`,
@@ -127,6 +134,7 @@ export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
         queue: [],
         currentIndex: null,
         status: "stopped",
+        loading: false,
         repeatEach: 1,
         gapMs: 1500,
         loopQueue: false,
@@ -157,7 +165,7 @@ export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
             if (get().status !== "playing") return;
             clearGap();
             player?.pause();
-            set({ status: "paused" });
+            set({ status: "paused", loading: false });
         },
 
         resume: () => {
@@ -216,7 +224,7 @@ export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
             repeatsLeft = 0;
             player?.pause();
             player?.clearLockScreenControls();
-            set({ queue: [], currentIndex: null, status: "stopped", previewReciterId: null, clipUrl: null, reciterOverrideId: null, sessionRepeat: null });
+            set({ queue: [], currentIndex: null, status: "stopped", loading: false, previewReciterId: null, clipUrl: null, reciterOverrideId: null, sessionRepeat: null });
         },
 
         advance: () => {
@@ -290,6 +298,11 @@ export function usePlayingAyah(surahNumber: number): number | null {
     });
 }
 
+/** True while the ayah that should be playing is still loading or buffering. */
+export function useIsLoading(): boolean {
+    return useAudioPlayerStore((state) => state.status === "playing" && state.loading);
+}
+
 /** The track at the current position, or null when stopped. */
 export function useCurrentTrack(): Track | null {
     return useAudioPlayerStore((state) => (state.currentIndex === null ? null : (state.queue[state.currentIndex] ?? null)));
@@ -303,7 +316,7 @@ export function resetAudioPlayerForTests() {
     player = null;
     repeatsLeft = 0;
     replayPending = false;
-    useAudioPlayerStore.setState({ queue: [], currentIndex: null, status: "stopped", repeatEach: 1, gapMs: 1500, loopQueue: false, sleepAt: null, sleepChoice: null, previewReciterId: null, clipUrl: null, reciterOverrideId: null, sessionRepeat: null });
+    useAudioPlayerStore.setState({ queue: [], currentIndex: null, status: "stopped", loading: false, repeatEach: 1, gapMs: 1500, loopQueue: false, sleepAt: null, sleepChoice: null, previewReciterId: null, clipUrl: null, reciterOverrideId: null, sessionRepeat: null });
 }
 
 /** The reciter heard right now (and shown in the mini-player). */
