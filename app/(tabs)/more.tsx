@@ -24,6 +24,7 @@ export default function MoreScreen() {
     const items: { icon: IconName; title: string; subtitle: string; onPress: () => void }[] = [
         { icon: "flag-outline", title: t("khatam.title"), subtitle: khatamPlan ? t("khatam.daysLeft", { count: Math.max(0, khatamPlan.targetDays) }) : t("khatam.intro"), onPress: () => router.push("/khatam") },
         { icon: "school-outline", title: t("hifz.title"), subtitle: t("hifz.count", { count: memorized }), onPress: () => router.push("/hifz") },
+        { icon: "sunny-outline", title: t("adhkar.title"), subtitle: t("adhkar.subtitle"), onPress: () => router.push("/adhkar") },
         { icon: "hand-left-outline", title: t("more.doa"), subtitle: t("more.doaIntro"), onPress: () => router.push("/doa") },
         { icon: "sparkles-outline", title: t("more.asma"), subtitle: t("more.asmaIntro"), onPress: () => router.push("/asma") },
         { icon: "ellipse-outline", title: t("more.tasbih"), subtitle: t("more.today", { count: tasbihToday }), onPress: () => router.push("/tasbih") },
@@ -55,9 +56,6 @@ export default function MoreScreen() {
                         <Ionicons name="chevron-forward" size={20} color={colors.ink2} />
                     </Pressable>
                 ))}
-                <AppText variant="caption" muted>
-                    {t("more.adhkarNote")}
-                </AppText>
             </ScrollView>
         </SafeAreaView>
     );

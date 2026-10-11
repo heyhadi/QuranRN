@@ -136,6 +136,7 @@ function RootLayoutNav() {
                             <Stack.Screen name="tajweed" />
                             <Stack.Screen name="khatam" />
                             <Stack.Screen name="doa" />
+                            <Stack.Screen name="adhkar" />
                             <Stack.Screen name="asma" />
                             <Stack.Screen name="tasbih" />
                             <Stack.Screen name="hifz/index" />

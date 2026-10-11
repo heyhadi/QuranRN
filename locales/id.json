@@ -421,9 +421,10 @@
     "reset": "Atur ulang",
     "target": "Target",
     "today": "Hari ini: {{count}}",
-    "adhkarNote": "Zikir pagi dan petang hadir setelah teksnya diperiksa terhadap sumber tepercaya.",
     "copyDoa": "Salin",
-    "sourceLabel": "Sumber"
+    "sourceLabel": "Sumber",
+    "duaDaily": "Doa harian",
+    "duaSelected": "Doa pilihan"
   },
   "today": {
     "morning": "Selamat pagi",
@@ -436,5 +437,23 @@
     "ayah": "Ayat hari ini",
     "ayahOffline": "Sambungkan ke internet untuk membaca {{reference}}.",
     "setupPrayer": "Buka Salat untuk mengatur lokasi."
+  },
+  "adhkar": {
+    "title": "Zikir",
+    "subtitle": "Pagi, petang, dan setelah salat",
+    "intro": "Zikir untuk awal dan akhir hari serta setelah salat. Ketuk untuk menghitung; hitungan mulai lagi setiap hari.",
+    "sets": {
+      "morning": "Pagi",
+      "evening": "Petang",
+      "afterSalah": "Setelah salat"
+    },
+    "progress": "{{done}} dari {{total}} selesai",
+    "reset": "Ulangi",
+    "benefit": "Keutamaannya",
+    "done": "Selesai",
+    "markRead": "Tandai sudah dibaca",
+    "todayTitle_morning": "Zikir pagi",
+    "todayTitle_evening": "Zikir petang",
+    "todayProgress": "{{done}} dari {{total}} selesai"
   }
 }

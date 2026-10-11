@@ -11,7 +11,7 @@ import { AppText } from "@/components/ui/AppText";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { useTheme } from "@/components/useTheme";
 import type { AppLanguage } from "@/i18n";
-import { formatHijri } from "@/services/hijri";
+import { formatDates } from "@/services/hijri";
 import { juzOf, juzStarts, type JuzStart } from "@/services/juz";
 import { useAyahSearch, useEnglishSurahMeanings, useSurahList } from "@/services/queries";
 import type { AyahSearchResult } from "@/services/quranCom";
@@ -52,7 +52,7 @@ export default function Home() {
     // Searching ayahs by meaning goes to quran.com, so it needs a connection and a few letters to start.
     const ayahSearch = useAyahSearch(mode === "ayah" ? searchQuery : "", language);
     const surahByNumber = useMemo(() => new Map(surahs.map((surah) => [surah.number, surah])), [surahs]);
-    const hijri = useMemo(() => formatHijri(new Date(), language), [language]);
+    const dates = useMemo(() => formatDates(new Date(), language), [language]);
 
     const openSurah = useCallback(
         (surahNumber: number, ayahNumber?: number) =>
@@ -83,7 +83,7 @@ export default function Home() {
         <View style={{ gap: spacing.lg, paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.md }}>
             <View>
                 <AppText variant="display">{t("home.greeting")}</AppText>
-                {hijri ? <AppText muted>{hijri}</AppText> : null}
+                <AppText muted>{dates}</AppText>
             </View>
 
             {lastRead && !searchQuery ? (

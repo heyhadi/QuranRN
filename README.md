@@ -33,7 +33,7 @@
 | **27 reciters.** Per-ayah audio with a mini-player that keeps going while you browse. Repeat, loop, speed, sleep timer, lock-screen controls, and download a Surah to listen offline. | **Hifz mode.** Repeat an ayah or range, hide the text and tap to check yourself, practise with Husary's slow teaching recitation, and mark ayahs memorized. |
 | **Khatam planner.** Finish the Quran in 30 to 180 days, with a daily goal, a streak and a map of the 30 Juz. | **Prayer times.** By location with MUIS, Kemenag, JAKIM and five other methods, a countdown to the next prayer, reminders, and a Qibla compass. Saved for offline use. |
 | **Notes and collections.** Write a note on any ayah and file bookmarks into coloured collections. | **Search.** By Surah name, meaning or number, by Juz, or every ayah by meaning. |
-| **Doa, Asmaul Husna and tasbih.** 227 doa with transliteration and meaning, the 99 names, and a counter that vibrates at 33, 66 and 99. | **Indonesian and English**, light and dark. Surahs you have read open again without a connection. |
+| **Adhkar, dua, Asmaul Husna and tasbih.** Morning, evening and after-prayer adhkar with counters, everyday dua with hadith sources, the 99 names, and a counter that vibrates at 33, 66 and 99. | **Indonesian and English**, light and dark. Surahs you have read open again without a connection. |
 
 ## How it works
 
@@ -93,9 +93,8 @@ npm run build:android:preview     # Android APK built in the cloud with EAS
 Phases 1 to 6 of [ROADMAP.md](ROADMAP.md) are built. Still to do:
 
 1. Home-screen widgets
-2. Morning and evening adhkar (waiting for a text source I can verify), and English doa translations
-3. Mushaf page mode
-4. Share an ayah as an image, accessibility pass, store listing
+2. Mushaf page mode
+3. Share an ayah as an image, accessibility pass, store listing
 
 ![Tajweed colours you can tap, and word-by-word meaning](docs/images/2-tajweed-you-can-tap.png)
 
@@ -108,8 +107,7 @@ prayer times are sample data. The app itself now follows them closely.
 
 ## Known limits
 
-- Doa have Indonesian meanings only, and the Asmaul Husna meanings are in English.
-- Morning and evening adhkar are not in yet.
+- Indonesian doa come from equran.id (227); the English dua list is the smaller bundled set (46). The Asmaul Husna meanings are in English.
 - A Surah needs a connection the first time it is opened, and tajweed colours, English translations,
   word-by-word and the other tafsirs need one the first time each is used.
 - Background audio and lock-screen controls are set up but still need to be checked on a real phone.
@@ -119,6 +117,7 @@ prayer times are sample data. The app itself now follows them closely.
 ## Credits
 
 - Quran text, Indonesian translation, Kemenag tafsir and doa via [equran.id](https://equran.id).
+- Adhkar and English dua from [fitrahive/dua-dhikr](https://github.com/fitrahive/dua-dhikr) (MIT), bundled in `constants/adhkar/`.
 - English translations, tajweed text, word-by-word, other tafsirs and ayah search via [quran.com](https://quran.com); more recitations from [everyayah.com](https://everyayah.com); prayer times and Asmaul Husna from [aladhan.com](https://aladhan.com).
 - [Amiri](https://github.com/aliftype/amiri) typeface by Khaled Hosny, [Reem Kufi](https://github.com/aliftype/reem-kufi) and [Source Sans 3](https://github.com/adobe-fonts/source-sans), all under the SIL Open Font License.
 

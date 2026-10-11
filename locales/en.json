@@ -407,11 +407,11 @@
   },
   "more": {
     "title": "More",
-    "doa": "Doa",
-    "doaIntro": "Doa for everyday life, from equran.id. Arabic, transliteration and Indonesian meaning.",
-    "doaSearch": "Search doa",
-    "doaNone": "No doa matches “{{query}}”.",
-    "doaLoadError": "Doa couldn't load. They need a connection the first time.",
+    "doa": "Dua",
+    "doaIntro": "Dua for everyday life, with the hadith source for each. Arabic, transliteration and English meaning.",
+    "doaSearch": "Search dua",
+    "doaNone": "No dua matches “{{query}}”.",
+    "doaLoadError": "Dua couldn't load. They need a connection the first time.",
     "asma": "Asmaul Husna",
     "asmaIntro": "The 99 beautiful names of Allah, with their meanings.",
     "asmaMeaningNote": "Meanings are in English.",
@@ -421,9 +421,10 @@
     "reset": "Reset",
     "target": "Target",
     "today": "Today: {{count}}",
-    "adhkarNote": "Morning and evening adhkar are coming once the texts have been checked against a trusted source.",
     "copyDoa": "Copy",
-    "sourceLabel": "Source"
+    "sourceLabel": "Source",
+    "duaDaily": "Daily dua",
+    "duaSelected": "Selected dua"
   },
   "today": {
     "morning": "Good morning",
@@ -436,5 +437,23 @@
     "ayah": "Ayah of the day",
     "ayahOffline": "Connect to the internet to read {{reference}}.",
     "setupPrayer": "Open Prayer to set your location."
+  },
+  "adhkar": {
+    "title": "Adhkar",
+    "subtitle": "Morning, evening and after prayer",
+    "intro": "Remembrance for the start and end of the day and after each prayer. Tap to count; counts start again every day.",
+    "sets": {
+      "morning": "Morning",
+      "evening": "Evening",
+      "afterSalah": "After prayer"
+    },
+    "progress": "{{done}} of {{total}} done",
+    "reset": "Start over",
+    "benefit": "Why read this",
+    "done": "Done",
+    "markRead": "Mark as read",
+    "todayTitle_morning": "Morning adhkar",
+    "todayTitle_evening": "Evening adhkar",
+    "todayProgress": "{{done}} of {{total}} done"
   }
 }

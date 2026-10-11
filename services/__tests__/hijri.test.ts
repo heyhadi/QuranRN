@@ -1,4 +1,4 @@
-import { formatHijri } from "../hijri";
+import { formatDates, formatGregorian, formatHijri } from "../hijri";
 
 describe("formatHijri", () => {
     it("formats a date in the Umm al-Qura calendar", () => {
@@ -20,5 +20,20 @@ describe("formatHijri", () => {
         } finally {
             (Intl as { DateTimeFormat: unknown }).DateTimeFormat = original;
         }
+    });
+});
+
+describe("formatGregorian and formatDates", () => {
+    const day = new Date(2026, 9, 11, 12);
+
+    it("writes the solar date with the weekday in both languages", () => {
+        expect(formatGregorian(day, "en")).toMatch(/^Sunday,? 11 October 2026$/);
+        expect(formatGregorian(day, "id")).toBe("Minggu, 11 Oktober 2026");
+    });
+
+    it("puts the solar date first and the Hijri date on the next line", () => {
+        const lines = formatDates(day, "id").split("\n");
+        expect(lines[0]).toBe("Minggu, 11 Oktober 2026");
+        expect(lines.length).toBeLessThanOrEqual(2);
     });
 });

@@ -6,6 +6,7 @@ import { ActivityIndicator, Pressable, SectionList, Share, StyleSheet, TextInput
 import { Button } from "react-native-paper";
 import { AppText } from "@/components/ui/AppText";
 import { useTheme } from "@/components/useTheme";
+import { getAdhkar } from "@/services/adhkar";
 import { filterDuas, groupDuas, type Dua } from "@/services/duas";
 import { useDuas } from "@/services/queries";
 
@@ -49,11 +50,24 @@ function DuaCard({ dua }: { dua: Dua }) {
     );
 }
 
-/** Everyday doa from equran.id: Arabic, transliteration and Indonesian meaning. */
+/** The English dua list: bundled, so it works offline, with the hadith source for each. */
+function bundledDuas(groupNames: { daily: string; selected: string }): Dua[] {
+    let id = 0;
+    const from = (set: "dailyDua" | "selectedDua", group: string): Dua[] =>
+        getAdhkar(set, "en").map((item) => ({ id: ++id, group, title: item.title, arabic: item.arabic, transliteration: item.latin, meaning: item.translation, source: item.source }));
+    return [...from("dailyDua", groupNames.daily), ...from("selectedDua", groupNames.selected)];
+}
+
+/** Everyday dua: from equran.id in Indonesian (Arabic, transliteration, meaning), bundled in English. */
 export default function DoaScreen() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { colors, spacing, radius } = useTheme();
-    const duas = useDuas();
+    const isEnglish = i18n.language !== "id";
+    const remote = useDuas(!isEnglish);
+    const duas = useMemo(
+        () => (isEnglish ? { data: bundledDuas({ daily: t("more.duaDaily"), selected: t("more.duaSelected") }), isPending: false, isError: false, refetch: () => undefined } : remote),
+        [isEnglish, remote, t],
+    );
     const [query, setQuery] = useState("");
     const sections = useMemo(() => groupDuas(filterDuas(duas.data ?? [], query)).map((group) => ({ title: group.name, data: group.duas })), [duas.data, query]);
 

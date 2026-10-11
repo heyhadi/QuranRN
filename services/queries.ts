@@ -93,9 +93,9 @@ export function useTajweedVerse(verseKey: string) {
     return useQuery({ queryKey: ["tajweedVerse", verseKey], queryFn: () => getTajweedVerse(verseKey), staleTime: Infinity });
 }
 
-/** Indonesian doa from equran.id; saved on the device once fetched, like the Surahs. */
-export function useDuas() {
-    return useQuery({ queryKey: ["duas"], queryFn: getDuas, staleTime: Infinity });
+/** Indonesian doa from equran.id (English uses the bundled dua); saved on the device once fetched, like the Surahs. */
+export function useDuas(enabled = true) {
+    return useQuery({ queryKey: ["duas"], queryFn: getDuas, staleTime: Infinity, enabled });
 }
 
 export function useAsmaulHusna() {

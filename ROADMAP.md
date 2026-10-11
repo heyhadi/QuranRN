@@ -15,7 +15,7 @@ Wird (وِرْد): the portion of Quran you keep up every day. Store name "Wird 
 | Word-by-word meaning | quran.com `language=id` | quran.com `language=en` |
 | Transliteration | quran.com per-word (Latin script, same for both) | same |
 | Tajweed rule names + explanations | written by us (`content/tajweed.id.json`) | written by us (`content/tajweed.en.json`) |
-| Doa / adhkar | equran `/api/doa` | bundled Hisnul Muslim content (equran doa is Indonesian-only) |
+| Doa / adhkar | equran `/api/doa` | bundled fitrahive/dua-dhikr (MIT), with English translations |
 | Hijri months, prayer names | localized strings | localized strings |
 - **Data sources:**
 
@@ -72,12 +72,13 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Daily ayah and khatam reminders
 - [ ] Home-screen widgets: need `expo-apple-targets` and native work; not started
 
-## Phase 6: Worship tools (done, except adhkar)
+## Phase 6: Worship tools (done)
 - [x] Prayer times by location (MUIS, Kemenag, JAKIM and five more methods), next prayer countdown, adhan reminders, saved for offline use
 - [x] Qibla compass, inside the Prayer tab
 - [x] Doa (equran.id, Indonesian), Asmaul Husna (99 names, English meanings), tasbih with haptics
-- [x] Hijri date on Home
-- [ ] Morning/evening adhkar: not included, no verified source for the texts yet. Doa have Indonesian meanings only; English doa translations need a source I can verify
+- [x] Solar and Hijri dates on Home and Today
+- [x] Morning, evening and after-prayer adhkar with daily counters, and English dua (bundled from fitrahive/dua-dhikr, MIT, each with its hadith source)
+- [x] Today tab: next prayer, daily reading goal, ayah of the day, adhkar, hifz and tasbih
 - [ ] Ramadan mode (imsak/iftar reminders): imsak time is fetched; the mode itself is not built
 
 ## Phase 7: Sharing and polish

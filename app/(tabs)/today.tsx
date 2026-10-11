@@ -9,11 +9,13 @@ import { usePrayerTimes } from "@/components/usePrayerTimes";
 import { useTheme } from "@/components/useTheme";
 import { dailyAyahFor } from "@/constants/dailyAyahs";
 import type { AppLanguage } from "@/i18n";
+import { getAdhkar, routineForHour } from "@/services/adhkar";
 import { currentStreak, dailyTarget, dateKey } from "@/services/khatam";
-import { formatHijri } from "@/services/hijri";
+import { formatDates } from "@/services/hijri";
 import { minutesUntil, nextPrayer } from "@/services/prayerTimes";
 import { useEnglishTranslation, useSurahDetail } from "@/services/queries";
 import { translationText } from "@/services/richText";
+import { completedIn, countsFor, useAdhkarStore } from "@/store/adhkar";
 import { useHifzStore } from "@/store/hifz";
 import { useKhatamStore } from "@/store/khatam";
 import { useReadingProgressStore } from "@/store/readingProgress";
@@ -50,6 +52,11 @@ export default function TodayScreen() {
     const tasbihToday = useTasbihStore((s) => s.history[dateKey(now)] ?? 0);
     const englishTranslationId = useSettingsStore((s) => s.englishTranslationId);
 
+    const routine = routineForHour(now.getHours());
+    const adhkarItems = getAdhkar(routine, language === "id" ? "id" : "en");
+    const adhkarState = useAdhkarStore();
+    const adhkarDone = completedIn(countsFor(adhkarState, now), routine, adhkarItems.map((item) => item.repeat));
+
     const reference = dailyAyahFor(now);
     const [surahNumber, ayahNumber] = reference.split(":").map(Number);
     const detail = useSurahDetail(surahNumber);
@@ -58,7 +65,7 @@ export default function TodayScreen() {
     const meaning = language === "en" && english.data?.[ayahNumber] ? translationText(english.data[ayahNumber]) : ayah?.translation;
 
     const next = useMemo(() => (state.status === "ready" ? nextPrayer(state.days, state.timezone, now) : null), [state, now]);
-    const hijri = useMemo(() => formatHijri(now, language), [now, language]);
+    const dates = useMemo(() => formatDates(now, language), [now, language]);
     const countdown = (at: Date) => {
         const minutes = minutesUntil(at, now);
         if (minutes <= 0) return t("prayer.now");
@@ -96,7 +103,7 @@ export default function TodayScreen() {
                     <AppText variant="display" accessibilityRole="header">
                         {greeting}
                     </AppText>
-                    {hijri ? <AppText muted>{hijri}</AppText> : null}
+                    <AppText muted>{dates}</AppText>
                 </View>
 
                 <Pressable
@@ -172,6 +179,17 @@ export default function TodayScreen() {
                     )}
                 </Pressable>
 
+                <Pressable onPress={() => router.push("/adhkar")} accessibilityRole="button" style={[card, styles.adhkar]}>
+                    <Ionicons name={adhkarDone >= adhkarItems.length ? "checkmark-circle" : "sunny-outline"} size={26} color={colors.mushaf} />
+                    <View style={styles.flex}>
+                        <AppText variant="bodyStrong">{t(`adhkar.todayTitle_${routine}`)}</AppText>
+                        <AppText variant="caption" muted>
+                            {t("adhkar.todayProgress", { done: adhkarDone, total: adhkarItems.length })}
+                        </AppText>
+                    </View>
+                    <Ionicons name="chevron-forward" size={20} color={colors.ink2} />
+                </Pressable>
+
                 <View style={styles.grid}>
                     {quick("school-outline", t("hifz.title"), t("hifz.count", { count: memorized }), () => router.push("/hifz"))}
                     {quick("ellipse-outline", t("more.tasbih"), t("more.today", { count: tasbihToday }), () => router.push("/tasbih"))}
@@ -191,6 +209,7 @@ const styles = StyleSheet.create({
     track: { height: 8, borderRadius: 4, overflow: "hidden" },
     fill: { height: 8, borderRadius: 4 },
     link: { flexDirection: "row", alignItems: "center", gap: 4, alignSelf: "flex-start", paddingVertical: 4 },
+    adhkar: { flexDirection: "row", alignItems: "center", gap: 12 },
     grid: { flexDirection: "row", gap: 12 },
     quick: { flex: 1, borderWidth: StyleSheet.hairlineWidth, gap: 4 },
 });
