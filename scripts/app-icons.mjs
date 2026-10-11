@@ -1,6 +1,7 @@
-// Renders the app icon, the Android adaptive-icon foreground, the splash mark and the favicon in assets/images
+// Renders the app icon, the Android adaptive-icon foreground, the splash mark, the favicon and the Android notification icon in assets/images
 // from docs/readme-src/app-mark.html. Uses your installed Google Chrome through playwright-core.
 // Run: node scripts/app-icons.mjs
+import { execFileSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium } from 'playwright-core';
@@ -20,4 +21,10 @@ await page.setViewportSize({ width: 1024, height: 1024 });
 await page.goto(`${SRC}?v=icon`);
 await page.evaluate(() => document.fonts.ready);
 await page.screenshot({ path: resolve(OUT, 'favicon.png'), clip: { x: 0, y: 0, width: 1024, height: 1024 } });
+
+// The Android notification icon: the white star silhouette, 96 x 96 as expo-notifications asks for.
+await page.goto(`${SRC}?v=notification`);
+await page.evaluate(() => document.fonts.ready);
+await page.screenshot({ path: resolve(OUT, 'notification-icon.png'), omitBackground: true });
+execFileSync('sips', ['-z', '96', '96', resolve(OUT, 'notification-icon.png')]);
 await browser.close();
