@@ -18,17 +18,22 @@
   .mark { position: absolute; right: -120px; top: -120px; width: 420px; height: 420px; opacity: 0.09; }
   .mark i { position: absolute; inset: 0; border: 10px solid #C9A35A; border-radius: 30px; }
   .mark i:last-child { transform: rotate(45deg); }
-  .copy { position: absolute; left: 64px; top: 64px; width: 560px; display: grid; gap: 14px; }
+  .copy { position: absolute; left: 64px; top: 64px; width: 500px; display: grid; gap: 14px; }
   h1 { margin: 0; font-size: 50px; line-height: 1.06; font-weight: 800; letter-spacing: -0.02em; }
   p { margin: 0; font-size: 21px; line-height: 1.45; color: rgba(244, 247, 244, 0.82); }
   .eyebrow { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: #E2C98F; font-weight: 700; }
   .phones { position: absolute; right: 56px; bottom: -150px; display: flex; gap: 26px; align-items: flex-end; }
+  .bare .phones { bottom: -46px; }
+  .bare .phones.two .phone { width: 282px; }
   .phone { width: 300px; border-radius: 48px; padding: 11px; background: #0B0F0D; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7), 0 0 0 1.5px rgba(255,255,255,0.08) inset; }
   .phone img { display: block; width: 100%; border-radius: 38px; }
   .phone:nth-child(2) { transform: translateY(-40px); }
   .phones.one { right: 120px; }
   .phones.three .phone { width: 250px; }
   .phones.three { right: 40px; }
+  /* frame=none: the image already has its own bezel (the design mockups) */
+  .bare .phone { padding: 0; background: none; box-shadow: none; border-radius: 0; filter: drop-shadow(0 36px 50px rgba(0,0,0,0.55)); }
+  .bare .phone img { border-radius: 0; }
 </style>
 <div class="mark"><i></i><i></i></div>
 <div class="copy">
@@ -45,6 +50,7 @@
   const shots = q.getAll("shot");
   const phones = document.getElementById("phones");
   phones.className = "phones " + ["", "one", "two", "three"][shots.length];
+  if (q.get("frame") === "none") document.body.classList.add("bare");
   for (const src of shots) {
     const frame = document.createElement("div");
     frame.className = "phone";

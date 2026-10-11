@@ -18,6 +18,10 @@
   <a href="ROADMAP.md">Roadmap</a>
 </p>
 
+![Wird: home, reader with tajweed colours, and word-by-word meaning](docs/images/1-your-daily-portion.png)
+
+<p align="center"><sub>Design preview of the redesign in progress. What the app does today is listed under <a href="#what-it-does">What it does</a>.</sub></p>
+
 *Wird* (وِرْد) is the portion of Quran a person keeps up every day. This is a personal project.
 
 ## What it does
@@ -79,6 +83,8 @@ npm run build:android:preview     # Android APK built in the cloud with EAS
 - Tests cover the API mappers, search, the HTTP client, Qibla maths, bookmarks and the audio player.
   Mapper tests run against trimmed copies of real equran.id responses
   (`services/__tests__/fixtures/`).
+- `node scripts/readme-images.mjs` regenerates the README images from the design mockups in
+  `docs/quranrn-plan.html`, using your installed Chrome.
 
 ## Coming next
 
@@ -91,6 +97,15 @@ Phase 1 (upgrade, data layer, bug fixes) is done. Next, in order (details in [RO
 5. Habits: hifz (memorisation) mode, khatam planner and streaks, daily ayah, widgets
 6. Worship tools: prayer times, adhkar, doa, tasbih
 7. Sharing and polish: share an ayah as an image, accessibility
+
+![Tajweed colours you can tap, and word-by-word meaning](docs/images/2-tajweed-you-can-tap.png)
+
+![Hifz mode and the reciter library](docs/images/3-memorise-and-listen.png)
+
+![Prayer times, Qibla and tasbih](docs/images/4-prayer-qibla-tasbih.png)
+
+These are design mockups from the plan; the Quran text and tajweed markup in them are real (quran.com),
+and the prayer times are sample data.
 
 ## Known limits
 
