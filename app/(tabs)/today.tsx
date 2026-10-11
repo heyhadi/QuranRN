@@ -4,7 +4,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { NextPrayerCard } from "@/components/NextPrayerCard";
 import { AppText } from "@/components/ui/AppText";
+import { OrnateCard } from "@/components/ui/Plate";
 import { usePrayerTimes } from "@/components/usePrayerTimes";
 import { useTheme } from "@/components/useTheme";
 import { dailyAyahFor } from "@/constants/dailyAyahs";
@@ -83,20 +85,17 @@ export default function TodayScreen() {
     const openAyah = () => router.push({ pathname: "/surah/[id]", params: { id: surahNumber, ayah: ayahNumber } });
     const continueReading = () => (lastRead ? router.push({ pathname: "/surah/[id]", params: { id: lastRead.surahNumber, ayah: lastRead.ayahNumber } }) : router.navigate("/"));
 
-    const card = [styles.card, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg, padding: spacing.lg }];
+    const cardContent = { padding: spacing.lg, gap: 10 };
     const quick = (icon: IconName, title: string, subtitle: string, onPress: () => void) => (
-        <Pressable
-            onPress={onPress}
-            accessibilityRole="button"
-            accessibilityLabel={`${title}. ${subtitle}`}
-            style={({ pressed }) => [styles.quick, { backgroundColor: pressed ? colors.surface2 : colors.surface, borderColor: colors.line, borderRadius: radius.lg, padding: spacing.lg }]}
-        >
-            <Ionicons name={icon} size={22} color={colors.mushaf} />
-            <AppText variant="bodyStrong">{title}</AppText>
-            <AppText variant="caption" muted>
-                {subtitle}
-            </AppText>
-        </Pressable>
+        <View style={styles.quickWrap}>
+            <OrnateCard onPress={onPress} accessibilityLabel={`${title}. ${subtitle}`} style={[styles.quick, { padding: spacing.lg }]}>
+                <Ionicons name={icon} size={22} color={colors.mushaf} />
+                <AppText variant="bodyStrong">{title}</AppText>
+                <AppText variant="caption" muted>
+                    {subtitle}
+                </AppText>
+            </OrnateCard>
+        </View>
     );
 
     return (
@@ -109,28 +108,10 @@ export default function TodayScreen() {
                     <AppText muted>{dates}</AppText>
                 </View>
 
-                <Pressable
-                    onPress={() => router.navigate("/prayer")}
-                    accessibilityRole="button"
-                    style={[styles.hero, { backgroundColor: colors.heroBackground, borderRadius: radius.lg, padding: spacing.xl }]}
-                >
-                    <AppText variant="caption" color={colors.heroAccent}>
-                        {t("prayer.next")}
-                    </AppText>
-                    {next ? (
-                        <>
-                            <AppText style={[styles.heroName, { color: colors.heroInk }]}>{t(`prayer.names.${next.name}`)}</AppText>
-                            <AppText variant="title" color={colors.heroAccent}>
-                                {t("prayer.in", { time: countdown(next.at) })}
-                            </AppText>
-                        </>
-                    ) : (
-                        <AppText style={{ color: colors.heroInk }}>{state.status === "loading" ? t("prayer.locating") : t("today.setupPrayer")}</AppText>
-                    )}
-                </Pressable>
+                <NextPrayerCard next={next} timezone={state.status === "ready" ? state.timezone : null} countdown={countdown} placeholder={state.status === "loading" ? t("prayer.locating") : t("today.setupPrayer")} onPress={() => router.navigate("/prayer")} />
 
                 {fast && ramadan !== null && state.status === "ready" ? (
-                    <View style={[card, { borderColor: colors.brass }]}>
+                    <OrnateCard style={cardContent}>
                         <AppText variant="label" color={colors.brass}>
                             {t("ramadan.day", { day: ramadan })}
                         </AppText>
@@ -144,10 +125,10 @@ export default function TodayScreen() {
                         <AppText variant="caption" muted>
                             {t("ramadan.times", { imsak: state.today.times.imsak, iftar: state.today.times.maghrib })}
                         </AppText>
-                    </View>
+                    </OrnateCard>
                 ) : null}
 
-                <View style={card}>
+                <OrnateCard style={cardContent}>
                     <View style={styles.row}>
                         <AppText variant="label" muted style={styles.flex}>
                             {t("today.goal")}
@@ -177,9 +158,9 @@ export default function TodayScreen() {
                         </AppText>
                         <Ionicons name="chevron-forward" size={16} color={colors.mushaf} />
                     </Pressable>
-                </View>
+                </OrnateCard>
 
-                <Pressable onPress={openAyah} accessibilityRole="button" style={[card, { gap: spacing.md }]}>
+                <OrnateCard onPress={openAyah} style={[cardContent, { gap: spacing.md }]}>
                     <View style={styles.row}>
                         <AppText variant="label" muted style={styles.flex}>
                             {t("today.ayah")}
@@ -198,9 +179,9 @@ export default function TodayScreen() {
                     ) : (
                         <AppText muted>{detail.isError ? t("today.ayahOffline", { reference }) : t("common.loading")}</AppText>
                     )}
-                </Pressable>
+                </OrnateCard>
 
-                <Pressable onPress={() => router.push("/adhkar")} accessibilityRole="button" style={[card, styles.adhkar]}>
+                <OrnateCard onPress={() => router.push("/adhkar")} style={[cardContent, styles.adhkar]}>
                     <Ionicons name={adhkarDone >= adhkarItems.length ? "checkmark-circle" : "sunny-outline"} size={26} color={colors.mushaf} />
                     <View style={styles.flex}>
                         <AppText variant="bodyStrong">{t(`adhkar.todayTitle_${routine}`)}</AppText>
@@ -209,7 +190,7 @@ export default function TodayScreen() {
                         </AppText>
                     </View>
                     <Ionicons name="chevron-forward" size={20} color={colors.ink2} />
-                </Pressable>
+                </OrnateCard>
 
                 <View style={styles.grid}>
                     {quick("school-outline", t("hifz.title"), t("hifz.count", { count: memorized }), () => router.push("/hifz"))}
@@ -224,13 +205,11 @@ const styles = StyleSheet.create({
     screen: { flex: 1 },
     flex: { flex: 1 },
     row: { flexDirection: "row", alignItems: "center", gap: 6 },
-    card: { borderWidth: StyleSheet.hairlineWidth, gap: 10 },
-    hero: { gap: 4 },
-    heroName: { fontSize: 36, lineHeight: 44, fontWeight: "700" },
     track: { height: 8, borderRadius: 4, overflow: "hidden" },
     fill: { height: 8, borderRadius: 4 },
     link: { flexDirection: "row", alignItems: "center", gap: 4, alignSelf: "flex-start", paddingVertical: 4 },
     adhkar: { flexDirection: "row", alignItems: "center", gap: 12 },
     grid: { flexDirection: "row", gap: 12 },
-    quick: { flex: 1, borderWidth: StyleSheet.hairlineWidth, gap: 4 },
+    quickWrap: { flex: 1 },
+    quick: { gap: 4 },
 });

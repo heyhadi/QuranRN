@@ -52,7 +52,7 @@ export const useSettingsStore = create<SettingsState>()(
             reciterId: DEFAULT_RECITER_ID,
             favouriteReciterIds: [],
             playbackRate: 1,
-            themePreference: "system",
+            themePreference: "dark",
             languagePreference: "system",
             arabicFontSize: arabicFontSize.default,
             showTranslation: true,

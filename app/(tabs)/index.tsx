@@ -7,6 +7,7 @@ import { Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SavedList } from "@/components/SavedList";
 import { ListRow } from "@/components/SurahRow";
+import { OrnateCard, PlateCard } from "@/components/ui/Plate";
 import { AppText } from "@/components/ui/AppText";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { useTheme } from "@/components/useTheme";
@@ -87,13 +88,9 @@ export default function Home() {
             </View>
 
             {lastRead && !searchQuery ? (
-                <Pressable
-                    onPress={() => openSurah(lastRead.surahNumber, lastRead.ayahNumber)}
-                    accessibilityRole="button"
-                    style={({ pressed }) => [styles.continueCard, { backgroundColor: colors.heroBackground, borderRadius: radius.lg, opacity: pressed ? 0.9 : 1 }]}
-                >
+                <PlateCard corner="left" onPress={() => openSurah(lastRead.surahNumber, lastRead.ayahNumber)} accessibilityLabel={`${t("home.continueReading")}: ${lastRead.surahNameLatin}`} style={styles.continueCard}>
                     <View style={styles.continueText}>
-                        <AppText variant="caption" color={colors.heroAccent} style={styles.dim}>
+                        <AppText variant="label" color={colors.heroAccent}>
                             {t("home.continueReading")}
                         </AppText>
                         <AppText variant="title" color={colors.heroInk}>
@@ -103,40 +100,36 @@ export default function Home() {
                             {t("home.continueAyah", { ayah: lastRead.ayahNumber, juz: juzOf(lastRead.surahNumber, lastRead.ayahNumber) })}
                         </AppText>
                     </View>
-                    <AppText style={{ fontFamily: fonts.quran, fontSize: 26, lineHeight: 48, color: colors.heroAccent }}>
+                    <Text style={{ fontFamily: fonts.quranBold, fontSize: 34, lineHeight: 64, color: colors.heroAccent }} accessibilityElementsHidden importantForAccessibility="no">
                         {surahByNumber.get(lastRead.surahNumber)?.nameArabic ?? ""}
-                    </AppText>
-                </Pressable>
+                    </Text>
+                </PlateCard>
             ) : null}
 
             {!searchQuery ? (
                 <View style={styles.tiles}>
-                    <Pressable
-                        onPress={() => router.push("/khatam")}
-                        accessibilityRole="button"
-                        style={[styles.tile, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg }]}
-                    >
-                        <AppText variant="label" muted>
-                            {t("khatam.tile")}
-                        </AppText>
-                        <AppText variant="title">{t("khatam.percent", { value: Math.floor((readCount / TOTAL_AYAHS) * 100) })}</AppText>
-                        <AppText variant="caption" muted>
-                            {khatamPlan ? t("khatam.todayRead", { read: todayRead, goal: dailyTarget(khatamPlan.targetDays) }) : t("khatam.start")}
-                        </AppText>
-                    </Pressable>
-                    <Pressable
-                        onPress={() => router.push("/hifz")}
-                        accessibilityRole="button"
-                        style={[styles.tile, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg }]}
-                    >
-                        <AppText variant="label" muted>
-                            {t("hifz.tile")}
-                        </AppText>
-                        <AppText variant="title">{memorizedTotal}</AppText>
-                        <AppText variant="caption" muted numberOfLines={1}>
-                            {t("hifz.count", { count: memorizedTotal })}
-                        </AppText>
-                    </Pressable>
+                    <View style={styles.tileWrap}>
+                        <OrnateCard onPress={() => router.push("/khatam")} style={styles.tile}>
+                            <AppText variant="label" muted>
+                                {t("khatam.tile")}
+                            </AppText>
+                            <AppText variant="title">{t("khatam.percent", { value: Math.floor((readCount / TOTAL_AYAHS) * 100) })}</AppText>
+                            <AppText variant="caption" muted>
+                                {khatamPlan ? t("khatam.todayRead", { read: todayRead, goal: dailyTarget(khatamPlan.targetDays) }) : t("khatam.start")}
+                            </AppText>
+                        </OrnateCard>
+                    </View>
+                    <View style={styles.tileWrap}>
+                        <OrnateCard onPress={() => router.push("/hifz")} style={styles.tile}>
+                            <AppText variant="label" muted>
+                                {t("hifz.tile")}
+                            </AppText>
+                            <AppText variant="title">{memorizedTotal}</AppText>
+                            <AppText variant="caption" muted numberOfLines={1}>
+                                {t("hifz.count", { count: memorizedTotal })}
+                            </AppText>
+                        </OrnateCard>
+                    </View>
                 </View>
             ) : null}
 
@@ -281,11 +274,12 @@ const styles = StyleSheet.create({
     screen: { flex: 1 },
     centered: { flex: 1, justifyContent: "center", alignItems: "center", padding: 24, gap: 16 },
     centerText: { textAlign: "center" },
-    continueCard: { flexDirection: "row", alignItems: "center", padding: 16, gap: 12 },
+    continueCard: { flexDirection: "row", alignItems: "center", paddingVertical: 20, paddingHorizontal: 20, gap: 12 },
     continueText: { flex: 1, gap: 2 },
     dim: { opacity: 0.85 },
     tiles: { flexDirection: "row", gap: 12 },
-    tile: { flex: 1, borderWidth: StyleSheet.hairlineWidth, padding: 14, gap: 2 },
+    tileWrap: { flex: 1 },
+    tile: { padding: 16, gap: 2 },
     search: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 12 },
     searchInput: { flex: 1, fontSize: 16, paddingVertical: 10 },
     result: { paddingVertical: 12, gap: 4, borderBottomWidth: StyleSheet.hairlineWidth },

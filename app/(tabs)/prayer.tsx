@@ -4,7 +4,9 @@ import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
 import { Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { NextPrayerCard } from "@/components/NextPrayerCard";
 import { QiblaCompass } from "@/components/QiblaCompass";
+import { OrnateCard } from "@/components/ui/Plate";
 import { AppText } from "@/components/ui/AppText";
 import { usePrayerTimes } from "@/components/usePrayerTimes";
 import { useTheme } from "@/components/useTheme";
@@ -116,23 +118,14 @@ export default function PrayerScreen() {
         const { today } = state;
         body = (
             <View style={{ gap: spacing.lg }}>
-                {next ? (
-                    <View style={[styles.hero, { backgroundColor: colors.heroBackground, borderRadius: radius.lg, padding: spacing.xl }]}>
-                        <AppText variant="caption" color={colors.heroAccent}>
-                            {t("prayer.next")}
-                        </AppText>
-                        <AppText style={[styles.heroName, { color: colors.heroInk }]}>{t(`prayer.names.${next.name}`)}</AppText>
-                        <AppText variant="title" color={colors.heroAccent}>
-                            {t("prayer.in", { time: countdown(next.at) })}
-                        </AppText>
-                    </View>
-                ) : null}
+                <NextPrayerCard next={next} timezone={state.timezone} countdown={countdown} />
 
-                <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg }]}>
+                <OrnateCard>
                     {PRAYER_NAMES.map((name, index) => {
                         const isNext = next?.name === name && next.at.getTime() === next.at.getTime();
                         return (
                             <View key={name} style={[styles.row, index > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line }]}>
+                                <View style={[styles.marker, { backgroundColor: isNext ? colors.brass : "transparent" }]} />
                                 <AppText variant={isNext ? "bodyStrong" : "body"} color={isNext ? colors.mushaf : colors.ink} style={styles.flex}>
                                     {t(`prayer.names.${name}`)}
                                 </AppText>
@@ -142,7 +135,7 @@ export default function PrayerScreen() {
                             </View>
                         );
                     })}
-                </View>
+                </OrnateCard>
                 {state.isStale ? (
                     <AppText variant="caption" muted>
                         {t("prayer.offline")}
@@ -278,6 +271,7 @@ const styles = StyleSheet.create({
     card: { borderWidth: StyleSheet.hairlineWidth },
     row: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 16, paddingVertical: 12 },
     time: { fontVariant: ["tabular-nums"] },
+    marker: { width: 8, height: 8, borderRadius: 2, transform: [{ rotate: "45deg" }] },
     chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
     chip: { paddingHorizontal: 12, paddingVertical: 7 },
     bold: { fontWeight: "600" },
