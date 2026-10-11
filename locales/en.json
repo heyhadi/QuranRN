@@ -104,8 +104,15 @@
     "reciter": "Reciter",
     "about": "About",
     "version": "Version {{version}}",
-    "credits": "Quran text, translation, tafsir and audio via equran.id. Amiri typeface by Khaled Hosny.",
-    "reciterRow": "Reciter"
+    "credits": "Quran text, translation, tafsir and audio via equran.id; tajweed, English translations and word-by-word via quran.com; adhkar and English dua from fitrahive/dua-dhikr. Amiri typeface by Khaled Hosny.",
+    "reciterRow": "Reciter",
+    "feedback": "Feedback",
+    "reportProblem": "Report a problem",
+    "reportProblemHint": "Something broken or wrong? Tell us.",
+    "suggestIdea": "Suggest an idea",
+    "suggestIdeaHint": "A feature or a fix you would like.",
+    "github": "View on GitHub",
+    "feedbackNote": "Opens GitHub in your browser, so you need a GitHub account. Only the app version, your phone's system and the app language are added to the report; nothing you read or saved."
   },
   "notFound": {
     "title": "Page not found",

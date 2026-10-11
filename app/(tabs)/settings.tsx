@@ -3,7 +3,7 @@ import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
+import { Linking, Platform, Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { IconButton } from "@/components/ui/IconButton";
@@ -12,6 +12,7 @@ import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { useTheme } from "@/components/useTheme";
 import { defaultTafsirFor, englishTranslations, tafsirEditions } from "@/constants/editions";
 import { getReciter, styleLabel } from "@/constants/reciters";
+import { issueUrl, REPO_URL } from "@/constants/links";
 import { arabicFontSize } from "@/constants/theme";
 import { useSettingsStore, type LanguagePreference, type ThemePreference } from "@/store/settings";
 
@@ -57,6 +58,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function SettingsScreen() {
     const { t, i18n } = useTranslation();
+    const feedbackContext = { version: Constants.expoConfig?.version ?? "1.0.0", platform: Platform.OS, osVersion: String(Platform.Version), language: i18n.language };
     const { colors, spacing } = useTheme();
     const settings = useSettingsStore();
     const language = i18n.language === "id" ? "id" : "en";
@@ -170,6 +172,28 @@ export default function SettingsScreen() {
                         </View>
                         <Ionicons name="chevron-forward" size={20} color={colors.ink2} />
                     </Pressable>
+                </Section>
+
+                <Section title={t("settings.feedback")}>
+                    {[
+                        { icon: "bug-outline" as const, title: t("settings.reportProblem"), hint: t("settings.reportProblemHint"), url: issueUrl("bug", feedbackContext) },
+                        { icon: "bulb-outline" as const, title: t("settings.suggestIdea"), hint: t("settings.suggestIdeaHint"), url: issueUrl("feature", feedbackContext) },
+                        { icon: "logo-github" as const, title: t("settings.github"), hint: REPO_URL.replace("https://", ""), url: REPO_URL },
+                    ].map((item) => (
+                        <Pressable key={item.title} onPress={() => void Linking.openURL(item.url).catch(() => undefined)} accessibilityRole="link" accessibilityLabel={item.title} style={styles.row}>
+                            <Ionicons name={item.icon} size={22} color={colors.mushaf} />
+                            <View style={styles.flex}>
+                                <AppText variant="bodyStrong">{item.title}</AppText>
+                                <AppText variant="caption" muted>
+                                    {item.hint}
+                                </AppText>
+                            </View>
+                            <Ionicons name="open-outline" size={18} color={colors.ink2} />
+                        </Pressable>
+                    ))}
+                    <AppText variant="caption" muted>
+                        {t("settings.feedbackNote")}
+                    </AppText>
                 </Section>
 
                 <Section title={t("settings.about")}>

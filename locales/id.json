@@ -104,8 +104,15 @@
     "reciter": "Qari",
     "about": "Tentang",
     "version": "Versi {{version}}",
-    "credits": "Teks Al-Quran, terjemahan, tafsir, dan audio dari equran.id. Huruf Amiri oleh Khaled Hosny.",
-    "reciterRow": "Qari"
+    "credits": "Teks Quran, terjemahan, tafsir, dan audio dari equran.id; tajwid, terjemahan Inggris, dan kata per kata dari quran.com; zikir dan doa Inggris dari fitrahive/dua-dhikr. Huruf Amiri oleh Khaled Hosny.",
+    "reciterRow": "Qari",
+    "feedback": "Masukan",
+    "reportProblem": "Laporkan masalah",
+    "reportProblemHint": "Ada yang rusak atau keliru? Beri tahu kami.",
+    "suggestIdea": "Usul ide",
+    "suggestIdeaHint": "Fitur atau perbaikan yang Anda inginkan.",
+    "github": "Lihat di GitHub",
+    "feedbackNote": "Membuka GitHub di peramban, jadi butuh akun GitHub. Yang ditambahkan ke laporan hanya versi aplikasi, sistem ponsel, dan bahasa aplikasi; bukan apa yang Anda baca atau simpan."
   },
   "notFound": {
     "title": "Halaman tidak ditemukan",
