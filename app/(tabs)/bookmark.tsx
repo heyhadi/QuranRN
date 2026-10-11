@@ -1,113 +1,104 @@
-import { Link } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useMemo } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { AppText } from "@/components/ui/AppText";
+import { StarNumber } from "@/components/ui/StarNumber";
+import { useTheme } from "@/components/useTheme";
 import { bookmarkKey, sortBookmarks, useBookmarksStore, type Bookmark } from "@/store/bookmarks";
 
-const BookmarksScreen = () => {
+export default function BookmarksScreen() {
+    const { t } = useTranslation();
+    const router = useRouter();
+    const { colors, spacing, radius, fonts } = useTheme();
     const bookmarksByKey = useBookmarksStore((state) => state.bookmarks);
     const removeBookmark = useBookmarksStore((state) => state.removeBookmark);
     const bookmarks = useMemo(() => sortBookmarks(bookmarksByKey), [bookmarksByKey]);
 
     const renderItem = ({ item }: { item: Bookmark }) => (
-        <Link href={{ pathname: "/surah/[id]", params: { id: item.surahNumber, ayah: item.ayahNumber } }} asChild>
+        <ReanimatedSwipeable
+            friction={2}
+            rightThreshold={60}
+            overshootRight={false}
+            renderRightActions={() => (
+                <Pressable
+                    onPress={() => removeBookmark(item.surahNumber, item.ayahNumber)}
+                    accessibilityRole="button"
+                    accessibilityLabel={t("saved.remove")}
+                    style={[styles.delete, { backgroundColor: colors.danger, borderRadius: radius.lg }]}
+                >
+                    <Ionicons name="trash-outline" size={22} color="#FFFFFF" />
+                    <AppText variant="caption" color="#FFFFFF">
+                        {t("saved.remove")}
+                    </AppText>
+                </Pressable>
+            )}
+        >
             <Pressable
+                onPress={() => router.push({ pathname: "/surah/[id]", params: { id: item.surahNumber, ayah: item.ayahNumber } })}
                 accessibilityRole="button"
-                accessibilityHint="Long press to remove this bookmark"
-                onLongPress={() => removeBookmark(item.surahNumber, item.ayahNumber)}
+                accessibilityLabel={t("reader.bookmarkDetail", { surah: item.surahNameLatin, ayah: item.ayahNumber })}
+                accessibilityActions={[{ name: "delete", label: t("saved.remove") }]}
+                onAccessibilityAction={(event) => {
+                    if (event.nativeEvent.actionName === "delete") removeBookmark(item.surahNumber, item.ayahNumber);
+                }}
+                style={[styles.card, { backgroundColor: colors.surface, borderRadius: radius.lg, borderColor: colors.line, padding: spacing.lg }]}
             >
-                <View style={styles.bookmarkCard}>
-                    <View style={styles.numberContainer}>
-                        <Text style={styles.number}>{item.surahNumber}</Text>
-                    </View>
-                    <View style={styles.textContainer}>
-                        <Text style={styles.latinText}>
-                            {item.surahNameLatin} · Ayah {item.ayahNumber}
-                        </Text>
-                        <Text style={styles.arabicText} numberOfLines={1}>
-                            {item.textArabic}
-                        </Text>
-                    </View>
+                <View style={styles.cardHeader}>
+                    <StarNumber value={item.ayahNumber} size={32} />
+                    <AppText variant="heading" style={styles.flex}>
+                        {item.surahNameLatin}
+                    </AppText>
+                    <AppText variant="caption" muted>
+                        {`${item.surahNumber}:${item.ayahNumber}`}
+                    </AppText>
                 </View>
+                <AppText style={[styles.arabic, { fontFamily: fonts.quran, color: colors.ink }]} numberOfLines={2}>
+                    {item.textArabic}
+                </AppText>
             </Pressable>
-        </Link>
+        </ReanimatedSwipeable>
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView edges={["top"]} style={[styles.screen, { backgroundColor: colors.paper }]}>
+            <AppText variant="display" style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.md }} accessibilityRole="header">
+                {t("saved.title")}
+            </AppText>
             {bookmarks.length > 0 ? (
                 <FlatList
                     data={bookmarks}
                     keyExtractor={(item) => bookmarkKey(item.surahNumber, item.ayahNumber)}
                     renderItem={renderItem}
-                    ListFooterComponent={<Text style={styles.hintText}>Long press a bookmark to remove it.</Text>}
+                    contentContainerStyle={{ paddingHorizontal: spacing.lg, gap: spacing.md, paddingBottom: spacing.xl }}
+                    ListFooterComponent={
+                        <AppText variant="caption" muted style={styles.center}>
+                            {t("saved.hint")}
+                        </AppText>
+                    }
                 />
             ) : (
-                <Text style={styles.noBookmarksText}>No bookmarks yet. Tap the bookmark icon on any ayah to save it here.</Text>
+                <View style={[styles.empty, { padding: spacing.xxl }]}>
+                    <Ionicons name="bookmark-outline" size={40} color={colors.brass} />
+                    <AppText muted style={styles.center}>
+                        {t("saved.empty")}
+                    </AppText>
+                </View>
             )}
-        </View>
+        </SafeAreaView>
     );
-};
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingVertical: 16,
-    },
-    bookmarkCard: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#FFFFFF",
-        borderRadius: 16,
-        padding: 16,
-        marginBottom: 8,
-        elevation: 3,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-        marginHorizontal: 16,
-    },
-    numberContainer: {
-        backgroundColor: "#E0F2F7",
-        borderRadius: 20,
-        width: 40,
-        height: 40,
-        justifyContent: "center",
-        alignItems: "center",
-        marginRight: 16,
-    },
-    number: {
-        fontSize: 16,
-        fontWeight: "bold",
-        color: "green",
-    },
-    textContainer: {
-        flex: 1,
-        gap: 4,
-    },
-    arabicText: {
-        fontSize: 20,
-        textAlign: "right",
-        fontFamily: "AmiriQuran_400Regular",
-        writingDirection: "rtl",
-    },
-    latinText: {
-        fontSize: 15,
-        fontWeight: "600",
-    },
-    noBookmarksText: {
-        fontSize: 16,
-        textAlign: "center",
-        marginTop: 32,
-        marginHorizontal: 32,
-        color: "#777777",
-    },
-    hintText: {
-        fontSize: 13,
-        textAlign: "center",
-        color: "#777777",
-        marginTop: 8,
-    },
+    screen: { flex: 1 },
+    flex: { flex: 1 },
+    card: { borderWidth: StyleSheet.hairlineWidth, gap: 8 },
+    cardHeader: { flexDirection: "row", alignItems: "center", gap: 10 },
+    arabic: { fontSize: 22, lineHeight: 44, textAlign: "right", writingDirection: "rtl" },
+    delete: { width: 92, marginLeft: 10, alignItems: "center", justifyContent: "center", gap: 4 },
+    empty: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
+    center: { textAlign: "center" },
 });
-
-export default BookmarksScreen;

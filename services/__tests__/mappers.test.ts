@@ -1,4 +1,5 @@
-import { mapSurahDetail, mapSurahList, mapTafsir } from "../mappers";
+import { mapChapterMeanings, mapSurahDetail, mapSurahList, mapTafsir } from "../mappers";
+import chaptersEnResponse from "./fixtures/chaptersEn.json";
 import surahListResponse from "./fixtures/surahList.json";
 import surah112Response from "./fixtures/surah112.json";
 import tafsir112Response from "./fixtures/tafsir112.json";
@@ -59,5 +60,12 @@ describe("mapTafsir", () => {
 
         expect(tafsir.map((entry) => entry.ayahNumber)).toEqual([1, 2]);
         expect(tafsir[0].text).toMatch(/^Pada ayat ini/);
+    });
+});
+
+describe("mapChapterMeanings", () => {
+    it("keys quran.com's English meanings by Surah number", () => {
+        // Fixture: trimmed copy of a real api.quran.com/api/v4/chapters?language=en response.
+        expect(mapChapterMeanings(chaptersEnResponse)).toEqual({ 1: "The Opener", 18: "The Cave", 112: "The Sincerity" });
     });
 });

@@ -1,102 +1,77 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import React from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { AppText } from "@/components/ui/AppText";
 import { useQiblaDirection } from "@/components/useQiblaDirection";
+import { useTheme } from "@/components/useTheme";
 import { arrowRotation, compassPoint } from "@/services/qibla";
 
 export default function Qibla() {
+    const { t } = useTranslation();
+    const { colors, spacing } = useTheme();
     const qibla = useQiblaDirection();
 
+    let body: React.ReactNode;
     if (qibla.status === "loading") {
-        return (
-            <View style={styles.centered}>
-                <ActivityIndicator size="large" color="green" />
-                <Text style={styles.hint}>Finding your location…</Text>
-            </View>
+        body = (
+            <>
+                <ActivityIndicator size="large" color={colors.mushaf} />
+                <AppText muted>{t("qibla.finding")}</AppText>
+            </>
         );
-    }
-
-    if (qibla.status === "permission-denied") {
-        return (
-            <View style={styles.centered}>
-                <Text style={styles.message}>Wird needs your location to work out the Qibla direction.</Text>
-                <Button mode="contained" buttonColor="green" onPress={() => Linking.openSettings()}>
-                    Open Settings
+    } else if (qibla.status === "permission-denied") {
+        body = (
+            <>
+                <AppText style={styles.center}>{t("qibla.permission")}</AppText>
+                <Button mode="contained" onPress={() => Linking.openSettings()}>
+                    {t("qibla.openSettings")}
                 </Button>
-            </View>
+            </>
+        );
+    } else if (qibla.status === "error") {
+        body = <AppText style={styles.center}>{t("qibla.locationError")}</AppText>;
+    } else {
+        const { bearing, heading } = qibla;
+        const rotation = heading === null ? 0 : arrowRotation(bearing, heading);
+        const isFacingQibla = heading !== null && (rotation < 5 || rotation > 355);
+        body = (
+            <>
+                <View style={[styles.dial, { borderColor: isFacingQibla ? colors.mushaf : colors.line, backgroundColor: colors.surface }]}>
+                    <AppText variant="label" muted style={styles.north}>
+                        N
+                    </AppText>
+                    <View style={{ transform: [{ rotate: `${rotation}deg` }] }}>
+                        {/* The "navigate" icon points up and to the right; turn it so 0° points straight up. */}
+                        <Ionicons name="navigate" size={96} color={isFacingQibla ? colors.mushaf : colors.brass} style={styles.arrow} />
+                    </View>
+                </View>
+                <AppText variant="display">{`${Math.round(bearing)}° ${compassPoint(bearing)}`}</AppText>
+                <AppText muted style={styles.center}>
+                    {heading === null ? t("qibla.waiting") : isFacingQibla ? t("qibla.facing") : t("qibla.turn")}
+                </AppText>
+            </>
         );
     }
-
-    if (qibla.status === "error") {
-        return (
-            <View style={styles.centered}>
-                <Text style={styles.message}>Couldn't get your location. Make sure location services are on, then reopen this tab.</Text>
-            </View>
-        );
-    }
-
-    const { bearing, heading } = qibla;
-    const rotation = heading === null ? 0 : arrowRotation(bearing, heading);
-    const isFacingQibla = heading !== null && (rotation < 5 || rotation > 355);
 
     return (
-        <View style={styles.centered}>
-            <View style={[styles.dial, isFacingQibla && styles.dialAligned]}>
-                <View style={{ transform: [{ rotate: `${rotation}deg` }] }}>
-                    <Ionicons name="navigate" size={96} color={isFacingQibla ? "green" : "#333333"} style={styles.arrow} />
-                </View>
-            </View>
-            <Text style={styles.bearing}>
-                {Math.round(bearing)}° {compassPoint(bearing)}
-            </Text>
-            <Text style={styles.hint}>
-                {heading === null
-                    ? "Waiting for the compass…"
-                    : isFacingQibla
-                      ? "You are facing the Qibla."
-                      : "Turn until the arrow points straight up. Hold the phone flat, away from metal."}
-            </Text>
-        </View>
+        <SafeAreaView edges={["top"]} style={[styles.screen, { backgroundColor: colors.paper }]}>
+            <AppText variant="display" style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.sm }} accessibilityRole="header">
+                {t("qibla.title")}
+            </AppText>
+            <View style={[styles.body, { padding: spacing.xl, gap: spacing.lg }]}>{body}</View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    centered: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 24,
-        gap: 16,
-    },
-    dial: {
-        width: 220,
-        height: 220,
-        borderRadius: 110,
-        borderWidth: 3,
-        borderColor: "#dddddd",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    dialAligned: {
-        borderColor: "green",
-    },
-    // The "navigate" icon points up and to the right; turn it so 0° points straight up.
-    arrow: {
-        transform: [{ rotate: "-45deg" }],
-    },
-    bearing: {
-        fontSize: 28,
-        fontWeight: "bold",
-    },
-    message: {
-        fontSize: 16,
-        textAlign: "center",
-    },
-    hint: {
-        fontSize: 15,
-        textAlign: "center",
-        color: "#555555",
-    },
+    screen: { flex: 1 },
+    body: { flex: 1, alignItems: "center", justifyContent: "center" },
+    center: { textAlign: "center" },
+    dial: { width: 240, height: 240, borderRadius: 120, borderWidth: 3, alignItems: "center", justifyContent: "center" },
+    north: { position: "absolute", top: 12 },
+    arrow: { transform: [{ rotate: "-45deg" }] },
 });

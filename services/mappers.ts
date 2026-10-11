@@ -89,3 +89,13 @@ export function mapSurahDetail(response: EquranSurahDetailResponse): SurahDetail
 export function mapTafsir(response: EquranTafsirResponse): TafsirEntry[] {
     return response.data.tafsir.map((entry) => ({ ayahNumber: entry.ayat, text: entry.teks }));
 }
+
+// Raw shape from https://api.quran.com/api/v4/chapters?language=en (only the fields read).
+export interface QuranComChaptersResponse {
+    chapters: { id: number; translated_name: { name: string } }[];
+}
+
+/** English Surah meanings keyed by Surah number, e.g. 18 → "The Cave". */
+export function mapChapterMeanings(response: QuranComChaptersResponse): Record<number, string> {
+    return Object.fromEntries(response.chapters.map((chapter) => [chapter.id, chapter.translated_name.name]));
+}

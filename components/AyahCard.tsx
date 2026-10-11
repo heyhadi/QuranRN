@@ -1,134 +1,80 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
+import { StyleSheet, View } from "react-native";
+import { AppText } from "@/components/ui/AppText";
+import { IconButton } from "@/components/ui/IconButton";
+import { StarNumber } from "@/components/ui/StarNumber";
+import { useTheme } from "@/components/useTheme";
+import type { Ayah } from "@/services/types";
 
-interface AyahProps {
-    nomorAyat: number;
-    teksArab: string;
-    teksIndonesia: string;
-    audioUrl?: string;
-    onPlay?: () => void;
-    isPlaying?: boolean;
-    isBookmarked?: boolean; // Add isBookmarked prop
-    onBookmarkPress?: () => void; 
-    onTafsirPress?: () => void;
+interface AyahCardProps {
+    ayah: Ayah;
+    arabicSize: number;
+    showTranslation: boolean;
+    isPlaying: boolean;
+    isBookmarked: boolean;
+    onPlay: () => void;
+    onBookmarkPress: () => void;
+    onTafsirPress: () => void;
+    onSharePress: () => void;
 }
 
-const AyahCard: React.FC<AyahProps> = ({ 
-    nomorAyat, 
-    teksArab, 
-    teksIndonesia, 
-    audioUrl, 
-    onPlay, 
-    isPlaying, 
-    isBookmarked, // Receive isBookmarked prop
+const AyahCard = React.memo(function AyahCard({
+    ayah,
+    arabicSize,
+    showTranslation,
+    isPlaying,
+    isBookmarked,
+    onPlay,
     onBookmarkPress,
-    onTafsirPress
-}) => {
-   
+    onTafsirPress,
+    onSharePress,
+}: AyahCardProps) {
+    const { t } = useTranslation();
+    const { colors, spacing, radius } = useTheme();
+    const n = ayah.ayahNumber;
+
     return (
         <View
             style={[
-                styles.ayahCard,
-                isPlaying && styles.playingAyahCard, // Apply highlight style if playing
+                styles.card,
+                {
+                    padding: spacing.lg,
+                    gap: spacing.md,
+                    borderRadius: radius.lg,
+                    backgroundColor: isPlaying ? colors.mushafSoft : "transparent",
+                    borderBottomColor: colors.line,
+                },
             ]}
         >
-            <View style={styles.ayahHeader}>
-                <Text style={styles.ayahNumber}>{nomorAyat}</Text>
-                <Text style={styles.arabicText}>{teksArab}</Text>
+            <View style={styles.toolbar}>
+                <StarNumber value={n} size={34} active={isPlaying} />
+                <View style={styles.actions}>
+                    <IconButton icon={isPlaying ? "stop" : "play"} primary={isPlaying} size={34} onPress={onPlay} accessibilityLabel={t(isPlaying ? "reader.stop" : "reader.play", { ayah: n })} />
+                    <IconButton
+                        icon={isBookmarked ? "bookmark" : "bookmark-outline"}
+                        color={isBookmarked ? colors.brass : undefined}
+                        size={34}
+                        onPress={onBookmarkPress}
+                        accessibilityLabel={t(isBookmarked ? "reader.removeBookmark" : "reader.bookmark", { ayah: n })}
+                    />
+                    <IconButton icon="book-outline" size={34} onPress={onTafsirPress} accessibilityLabel={t("reader.tafsir", { ayah: n })} />
+                    <IconButton icon="share-outline" size={34} onPress={onSharePress} accessibilityLabel={t("reader.share", { ayah: n })} />
+                </View>
             </View>
-            <Text style={styles.translation}>{teksIndonesia}</Text>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={onPlay}
-                    accessibilityRole="button"
-                    accessibilityLabel={isPlaying ? `Stop ayah ${nomorAyat}` : `Play ayah ${nomorAyat}`}
-                >
-                    <Ionicons name={isPlaying ? "stop" : "play"} size={24} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={onBookmarkPress}
-                    accessibilityRole="button"
-                    accessibilityLabel={isBookmarked ? `Remove bookmark from ayah ${nomorAyat}` : `Bookmark ayah ${nomorAyat}`}
-                >
-                    <Ionicons name={isBookmarked ? "bookmark" : "bookmark-outline"} size={24} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.button, styles.tafsirButton]}
-                    onPress={onTafsirPress}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Tafsir of ayah ${nomorAyat}`}
-                >
-                    <Text style={styles.tafsirText}>Tafsir</Text>
-                </TouchableOpacity>
-            </View>
+            <AppText variant="arabic" size={arabicSize}>
+                {ayah.textArabic}
+            </AppText>
+            {showTranslation ? <AppText style={styles.translation}>{ayah.translation}</AppText> : null}
         </View>
     );
-};
-
-const styles = StyleSheet.create({
-    ayahCard: {
-        backgroundColor: "white",
-        borderRadius: 8,
-        padding: 16,
-        marginBottom: 16,
-        elevation: 3,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-       
-    },
-    playingAyahCard: {
-        // Style for the highlighted card
-        backgroundColor: "#e6ffe6", // Light green background
-        borderWidth: 2,
-        borderColor: "#2ecc71",
-    },
-    ayahHeader: {
-        flexDirection: "row",
-        alignItems: "flex-start",
-        marginBottom: 8,
-    },
-    ayahNumber: {
-        fontSize: 16,
-        fontWeight: "bold",
-        color: "#27ae60",
-        marginRight: 8,
-    },
-    arabicText: {
-        fontSize: 20,
-        textAlign: "right",
-        flex: 1,
-        fontFamily: "AmiriQuran_400Regular",
-    },
-    translation: {
-        fontSize: 16,
-        color: "#333",
-        marginBottom: 16,
-    },
-    buttonContainer: {
-        flexDirection: "row",
-        justifyContent: "flex-start",
-    },
-    button: {
-        backgroundColor: "#27ae60",
-        borderRadius: 20,
-        width: 40,
-        height: 40,
-        justifyContent: "center",
-        alignItems: "center",
-        marginRight: 8,
-    },
-    tafsirButton: {
-        backgroundColor: "#34495e",
-    },
-    tafsirText: {
-        color: "white",
-        fontSize: 14,
-    },
 });
 
 export default AyahCard;
+
+const styles = StyleSheet.create({
+    card: { borderBottomWidth: StyleSheet.hairlineWidth },
+    toolbar: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+    actions: { flexDirection: "row", gap: 8 },
+    translation: { fontSize: 15, lineHeight: 23 },
+});

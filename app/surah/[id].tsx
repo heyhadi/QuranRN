@@ -1,10 +1,17 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View, type ViewToken } from "react-native";
-import { Button, Modal, Text as PaperText, Portal } from "react-native-paper";
+import { useTranslation } from "react-i18next";
+import { ActivityIndicator, FlatList, Pressable, ScrollView, Share, StyleSheet, Switch, View, type ViewToken } from "react-native";
+import { Button } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import AyahCard from "@/components/AyahCard";
-import { useSurahDetail, useTafsir } from "@/services/queries";
+import { AppText } from "@/components/ui/AppText";
+import { IconButton } from "@/components/ui/IconButton";
+import { Sheet } from "@/components/ui/Sheet";
+import { useTheme } from "@/components/useTheme";
+import { arabicFontSize } from "@/constants/theme";
+import { juzOf } from "@/services/juz";
+import { useEnglishSurahMeanings, useSurahDetail, useTafsir } from "@/services/queries";
 import type { Ayah } from "@/services/types";
 import { usePlayingAyah, useAudioPlayerStore, type Track } from "@/store/audioPlayer";
 import { bookmarkKey, useBookmarksStore } from "@/store/bookmarks";
@@ -13,6 +20,9 @@ import { useSettingsStore } from "@/store/settings";
 
 const SCROLL_RETRY_LIMIT = 3;
 const VIEWABILITY_CONFIG = { itemVisiblePercentThreshold: 50 };
+// Al-Fatihah's first ayah is the basmalah itself, and At-Tawbah has none.
+const NO_SEPARATE_BASMALAH = new Set([1, 9]);
+const BASMALAH = "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ";
 
 function parsePositiveInt(value: string | string[] | undefined): number | null {
     const raw = Array.isArray(value) ? value[0] : value;
@@ -21,6 +31,9 @@ function parsePositiveInt(value: string | string[] | undefined): number | null {
 }
 
 export default function Surah() {
+    const { t, i18n } = useTranslation();
+    const router = useRouter();
+    const { colors, spacing, radius, fonts } = useTheme();
     const params = useLocalSearchParams<{ id: string; ayah?: string }>();
     const surahNumber = parsePositiveInt(params.id) ?? 0;
     const targetAyah = parsePositiveInt(params.ayah);
@@ -28,18 +41,20 @@ export default function Surah() {
     // Surah and tafsir load in parallel; a tafsir failure only affects the tafsir sheet.
     const surahQuery = useSurahDetail(surahNumber);
     const tafsirQuery = useTafsir(surahNumber);
+    const englishMeanings = useEnglishSurahMeanings(i18n.language === "en");
     const surah = surahQuery.data;
     const ayahs = useMemo(() => surah?.ayahs ?? [], [surah]);
 
     const bookmarks = useBookmarksStore((state) => state.bookmarks);
     const toggleBookmark = useBookmarksStore((state) => state.toggleBookmark);
-    const reciterId = useSettingsStore((state) => state.reciterId);
+    const { reciterId, arabicFontSize: arabicSize, showTranslation, stepArabicFontSize, setShowTranslation } = useSettingsStore();
     const playingAyah = usePlayingAyah(surahNumber);
     const toggleAudio = useAudioPlayerStore((state) => state.toggle);
     const stopAudio = useAudioPlayerStore((state) => state.stop);
     const setLastRead = useReadingProgressStore((state) => state.setLastRead);
 
     const [tafsirAyah, setTafsirAyah] = useState<number | null>(null);
+    const [displayOpen, setDisplayOpen] = useState(false);
     const listRef = useRef<FlatList<Ayah>>(null);
     const scrollRetries = useRef(0);
 
@@ -65,15 +80,12 @@ export default function Surah() {
     );
 
     // FlatList can't scroll to rows it hasn't measured yet: jump close by estimate, then retry.
-    const handleScrollToIndexFailed = useCallback(
-        (info: { index: number; averageItemLength: number }) => {
-            if (scrollRetries.current >= SCROLL_RETRY_LIMIT) return;
-            scrollRetries.current += 1;
-            listRef.current?.scrollToOffset({ offset: info.averageItemLength * info.index, animated: false });
-            setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.2 }), 100);
-        },
-        [],
-    );
+    const handleScrollToIndexFailed = useCallback((info: { index: number; averageItemLength: number }) => {
+        if (scrollRetries.current >= SCROLL_RETRY_LIMIT) return;
+        scrollRetries.current += 1;
+        listRef.current?.scrollToOffset({ offset: info.averageItemLength * info.index, animated: false });
+        setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.2 }), 100);
+    }, []);
 
     useEffect(() => {
         if (targetAyah === null || ayahs.length === 0) return;
@@ -114,123 +126,196 @@ export default function Surah() {
                 textArabic: ayah.textArabic,
             });
             Toast.show({
-                text1: nowBookmarked ? "Bookmark added" : "Bookmark removed",
-                text2: `Surah ${surah.nameLatin}, Ayah ${ayah.ayahNumber}`,
+                text1: t(nowBookmarked ? "reader.bookmarkAdded" : "reader.bookmarkRemoved"),
+                text2: t("reader.bookmarkDetail", { surah: surah.nameLatin, ayah: ayah.ayahNumber }),
                 type: nowBookmarked ? "success" : "info",
                 position: "top",
             });
         },
-        [surah, toggleBookmark],
+        [surah, toggleBookmark, t],
+    );
+
+    const handleShare = useCallback(
+        (ayah: Ayah) => {
+            if (!surah) return;
+            const reference = t("reader.shareSuffix", { surah: surah.nameLatin, surahNumber: surah.number, ayah: ayah.ayahNumber });
+            void Share.share({ message: `${ayah.textArabic}\n\n${ayah.translation}\n\n— ${reference}` });
+        },
+        [surah, t],
     );
 
     const tafsirText = tafsirAyah === null ? undefined : tafsirQuery.data?.find((entry) => entry.ayahNumber === tafsirAyah)?.text;
 
     if (surahQuery.isPending) {
         return (
-            <View style={styles.centered}>
+            <View style={[styles.centered, { backgroundColor: colors.paper }]}>
                 <Stack.Screen options={{ title: "" }} />
-                <ActivityIndicator size="large" color="green" />
+                <ActivityIndicator size="large" color={colors.mushaf} />
             </View>
         );
     }
 
     if (surahQuery.isError || !surah) {
         return (
-            <View style={styles.centered}>
+            <View style={[styles.centered, { backgroundColor: colors.paper }]}>
                 <Stack.Screen options={{ title: "" }} />
-                <Text style={styles.message}>Couldn't load this Surah. Check your connection and try again.</Text>
-                <Button mode="contained" buttonColor="green" onPress={() => surahQuery.refetch()}>
-                    Try again
+                <AppText style={styles.centerText}>{t("reader.loadError")}</AppText>
+                <Button mode="contained" onPress={() => surahQuery.refetch()}>
+                    {t("common.tryAgain")}
                 </Button>
             </View>
         );
     }
 
+    const meaning = (i18n.language === "en" && englishMeanings.data?.[surah.number]) || surah.meaning;
+
+    const header = (
+        <View style={{ padding: spacing.lg, gap: spacing.lg }}>
+            <View style={[styles.infoCard, { backgroundColor: colors.mushaf, borderRadius: radius.lg, padding: spacing.xl }]}>
+                <AppText style={{ fontFamily: fonts.quran, fontSize: 34, lineHeight: 64, color: colors.onMushaf }}>{surah.nameArabic}</AppText>
+                <AppText variant="title" color={colors.onMushaf}>
+                    {surah.nameLatin}
+                </AppText>
+                <AppText color={colors.onMushaf} style={styles.dim}>
+                    {meaning}
+                </AppText>
+                <View style={[styles.divider, { backgroundColor: colors.onMushaf }]} />
+                <AppText variant="caption" color={colors.onMushaf} style={styles.dim}>
+                    {`${t(`common.place.${surah.revelationPlace}`)} · ${t("common.ayahCount", { count: surah.ayahCount })} · ${t("common.juz", { number: juzOf(surah.number, 1) })}`}
+                </AppText>
+            </View>
+            {!NO_SEPARATE_BASMALAH.has(surah.number) ? (
+                <AppText style={[styles.basmalah, { fontFamily: fonts.quran, color: colors.ink }]}>{BASMALAH}</AppText>
+            ) : null}
+        </View>
+    );
+
+    const footer = (
+        <View style={[styles.footer, { padding: spacing.lg, gap: spacing.md }]}>
+            {surah.previous ? (
+                <Pressable
+                    onPress={() => router.replace({ pathname: "/surah/[id]", params: { id: surah.previous!.number } })}
+                    accessibilityRole="button"
+                    style={[styles.navButton, { backgroundColor: colors.surface2, borderRadius: radius.md }]}
+                >
+                    <AppText variant="bodyStrong" numberOfLines={1}>
+                        {`‹ ${surah.previous.nameLatin}`}
+                    </AppText>
+                </Pressable>
+            ) : (
+                <View style={styles.navButton} />
+            )}
+            {surah.next ? (
+                <Pressable
+                    onPress={() => router.replace({ pathname: "/surah/[id]", params: { id: surah.next!.number } })}
+                    accessibilityRole="button"
+                    accessibilityLabel={t("reader.next", { name: surah.next.nameLatin })}
+                    style={[styles.navButton, { backgroundColor: colors.mushaf, borderRadius: radius.md }]}
+                >
+                    <AppText variant="bodyStrong" color={colors.onMushaf} numberOfLines={1} style={styles.right}>
+                        {`${surah.next.nameLatin} ›`}
+                    </AppText>
+                </Pressable>
+            ) : null}
+        </View>
+    );
+
     return (
-        <View style={styles.container}>
-            <Stack.Screen options={{ title: surah.nameLatin }} />
+        <View style={[styles.container, { backgroundColor: colors.paper }]}>
+            <Stack.Screen
+                options={{
+                    title: surah.nameLatin,
+                    headerRight: () => (
+                        <IconButton icon="text-outline" size={34} onPress={() => setDisplayOpen(true)} accessibilityLabel={t("reader.displaySettings")} />
+                    ),
+                }}
+            />
             <FlatList
                 ref={listRef}
                 data={ayahs}
-                extraData={{ bookmarks, playingAyah }}
+                extraData={{ bookmarks, playingAyah, arabicSize, showTranslation }}
                 keyExtractor={(item) => bookmarkKey(item.surahNumber, item.ayahNumber)}
                 onScrollToIndexFailed={handleScrollToIndexFailed}
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={VIEWABILITY_CONFIG}
-                contentContainerStyle={styles.listContent}
+                ListHeaderComponent={header}
+                ListFooterComponent={footer}
+                contentContainerStyle={{ paddingHorizontal: spacing.sm }}
                 renderItem={({ item, index }) => (
                     <AyahCard
-                        nomorAyat={item.ayahNumber}
-                        teksArab={item.textArabic}
-                        teksIndonesia={item.translation}
+                        ayah={item}
+                        arabicSize={arabicSize}
+                        showTranslation={showTranslation}
                         isBookmarked={bookmarkKey(item.surahNumber, item.ayahNumber) in bookmarks}
                         isPlaying={playingAyah === item.ayahNumber}
                         onPlay={() => toggleAudio(queue, index)}
                         onBookmarkPress={() => handleBookmarkPress(item)}
                         onTafsirPress={() => setTafsirAyah(item.ayahNumber)}
+                        onSharePress={() => handleShare(item)}
                     />
                 )}
             />
-            <Portal>
-                <Modal visible={tafsirAyah !== null} onDismiss={() => setTafsirAyah(null)} contentContainerStyle={styles.modal}>
-                    <PaperText variant="titleMedium" style={styles.modalTitle}>
-                        Tafsir · {surah.nameLatin} {tafsirAyah}
-                    </PaperText>
-                    {tafsirQuery.isPending ? (
-                        <ActivityIndicator color="green" />
-                    ) : tafsirText ? (
-                        <ScrollView>
-                            <PaperText style={styles.tafsirText}>{tafsirText}</PaperText>
-                        </ScrollView>
-                    ) : (
-                        <View style={styles.tafsirError}>
-                            <PaperText>Couldn't load the tafsir for this ayah.</PaperText>
-                            <Button onPress={() => tafsirQuery.refetch()} textColor="green">
-                                Try again
-                            </Button>
+
+            <Sheet
+                visible={tafsirAyah !== null}
+                onDismiss={() => setTafsirAyah(null)}
+                title={t("reader.tafsirTitle", { surah: surah.nameLatin, ayah: tafsirAyah ?? "" })}
+            >
+                {tafsirQuery.isPending ? (
+                    <ActivityIndicator color={colors.mushaf} style={{ margin: spacing.xl }} />
+                ) : tafsirText ? (
+                    <ScrollView contentContainerStyle={{ paddingHorizontal: spacing.lg, paddingBottom: spacing.lg, gap: spacing.md }}>
+                        <AppText style={styles.tafsir}>{tafsirText}</AppText>
+                        <AppText variant="caption" muted>
+                            {t("reader.tafsirSource")}
+                        </AppText>
+                    </ScrollView>
+                ) : (
+                    <View style={{ paddingHorizontal: spacing.lg, gap: spacing.sm, alignItems: "flex-start" }}>
+                        <AppText>{t("reader.tafsirError")}</AppText>
+                        <Button onPress={() => tafsirQuery.refetch()}>{t("common.tryAgain")}</Button>
+                    </View>
+                )}
+            </Sheet>
+
+            <Sheet visible={displayOpen} onDismiss={() => setDisplayOpen(false)} title={t("reader.display")}>
+                <View style={{ paddingHorizontal: spacing.lg, gap: spacing.lg }}>
+                    <View style={styles.settingRow}>
+                        <AppText variant="bodyStrong">{t("reader.textSize")}</AppText>
+                        <View style={styles.stepper}>
+                            <IconButton icon="remove" onPress={() => stepArabicFontSize(-1)} disabled={arabicSize <= arabicFontSize.min} accessibilityLabel={t("reader.smaller")} />
+                            <AppText variant="bodyStrong" style={styles.sizeValue}>
+                                {arabicSize}
+                            </AppText>
+                            <IconButton icon="add" onPress={() => stepArabicFontSize(1)} disabled={arabicSize >= arabicFontSize.max} accessibilityLabel={t("reader.larger")} />
                         </View>
-                    )}
-                </Modal>
-            </Portal>
+                    </View>
+                    <AppText variant="arabic" size={arabicSize}>
+                        {ayahs[0]?.textArabic ?? BASMALAH}
+                    </AppText>
+                    <View style={styles.settingRow}>
+                        <AppText variant="bodyStrong">{t("reader.showTranslation")}</AppText>
+                        <Switch value={showTranslation} onValueChange={setShowTranslation} trackColor={{ true: colors.mushaf }} />
+                    </View>
+                </View>
+            </Sheet>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    listContent: {
-        padding: 12,
-    },
-    centered: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 24,
-        gap: 16,
-    },
-    message: {
-        fontSize: 16,
-        textAlign: "center",
-    },
-    modal: {
-        width: "88%",
-        maxHeight: "80%",
-        backgroundColor: "white",
-        borderRadius: 12,
-        padding: 20,
-        alignSelf: "center",
-        gap: 12,
-    },
-    modalTitle: {
-        fontWeight: "bold",
-    },
-    tafsirText: {
-        lineHeight: 22,
-    },
-    tafsirError: {
-        gap: 8,
-        alignItems: "flex-start",
-    },
+    container: { flex: 1 },
+    centered: { flex: 1, justifyContent: "center", alignItems: "center", padding: 24, gap: 16 },
+    centerText: { textAlign: "center" },
+    infoCard: { alignItems: "center", gap: 2 },
+    divider: { height: StyleSheet.hairlineWidth, alignSelf: "stretch", opacity: 0.35, marginVertical: 10 },
+    dim: { opacity: 0.85, textAlign: "center" },
+    basmalah: { fontSize: 26, lineHeight: 52, textAlign: "center" },
+    tafsir: { lineHeight: 25 },
+    footer: { flexDirection: "row" },
+    navButton: { flex: 1, paddingVertical: 14, paddingHorizontal: 16 },
+    right: { textAlign: "right" },
+    settingRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+    stepper: { flexDirection: "row", alignItems: "center", gap: 12 },
+    sizeValue: { minWidth: 28, textAlign: "center", fontVariant: ["tabular-nums"] },
 });

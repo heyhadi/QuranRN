@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSurahDetail, getSurahList, getTafsir } from "./quranService";
+import { getEnglishSurahMeanings, getSurahDetail, getSurahList, getTafsir } from "./quranService";
 
 // Quran text, translation and tafsir don't change, so cached data never goes stale.
 // The cache is saved to disk (see store/storage.ts), which is what makes reading work offline.
@@ -8,7 +8,13 @@ export const queryKeys = {
     surahList: ["surahList"] as const,
     surah: (surahNumber: number) => ["surah", surahNumber] as const,
     tafsir: (surahNumber: number) => ["tafsir", surahNumber] as const,
+    englishMeanings: ["surahMeanings", "en"] as const,
 };
+
+/** Only fetched when the app is in English. */
+export function useEnglishSurahMeanings(enabled: boolean) {
+    return useQuery({ queryKey: queryKeys.englishMeanings, queryFn: getEnglishSurahMeanings, staleTime: Infinity, enabled });
+}
 
 export function useSurahList() {
     return useQuery({ queryKey: queryKeys.surahList, queryFn: getSurahList, staleTime: Infinity });

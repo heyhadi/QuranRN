@@ -1,0 +1,80 @@
+{
+  "common": {
+    "tryAgain": "Try again",
+    "close": "Close",
+    "ayah": "Ayah",
+    "ayahCount_one": "{{count}} ayah",
+    "ayahCount_other": "{{count}} ayahs",
+    "juz": "Juz {{number}}",
+    "place": { "Mekah": "Meccan", "Madinah": "Medinan" }
+  },
+  "tabs": { "quran": "Quran", "saved": "Saved", "qibla": "Qibla", "settings": "Settings" },
+  "home": {
+    "greeting": "Assalamu'alaikum",
+    "continueReading": "Continue reading",
+    "continueAyah": "Ayah {{ayah}} · Juz {{juz}}",
+    "searchPlaceholder": "Search by name, meaning or number",
+    "noMatch": "No Surah matches “{{query}}”.",
+    "loadError": "Couldn't load the Surah list. Check your connection and try again.",
+    "tabSurah": "Surah",
+    "tabJuz": "Juz",
+    "juzStartsAt": "Starts at {{surah}} {{ayah}}"
+  },
+  "reader": {
+    "loadError": "Couldn't load this Surah. Check your connection and try again.",
+    "play": "Play ayah {{ayah}}",
+    "stop": "Stop ayah {{ayah}}",
+    "bookmark": "Bookmark ayah {{ayah}}",
+    "removeBookmark": "Remove bookmark from ayah {{ayah}}",
+    "tafsir": "Tafsir of ayah {{ayah}}",
+    "share": "Share ayah {{ayah}}",
+    "tafsirTitle": "Tafsir · {{surah}} {{ayah}}",
+    "tafsirSource": "Tafsir Kemenag RI · equran.id",
+    "tafsirError": "Couldn't load the tafsir for this ayah.",
+    "displaySettings": "Display settings",
+    "display": "Display",
+    "textSize": "Arabic text size",
+    "smaller": "Smaller Arabic text",
+    "larger": "Larger Arabic text",
+    "showTranslation": "Show translation",
+    "bookmarkAdded": "Bookmark added",
+    "bookmarkRemoved": "Bookmark removed",
+    "bookmarkDetail": "{{surah}}, ayah {{ayah}}",
+    "next": "Next: {{name}}",
+    "previous": "Previous: {{name}}",
+    "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}"
+  },
+  "saved": {
+    "title": "Saved",
+    "empty": "No bookmarks yet. Tap the bookmark icon on any ayah to save it here.",
+    "hint": "Swipe a bookmark left, then tap Remove.",
+    "remove": "Remove"
+  },
+  "qibla": {
+    "title": "Qibla",
+    "finding": "Finding your location…",
+    "permission": "Wird needs your location to work out the Qibla direction.",
+    "openSettings": "Open Settings",
+    "locationError": "Couldn't get your location. Make sure location services are on, then reopen this tab.",
+    "waiting": "Waiting for the compass…",
+    "facing": "You are facing the Qibla.",
+    "turn": "Turn until the arrow points straight up. Hold the phone flat, away from metal."
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "theme": { "system": "System", "light": "Light", "dark": "Dark" },
+    "language": "Language",
+    "languageOption": { "system": "System", "id": "Indonesia", "en": "English" },
+    "reading": "Reading",
+    "arabicSize": "Arabic text size",
+    "showTranslation": "Show translation",
+    "translationNote": "Translation: Kemenag RI (Indonesian). English translations arrive in a later update.",
+    "audio": "Audio",
+    "reciter": "Reciter",
+    "about": "About",
+    "version": "Version {{version}}",
+    "credits": "Quran text, translation, tafsir and audio via equran.id. Amiri Quran typeface by Khaled Hosny."
+  },
+  "notFound": { "title": "Page not found", "message": "This screen doesn't exist.", "goHome": "Go to the Surah list" }
+}
