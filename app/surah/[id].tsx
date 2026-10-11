@@ -260,8 +260,8 @@ export default function Surah() {
                     title: surah.nameLatin,
                     headerRight: () => (
                         <View style={styles.headerButtons}>
-                            <IconButton icon="school-outline" size={34} onPress={() => router.push({ pathname: "/hifz/[id]", params: { id: surah.number } })} accessibilityLabel={t("hifz.open")} />
-                            <IconButton icon="text-outline" size={34} onPress={() => setDisplayOpen(true)} accessibilityLabel={t("reader.displaySettings")} />
+                            <IconButton plain icon="school-outline" size={40} onPress={() => router.push({ pathname: "/hifz/[id]", params: { id: surah.number } })} accessibilityLabel={t("hifz.open")} />
+                            <IconButton plain icon="text-outline" size={40} onPress={() => setDisplayOpen(true)} accessibilityLabel={t("reader.displaySettings")} />
                         </View>
                     ),
                 }}
