@@ -6,6 +6,7 @@ import { AppText } from "@/components/ui/AppText";
 import { StarNumber } from "@/components/ui/StarNumber";
 import { useTheme } from "@/components/useTheme";
 import { BISMILLAH } from "@/constants/surahPages";
+import { displaySegments } from "@/components/TajweedText";
 import { tajweedColorKey, type TajweedRuleId } from "@/constants/tajweed";
 import type { MushafLine, MushafWord } from "@/services/mushaf";
 import { useMushafPage, useSurahList } from "@/services/queries";
@@ -55,7 +56,7 @@ function TextLine({ words, width, height, fontSize, tajweed, onWordPress, onRule
                     style={{ fontFamily: fonts.quran, fontSize: wordSize, lineHeight: wordSize * 1.75, color: colors.ink, marginHorizontal: wordSize * 0.1, includeFontPadding: false, flexShrink: 0 }}
                 >
                     {tajweed && word.segments
-                        ? word.segments.map((segment, part) =>
+                        ? displaySegments(word.segments).map((segment, part) =>
                               segment.rule ? (
                                   <Text key={part} style={{ color: colors.tajweed[tajweedColorKey[segment.rule]] }} onPress={() => onRulePress(segment.rule!)}>
                                       {segment.text}

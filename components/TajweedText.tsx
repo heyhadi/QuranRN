@@ -1,9 +1,14 @@
-import React from "react";
-import { Text } from "react-native";
+import React, { useMemo } from "react";
+import { Platform, Text } from "react-native";
 import { AppText } from "@/components/ui/AppText";
 import { useTheme } from "@/components/useTheme";
 import { tajweedColorKey, type TajweedRuleId } from "@/constants/tajweed";
-import type { TajweedSegment } from "@/services/tajweed";
+import { shapeSafe, type TajweedSegment } from "@/services/tajweed";
+
+/** On Android the coloured runs are re-cut so letters stay joined and marks stay on their letters (see shapeSafe). */
+export function displaySegments(segments: TajweedSegment[]): TajweedSegment[] {
+    return Platform.OS === "android" ? shapeSafe(segments) : segments;
+}
 
 interface TajweedTextProps {
     segments: TajweedSegment[];
@@ -15,9 +20,10 @@ interface TajweedTextProps {
 /** Quran text with each tajweed rule in its own colour; coloured letters are tappable. */
 export function TajweedText({ segments, size, onRulePress }: TajweedTextProps) {
     const { colors } = useTheme();
+    const shown = useMemo(() => displaySegments(segments), [segments]);
     return (
         <AppText variant="arabic" size={size}>
-            {segments.map((segment, index) =>
+            {shown.map((segment, index) =>
                 segment.rule ? (
                     <Text
                         key={index}
