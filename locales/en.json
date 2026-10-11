@@ -1,6 +1,7 @@
 {
   "common": {
     "tryAgain": "Try again",
+    "loading": "Loading…",
     "close": "Close",
     "ayah": "Ayah",
     "ayahCount_one": "{{count}} ayah",
@@ -17,7 +18,8 @@
     "qibla": "Qibla",
     "settings": "Settings",
     "more": "More",
-    "prayer": "Prayer"
+    "prayer": "Prayer",
+    "today": "Today"
   },
   "home": {
     "greeting": "Assalamu'alaikum",
@@ -422,5 +424,17 @@
     "adhkarNote": "Morning and evening adhkar are coming once the texts have been checked against a trusted source.",
     "copyDoa": "Copy",
     "sourceLabel": "Source"
+  },
+  "today": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "night": "Good night",
+    "goal": "Today's reading",
+    "noPlan": "Set a Khatam plan to get a daily reading goal.",
+    "continueAt": "Continue: {{surah}} {{ayah}}",
+    "ayah": "Ayah of the day",
+    "ayahOffline": "Connect to the internet to read {{reference}}.",
+    "setupPrayer": "Open Prayer to set your location."
   }
 }

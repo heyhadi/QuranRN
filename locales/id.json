@@ -1,6 +1,7 @@
 {
   "common": {
     "tryAgain": "Coba lagi",
+    "loading": "Memuat…",
     "close": "Tutup",
     "ayah": "Ayat",
     "ayahCount_one": "{{count}} ayat",
@@ -17,7 +18,8 @@
     "qibla": "Kiblat",
     "settings": "Pengaturan",
     "more": "Lainnya",
-    "prayer": "Salat"
+    "prayer": "Salat",
+    "today": "Hari Ini"
   },
   "home": {
     "greeting": "Assalamu'alaikum",
@@ -422,5 +424,17 @@
     "adhkarNote": "Zikir pagi dan petang hadir setelah teksnya diperiksa terhadap sumber tepercaya.",
     "copyDoa": "Salin",
     "sourceLabel": "Sumber"
+  },
+  "today": {
+    "morning": "Selamat pagi",
+    "afternoon": "Selamat siang",
+    "evening": "Selamat sore",
+    "night": "Selamat malam",
+    "goal": "Bacaan hari ini",
+    "noPlan": "Buat rencana Khatam untuk mendapat target baca harian.",
+    "continueAt": "Lanjut: {{surah}} {{ayah}}",
+    "ayah": "Ayat hari ini",
+    "ayahOffline": "Sambungkan ke internet untuk membaca {{reference}}.",
+    "setupPrayer": "Buka Salat untuk mengatur lokasi."
   }
 }

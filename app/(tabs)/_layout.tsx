@@ -35,6 +35,7 @@ export default function TabLayout() {
             }}
         >
             <Tabs.Screen name="index" options={{ title: t("tabs.quran"), tabBarIcon: tabIcon("book", "book-outline") }} />
+            <Tabs.Screen name="today" options={{ title: t("tabs.today"), tabBarIcon: tabIcon("sunny", "sunny-outline") }} />
             <Tabs.Screen name="prayer" options={{ title: t("tabs.prayer"), tabBarIcon: tabIcon("moon", "moon-outline") }} />
             <Tabs.Screen name="more" options={{ title: t("tabs.more"), tabBarIcon: tabIcon("apps", "apps-outline") }} />
             <Tabs.Screen name="settings" options={{ title: t("tabs.settings"), tabBarIcon: tabIcon("settings", "settings-outline") }} />
