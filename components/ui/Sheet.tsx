@@ -1,6 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
-import { Modal, Portal } from "react-native-paper";
+import { Modal, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { useTheme } from "@/components/useTheme";
@@ -10,52 +10,61 @@ interface SheetProps {
     onDismiss: () => void;
     title: string;
     children: React.ReactNode;
-    /** Cap the height, as a fraction of the screen (content scrolls inside). */
-    maxHeight?: `${number}%`;
+    /** Cap the height as a fraction of the screen; content scrolls inside. */
+    maxHeightRatio?: number;
 }
 
-/** A bottom sheet built on Paper's Modal, so no extra native module is needed. */
-export function Sheet({ visible, onDismiss, title, children, maxHeight = "80%" }: SheetProps) {
-    const { colors, radius, spacing } = useTheme();
+/**
+ * A bottom sheet on React Native's own Modal: it always sits on the bottom edge and dims the whole
+ * screen. (Paper's Modal adds safe-area margins that left it floating above the bottom.)
+ */
+export function Sheet({ visible, onDismiss, title, children, maxHeightRatio = 0.8 }: SheetProps) {
+    const { colors, radius, spacing, scheme } = useTheme();
     const insets = useSafeAreaInsets();
+    const { height } = useWindowDimensions();
+
     return (
-        <Portal>
-            <Modal
-                visible={visible}
-                onDismiss={onDismiss}
-                style={styles.modal}
-                contentContainerStyle={[
-                    styles.sheet,
-                    {
-                        backgroundColor: colors.surface,
-                        borderTopLeftRadius: radius.xl,
-                        borderTopRightRadius: radius.xl,
-                        paddingBottom: Math.max(insets.bottom, spacing.lg),
-                        maxHeight,
-                    },
-                ]}
-            >
-                <View style={[styles.grab, { backgroundColor: colors.line }]} />
-                <View style={[styles.header, { paddingHorizontal: spacing.lg }]}>
-                    <AppText variant="title" style={styles.title} accessibilityRole="header">
-                        {title}
-                    </AppText>
-                    <Pressable onPress={onDismiss} accessibilityRole="button" accessibilityLabel="Close" hitSlop={10}>
-                        <AppText variant="title" muted>
-                            ×
+        <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss} statusBarTranslucent>
+            <View style={styles.root}>
+                <Pressable
+                    style={[StyleSheet.absoluteFill, { backgroundColor: scheme === "dark" ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0.4)" }]}
+                    onPress={onDismiss}
+                    accessibilityRole="button"
+                    accessibilityLabel="Close"
+                />
+                <View
+                    accessibilityViewIsModal
+                    style={[
+                        styles.sheet,
+                        {
+                            backgroundColor: colors.surface,
+                            borderTopLeftRadius: radius.xl,
+                            borderTopRightRadius: radius.xl,
+                            paddingBottom: Math.max(insets.bottom, spacing.lg),
+                            maxHeight: height * maxHeightRatio,
+                        },
+                    ]}
+                >
+                    <View style={[styles.grab, { backgroundColor: colors.line }]} />
+                    <View style={[styles.header, { paddingHorizontal: spacing.lg }]}>
+                        <AppText variant="title" style={styles.title} accessibilityRole="header">
+                            {title}
                         </AppText>
-                    </Pressable>
+                        <Pressable onPress={onDismiss} accessibilityRole="button" accessibilityLabel="Close" hitSlop={10}>
+                            <Ionicons name="close" size={24} color={colors.ink2} />
+                        </Pressable>
+                    </View>
+                    {children}
                 </View>
-                {children}
-            </Modal>
-        </Portal>
+            </View>
+        </Modal>
     );
 }
 
 const styles = StyleSheet.create({
-    modal: { justifyContent: "flex-end", margin: 0 },
+    root: { flex: 1, justifyContent: "flex-end" },
     sheet: { paddingTop: 8, width: "100%" },
     grab: { width: 40, height: 4, borderRadius: 2, alignSelf: "center", marginBottom: 8 },
-    header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8 },
+    header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8, gap: 12 },
     title: { flex: 1 },
 });

@@ -59,7 +59,8 @@ export const fonts = {
     body: "SourceSans3_400Regular",
     bodyMedium: "SourceSans3_600SemiBold",
     bodyBold: "SourceSans3_700Bold",
-    quran: "AmiriQuran_400Regular",
+    quran: "Amiri_400Regular",
+    quranBold: "Amiri_700Bold",
 } as const;
 
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 } as const;

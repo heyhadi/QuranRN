@@ -74,7 +74,7 @@
     "reciter": "Reciter",
     "about": "About",
     "version": "Version {{version}}",
-    "credits": "Quran text, translation, tafsir and audio via equran.id. Amiri Quran typeface by Khaled Hosny."
+    "credits": "Quran text, translation, tafsir and audio via equran.id. Amiri typeface by Khaled Hosny."
   },
   "notFound": { "title": "Page not found", "message": "This screen doesn't exist.", "goHome": "Go to the Surah list" }
 }

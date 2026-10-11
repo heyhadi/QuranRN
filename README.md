@@ -28,7 +28,7 @@
 
 |  |  |
 |---|---|
-| **Read all 114 Surahs.** Arabic in the Amiri Quran typeface, with the Indonesian translation from Kemenag under every ayah. | **Listen ayah by ayah.** Tap play on any ayah; recitation continues to the next one and the list follows along. Tap again to stop. |
+| **Read all 114 Surahs.** Arabic in the Amiri typeface, with the Indonesian translation from Kemenag under every ayah. | **Listen ayah by ayah.** Tap play on any ayah; recitation continues to the next one and the list follows along. Tap again to stop. |
 | **Tafsir for every ayah.** The Kemenag tafsir opens in a scrollable sheet. If it fails to load, the Surah still opens and the sheet offers a retry. | **Bookmarks that stay.** Bookmark any ayah; bookmarks are saved on the device and jump straight back to the ayah. Long-press to remove. |
 | **Continue reading.** The home screen remembers the last ayah you were reading and takes you back to it. | **Search.** Find a Surah by Latin name (`al baqarah`, `alkahf`), meaning (`gua`) or number (`18`). |
 | **Works offline.** Every Surah you open is cached on the device for four weeks, so it opens again without a connection. | **Qibla compass.** The direction to the Kaaba from where you are, with the phone's own compass heading. |
@@ -118,7 +118,7 @@ and the prayer times are sample data.
 ## Credits
 
 - Quran text, Indonesian translation and tafsir (Kemenag RI) and recitation audio via [equran.id](https://equran.id).
-- [Amiri Quran](https://github.com/aliftype/amiri) typeface by Khaled Hosny, under the SIL Open Font License.
+- [Amiri](https://github.com/aliftype/amiri) typeface by Khaled Hosny, [Reem Kufi](https://github.com/aliftype/reem-kufi) and [Source Sans 3](https://github.com/adobe-fonts/source-sans), all under the SIL Open Font License.
 
 ---
 

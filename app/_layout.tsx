@@ -1,4 +1,5 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Amiri_400Regular, Amiri_700Bold } from "@expo-google-fonts/amiri";
 import { ReemKufi_600SemiBold, ReemKufi_700Bold } from "@expo-google-fonts/reem-kufi";
 import { SourceSans3_400Regular, SourceSans3_600SemiBold, SourceSans3_700Bold } from "@expo-google-fonts/source-sans-3";
 import { DarkTheme, DefaultTheme, ThemeProvider, type Theme as NavigationTheme } from "expo-router/react-navigation";
@@ -41,7 +42,9 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
     const [loaded, error] = useFonts({
-        AmiriQuran_400Regular: require("../assets/fonts/AmiriQuran-Regular.ttf"),
+        // Amiri, not Amiri Quran: the Quran variant is a colour font that paints vowel marks red and blue.
+        Amiri_400Regular,
+        Amiri_700Bold,
         ReemKufi_600SemiBold,
         ReemKufi_700Bold,
         SourceSans3_400Regular,
