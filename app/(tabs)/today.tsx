@@ -193,7 +193,7 @@ export default function TodayScreen() {
                 </OrnateCard>
 
                 <View style={styles.grid}>
-                    {quick("school-outline", t("hifz.title"), t("hifz.count", { count: memorized }), () => router.push("/hifz"))}
+                    {quick("repeat-outline", t("hifz.title"), t("hifz.count", { count: memorized }), () => router.push("/hifz"))}
                     {quick("ellipse-outline", t("more.tasbih"), t("more.today", { count: tasbihToday }), () => router.push("/tasbih"))}
                 </View>
             </ScrollView>
