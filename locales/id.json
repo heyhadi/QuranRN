@@ -26,7 +26,8 @@
     "loadError": "Daftar surah tidak dapat dimuat. Periksa koneksi internet, lalu coba lagi.",
     "tabSurah": "Surah",
     "tabJuz": "Juz",
-    "juzStartsAt": "Dimulai di {{surah}} {{ayah}}"
+    "juzStartsAt": "Dimulai di {{surah}} {{ayah}}",
+    "tabAll": "Semua"
   },
   "reader": {
     "loadError": "Surah ini tidak dapat dimuat. Periksa koneksi internet, lalu coba lagi.",

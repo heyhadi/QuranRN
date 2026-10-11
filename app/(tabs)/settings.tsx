@@ -10,9 +10,34 @@ import { IconButton } from "@/components/ui/IconButton";
 import { ReciterTile } from "@/components/ui/ReciterTile";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { useTheme } from "@/components/useTheme";
+import { defaultTafsirFor, englishTranslations, tafsirEditions } from "@/constants/editions";
 import { getReciter, styleLabel } from "@/constants/reciters";
 import { arabicFontSize } from "@/constants/theme";
 import { useSettingsStore, type LanguagePreference, type ThemePreference } from "@/store/settings";
+
+function Chips<T extends string | number>({ options, value, onChange }: { options: { id: T; label: string }[]; value: T; onChange: (id: T) => void }) {
+    const { colors, radius } = useTheme();
+    return (
+        <View style={styles.chips}>
+            {options.map((option) => {
+                const selected = option.id === value;
+                return (
+                    <Pressable
+                        key={String(option.id)}
+                        onPress={() => onChange(option.id)}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected }}
+                        style={[styles.chip, { backgroundColor: selected ? colors.mushaf : colors.surface2, borderRadius: radius.pill }]}
+                    >
+                        <AppText variant="caption" color={selected ? colors.onMushaf : colors.ink2} style={styles.bold}>
+                            {option.label}
+                        </AppText>
+                    </Pressable>
+                );
+            })}
+        </View>
+    );
+}
 
 const SAMPLE_ARABIC = "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ";
 
@@ -31,9 +56,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function SettingsScreen() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { colors, spacing } = useTheme();
     const settings = useSettingsStore();
+    const language = i18n.language === "id" ? "id" : "en";
     const router = useRouter();
     const reciter = getReciter(settings.reciterId);
 
@@ -85,6 +111,42 @@ export default function SettingsScreen() {
                     <AppText variant="caption" muted>
                         {t("settings.translationNote")}
                     </AppText>
+                    <View style={styles.row}>
+                        <AppText variant="bodyStrong" style={styles.flex}>
+                            {t("settingsReading.transliteration")}
+                        </AppText>
+                        <Switch value={settings.showTransliteration} onValueChange={settings.setShowTransliteration} trackColor={{ true: colors.mushaf }} accessibilityLabel={t("settingsReading.transliteration")} />
+                    </View>
+                    <View style={styles.row}>
+                        <View style={styles.flex}>
+                            <AppText variant="bodyStrong">{t("settingsReading.tajweed")}</AppText>
+                            <AppText variant="caption" muted>
+                                {t("settingsReading.tajweedNote")}
+                            </AppText>
+                        </View>
+                        <Switch value={settings.tajweedEnabled} onValueChange={settings.setTajweedEnabled} trackColor={{ true: colors.mushaf }} accessibilityLabel={t("settingsReading.tajweed")} />
+                    </View>
+                    <Pressable onPress={() => router.push("/tajweed")} accessibilityRole="button" style={styles.row}>
+                        <AppText variant="bodyStrong" color={colors.mushaf} style={styles.flex}>
+                            {t("tajweed.learn")}
+                        </AppText>
+                        <Ionicons name="chevron-forward" size={20} color={colors.ink2} />
+                    </Pressable>
+                    <View style={{ gap: spacing.sm }}>
+                        <AppText variant="bodyStrong">{t("settingsReading.translationEdition")}</AppText>
+                        <Chips options={englishTranslations.map((edition) => ({ id: edition.id, label: edition.name }))} value={settings.englishTranslationId} onChange={settings.setEnglishTranslationId} />
+                    </View>
+                    <View style={{ gap: spacing.sm }}>
+                        <AppText variant="bodyStrong">{t("settingsReading.tafsir")}</AppText>
+                        <Chips
+                            options={tafsirEditions.map((edition) => ({ id: String(edition.id), label: edition.name }))}
+                            value={String(settings.tafsirChoice ?? defaultTafsirFor(language))}
+                            onChange={(id) => settings.setTafsirChoice(id === "kemenag" ? "kemenag" : Number(id))}
+                        />
+                        <AppText variant="caption" muted>
+                            {settings.tafsirChoice === null ? t("settingsReading.tafsirFollow") : ""}
+                        </AppText>
+                    </View>
                 </Section>
 
                 <Section title={t("settings.audio")}>
@@ -124,6 +186,9 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
     screen: { flex: 1 },
     flex: { flex: 1 },
+    bold: { fontWeight: "600" },
+    chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+    chip: { paddingHorizontal: 12, paddingVertical: 7 },
     section: { borderWidth: StyleSheet.hairlineWidth },
     row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
     stepper: { flexDirection: "row", alignItems: "center", gap: 12 },

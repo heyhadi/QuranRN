@@ -74,3 +74,25 @@ export function htmlToBlocks(html: string): TextBlock[] {
     add("paragraph", html.slice(cursor));
     return blocks;
 }
+
+export interface HighlightSegment {
+    text: string;
+    highlight?: boolean;
+}
+
+/** Split a search snippet into plain and highlighted parts: "So, observe <em>patience</em>" → two segments. */
+export function parseHighlight(html: string): HighlightSegment[] {
+    const segments: HighlightSegment[] = [];
+    const push = (raw: string, highlight?: boolean) => {
+        const text = decodeEntities(raw.replace(/<[^>]+>/g, ""));
+        if (text) segments.push(highlight ? { text, highlight } : { text });
+    };
+    let cursor = 0;
+    for (const match of html.matchAll(/<em>(.*?)<\/em>/gs)) {
+        push(html.slice(cursor, match.index));
+        push(match[1], true);
+        cursor = match.index + match[0].length;
+    }
+    push(html.slice(cursor));
+    return segments;
+}

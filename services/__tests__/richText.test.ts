@@ -1,4 +1,4 @@
-import { decodeEntities, htmlToBlocks, parseTranslation, translationText } from "../richText";
+import { decodeEntities, htmlToBlocks, parseHighlight, parseTranslation, translationText } from "../richText";
 
 // Snippets below are real api.quran.com responses.
 const HALEEM = "In the name of Allāh,<sup foot_note=195932>1</sup> the Entirely Merciful, the Especially Merciful.<sup foot_note=195931>2</sup>";
@@ -58,5 +58,21 @@ describe("htmlToBlocks", () => {
 describe("decodeEntities", () => {
     it("decodes named and numeric entities and leaves unknown ones alone", () => {
         expect(decodeEntities("a &amp; b &#8217; &#x2019; &unknown;")).toBe("a & b ’ ’ &unknown;");
+    });
+});
+
+describe("parseHighlight", () => {
+    it("marks the matched words, as in a real search result", () => {
+        expect(parseHighlight("So, observe <em>patience</em>, a good <em>patience</em>.")).toEqual([
+            { text: "So, observe " },
+            { text: "patience", highlight: true },
+            { text: ", a good " },
+            { text: "patience", highlight: true },
+            { text: "." },
+        ]);
+    });
+
+    it("returns plain text when nothing matched", () => {
+        expect(parseHighlight("No match here")).toEqual([{ text: "No match here" }]);
     });
 });

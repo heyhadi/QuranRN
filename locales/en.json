@@ -26,7 +26,8 @@
     "loadError": "Couldn't load the Surah list. Check your connection and try again.",
     "tabSurah": "Surah",
     "tabJuz": "Juz",
-    "juzStartsAt": "Starts at {{surah}} {{ayah}}"
+    "juzStartsAt": "Starts at {{surah}} {{ayah}}",
+    "tabAll": "All"
   },
   "reader": {
     "loadError": "Couldn't load this Surah. Check your connection and try again.",
