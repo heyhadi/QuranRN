@@ -1,0 +1,28 @@
+{
+  "chapters": [
+    {
+      "id": 1,
+      "name_simple": "Al-Fatihah",
+      "translated_name": {
+        "language_name": "english",
+        "name": "The Opener"
+      }
+    },
+    {
+      "id": 18,
+      "name_simple": "Al-Kahf",
+      "translated_name": {
+        "language_name": "english",
+        "name": "The Cave"
+      }
+    },
+    {
+      "id": 112,
+      "name_simple": "Al-Ikhlas",
+      "translated_name": {
+        "language_name": "english",
+        "name": "The Sincerity"
+      }
+    }
+  ]
+}

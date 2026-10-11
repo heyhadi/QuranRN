@@ -1,0 +1,77 @@
+{
+ "verse": {
+  "verse_key": "112:1",
+  "words": [
+   {
+    "position": 1,
+    "char_type_name": "word",
+    "text_uthmani": "قُلْ",
+    "transliteration": {
+     "text": "qul",
+     "language_name": "english"
+    },
+    "translation": {
+     "text": "Say",
+     "language_name": "english"
+    },
+    "audio_url": "wbw/112_001_001.mp3"
+   },
+   {
+    "position": 2,
+    "char_type_name": "word",
+    "text_uthmani": "هُوَ",
+    "transliteration": {
+     "text": "huwa",
+     "language_name": "english"
+    },
+    "translation": {
+     "text": "He",
+     "language_name": "english"
+    },
+    "audio_url": "wbw/112_001_002.mp3"
+   },
+   {
+    "position": 3,
+    "char_type_name": "word",
+    "text_uthmani": "ٱللَّهُ",
+    "transliteration": {
+     "text": "l-lahu",
+     "language_name": "english"
+    },
+    "translation": {
+     "text": "(is) Allah",
+     "language_name": "english"
+    },
+    "audio_url": "wbw/112_001_003.mp3"
+   },
+   {
+    "position": 4,
+    "char_type_name": "word",
+    "text_uthmani": "أَحَدٌ",
+    "transliteration": {
+     "text": "aḥadun",
+     "language_name": "english"
+    },
+    "translation": {
+     "text": "the One",
+     "language_name": "english"
+    },
+    "audio_url": "wbw/112_001_004.mp3"
+   },
+   {
+    "position": 5,
+    "char_type_name": "end",
+    "text_uthmani": "١",
+    "transliteration": {
+     "text": null,
+     "language_name": "english"
+    },
+    "translation": {
+     "text": "(1)",
+     "language_name": "english"
+    },
+    "audio_url": null
+   }
+  ]
+ }
+}
