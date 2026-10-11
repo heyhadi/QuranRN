@@ -1,259 +1,236 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { getSurahDetail, getTafsDetail } from "../../services/quranService"; // Path to your API service
-import { Audio } from "expo-av";
-import AyahCard from "@/components/AyahCard"; // Path to your AyahCard component
-import { useNavigation } from "@react-navigation/native";
-import useBookmarkStore from "@/store/store"; // Import the Zustand store
+import { Stack, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View, type ViewToken } from "react-native";
+import { Button, Modal, Text as PaperText, Portal } from "react-native-paper";
 import Toast from "react-native-toast-message";
-import { useSetAyahIndexStore } from "@/store/store";
+import AyahCard from "@/components/AyahCard";
+import { useSurahDetail, useTafsir } from "@/services/queries";
+import type { Ayah } from "@/services/types";
+import { usePlayingAyah, useAudioPlayerStore, type Track } from "@/store/audioPlayer";
+import { bookmarkKey, useBookmarksStore } from "@/store/bookmarks";
+import { useReadingProgressStore } from "@/store/readingProgress";
+import { useSettingsStore } from "@/store/settings";
 
-import { Portal, Modal, Text as PaperText } from "react-native-paper";
+const SCROLL_RETRY_LIMIT = 3;
+const VIEWABILITY_CONFIG = { itemVisiblePercentThreshold: 50 };
 
-interface SurahDetail {
-    nomorAyat: number;
-    teksArab: string;
-    teksIndonesia: string;
-    audio: string;
-    isBookmarked: boolean;
-    namaSurah: string;
-    nomorSurah: number;
+function parsePositiveInt(value: string | string[] | undefined): number | null {
+    const raw = Array.isArray(value) ? value[0] : value;
+    const parsed = Number(raw);
+    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
 }
 
 export default function Surah() {
-    const route = useRouter();
-    const navigation = useNavigation();
-    const { id } = useLocalSearchParams();
-    const [surah, setSurah] = useState<SurahDetail[]>([]); // Corrected type
-    const [isLoading, setIsLoading] = useState(true);
-    const [sound, setSound] = useState<Audio.Sound | null>(null);
-    const [currentAyahIndex, setCurrentAyahIndex] = useState<number | null>(null);
-    const flatListRef = useRef<FlatList<SurahDetail>>(null); // Corrected type
-    const { bookmarks, addBookmark, removeBookmark } = useBookmarkStore(); // Access Zustand store
-    const { currentIndex, setCurrentIndex } = useSetAyahIndexStore(); // Access and update currentIndex
-    const [tafsirData, setTafsirData] = useState<any | null>(null);
-    const [currentTafsir, setCurrentTafsir] = useState<any>(null);
+    const params = useLocalSearchParams<{ id: string; ayah?: string }>();
+    const surahNumber = parsePositiveInt(params.id) ?? 0;
+    const targetAyah = parsePositiveInt(params.ayah);
+
+    // Surah and tafsir load in parallel; a tafsir failure only affects the tafsir sheet.
+    const surahQuery = useSurahDetail(surahNumber);
+    const tafsirQuery = useTafsir(surahNumber);
+    const surah = surahQuery.data;
+    const ayahs = useMemo(() => surah?.ayahs ?? [], [surah]);
+
+    const bookmarks = useBookmarksStore((state) => state.bookmarks);
+    const toggleBookmark = useBookmarksStore((state) => state.toggleBookmark);
+    const reciterId = useSettingsStore((state) => state.reciterId);
+    const playingAyah = usePlayingAyah(surahNumber);
+    const toggleAudio = useAudioPlayerStore((state) => state.toggle);
+    const stopAudio = useAudioPlayerStore((state) => state.stop);
+    const setLastRead = useReadingProgressStore((state) => state.setLastRead);
+
+    const [tafsirAyah, setTafsirAyah] = useState<number | null>(null);
+    const listRef = useRef<FlatList<Ayah>>(null);
+    const scrollRetries = useRef(0);
+
+    const queue: Track[] = useMemo(
+        () =>
+            ayahs.map((ayah) => ({
+                surahNumber: ayah.surahNumber,
+                ayahNumber: ayah.ayahNumber,
+                url: ayah.audio[reciterId] ?? Object.values(ayah.audio)[0],
+            })),
+        [ayahs, reciterId],
+    );
+
+    // ---- Scrolling: one helper for both "jump to ayah" and "follow the playing ayah". ----
+    const scrollToAyah = useCallback(
+        (ayahNumber: number) => {
+            const index = ayahNumber - 1;
+            if (index < 0 || index >= ayahs.length) return;
+            scrollRetries.current = 0;
+            listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.2 });
+        },
+        [ayahs.length],
+    );
+
+    // FlatList can't scroll to rows it hasn't measured yet: jump close by estimate, then retry.
+    const handleScrollToIndexFailed = useCallback(
+        (info: { index: number; averageItemLength: number }) => {
+            if (scrollRetries.current >= SCROLL_RETRY_LIMIT) return;
+            scrollRetries.current += 1;
+            listRef.current?.scrollToOffset({ offset: info.averageItemLength * info.index, animated: false });
+            setTimeout(() => listRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0.2 }), 100);
+        },
+        [],
+    );
 
     useEffect(() => {
-        const fetchSurah = async () => {
-            try {
-                const surahData = await getSurahDetail(parseInt(Array.isArray(id) ? id[0] : id));
-                const tafsirData = await getTafsDetail(parseInt(Array.isArray(id) ? id[0] : id));
+        if (targetAyah === null || ayahs.length === 0) return;
+        const timer = setTimeout(() => scrollToAyah(targetAyah), 50);
+        return () => clearTimeout(timer);
+    }, [targetAyah, ayahs.length, scrollToAyah]);
 
-                if (surahData && surahData.data && surahData.data.ayat) {
-                    const transformedData = surahData.data.ayat.map((item: any, index: number) => ({
-                        nomorAyat: item.no || index + 1, // Provide a fallback if no exists
-                        teksArab: item.teksArab,
-                        teksIndonesia: item.teksIndonesia,
-                        audio: item.audio["01"],
-                        isBookmarked: bookmarks.some((bookmark) => bookmark.nomorAyat === item.no || bookmark.nomorAyat === index + 1), // Check if ayah is bookmarked
-                        namaSurah: surahData.data.namaLatin,
-                        nomorSurah: surahData.data.nomor,
-                    }));
-                    setSurah(transformedData);
-                    setTafsirData(tafsirData.data.tafsir);
-                    navigation.setOptions({
-                        title: surahData.data.namaLatin,
-                        headerStyle: { backgroundColor: "green" },
-                        headerTintColor: "white",
-                        headerTitleStyle: { color: "white" },
-                        headerBackTitleVisible: false,
-                        headerBackTitle: "Go Back",
-                    });
+    useEffect(() => {
+        if (playingAyah !== null) scrollToAyah(playingAyah);
+    }, [playingAyah, scrollToAyah]);
 
-                    // Handle initial scroll if currentIndex is set
-                    // Handle initial scroll if currentIndex is set
-                    if (currentIndex !== null && flatListRef.current) {
-                        // Use a slight delay to ensure FlatList is rendered before scrolling
-                        setTimeout(() => {
-                            flatListRef.current?.scrollToIndex({
-                                animated: true,
-                                index: currentIndex,
-                                viewOffset: 50,
-                                viewPosition: 0.5,
-                            });
-                        }, 100); // Adjust delay as needed
-                    }
-                } else {
-                    console.error("Invalid surah data:", surahData);
-                }
-            } catch (error) {
-                console.error("Error fetching surah:", error);
-            } finally {
-                setIsLoading(false);
+    // ---- Leaving the screen: stop audio and remember where the reader was. ----
+    const lastVisibleAyah = useRef<number | null>(null);
+    const surahNameRef = useRef<string | null>(null);
+    surahNameRef.current = surah?.nameLatin ?? null;
+
+    const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken<Ayah>[] }) => {
+        const first = viewableItems.find((token) => token.isViewable)?.item;
+        if (first) lastVisibleAyah.current = first.ayahNumber;
+    }).current;
+
+    useEffect(() => {
+        return () => {
+            stopAudio();
+            if (lastVisibleAyah.current !== null && surahNameRef.current) {
+                setLastRead({ surahNumber, ayahNumber: lastVisibleAyah.current, surahNameLatin: surahNameRef.current });
             }
         };
+    }, [surahNumber, stopAudio, setLastRead]);
 
-        fetchSurah();
-    }, [id, currentIndex]); // Include currentIndex in the dependency array
-
-    useEffect(() => {
-        if (currentIndex !== null && flatListRef.current) {
-            setTimeout(() => {
-                try {
-                    flatListRef.current?.scrollToIndex({
-                        animated: true,
-                        index: currentIndex,
-                        viewOffset: 50,
-                        viewPosition: 0.5,
-                    });
-                } catch (error) {
-                    console.warn("Invalid index for FlatList scroll:", currentIndex);
-                }
-            }, 100);
-        }
-    }, [currentIndex]);
-
-    useEffect(() => {
-        if (surah.length && currentIndex !== null && flatListRef.current) {
-            setTimeout(() => {
-                try {
-                    flatListRef.current?.scrollToIndex({
-                        animated: true,
-                        index: currentIndex - 1,
-                        viewOffset: 50,
-                        viewPosition: 0.5,
-                    });
-                } catch (error) {
-                    console.warn("Invalid index for FlatList scroll:", currentIndex);
-                }
-            }, 100);
-        }
-    }, [currentIndex, surah]);
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener("beforeRemove", () => {
-            setCurrentIndex(null); // Reset currentIndex when leaving the screen
-        });
-
-        return unsubscribe;
-    }, [navigation, setCurrentIndex]);
-
-    useEffect(() => {
-        if (currentAyahIndex !== null && flatListRef.current) {
-            // Scroll to the currently playing ayah
-            flatListRef.current.scrollToIndex({
-                animated: true,
-                index: currentAyahIndex,
-                viewOffset: 50, // Adjust this value as needed
-                viewPosition: 0.5,
+    const handleBookmarkPress = useCallback(
+        (ayah: Ayah) => {
+            if (!surah) return;
+            const nowBookmarked = toggleBookmark({
+                surahNumber: ayah.surahNumber,
+                ayahNumber: ayah.ayahNumber,
+                surahNameLatin: surah.nameLatin,
+                textArabic: ayah.textArabic,
             });
-        }
-    }, [currentAyahIndex]);
-
-    const playSound = async (index: number) => {
-        if (!surah || !surah.length || index < 0 || index >= surah.length) {
-            return;
-        }
-
-        const ayah = surah[index];
-        const audioUrl = ayah.audio;
-
-        if (sound && currentAyahIndex === index) {
-            sound.unloadAsync();
-            setSound(null);
-            setCurrentAyahIndex(null);
-            return;
-        }
-
-        try {
-            if (sound) {
-                await sound.unloadAsync();
-            }
-
-            const { sound: newSound } = await Audio.Sound.createAsync({ uri: audioUrl });
-            setSound(newSound);
-            setCurrentAyahIndex(index);
-            await newSound.playAsync();
-
-            newSound.setOnPlaybackStatusUpdate(async (status) => {
-                if (status.isLoaded && status.didJustFinish) {
-                    const nextIndex = index + 1;
-                    if (nextIndex < surah.length) {
-                        await newSound.unloadAsync();
-                        playSound(nextIndex);
-                    } else {
-                        setSound(null);
-                        setCurrentAyahIndex(null);
-                    }
-                }
+            Toast.show({
+                text1: nowBookmarked ? "Bookmark added" : "Bookmark removed",
+                text2: `Surah ${surah.nameLatin}, Ayah ${ayah.ayahNumber}`,
+                type: nowBookmarked ? "success" : "info",
+                position: "top",
             });
-        } catch (error) {
-            console.error("Error playing sound:", error);
-        }
-    };
+        },
+        [surah, toggleBookmark],
+    );
 
-    if (isLoading) {
+    const tafsirText = tafsirAyah === null ? undefined : tafsirQuery.data?.find((entry) => entry.ayahNumber === tafsirAyah)?.text;
+
+    if (surahQuery.isPending) {
         return (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <View style={styles.centered}>
+                <Stack.Screen options={{ title: "" }} />
                 <ActivityIndicator size="large" color="green" />
             </View>
         );
     }
 
-    if (!surah) {
-        return <Text>Error loading Surah.</Text>;
+    if (surahQuery.isError || !surah) {
+        return (
+            <View style={styles.centered}>
+                <Stack.Screen options={{ title: "" }} />
+                <Text style={styles.message}>Couldn't load this Surah. Check your connection and try again.</Text>
+                <Button mode="contained" buttonColor="green" onPress={() => surahQuery.refetch()}>
+                    Try again
+                </Button>
+            </View>
+        );
     }
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.container}>
+            <Stack.Screen options={{ title: surah.nameLatin }} />
             <FlatList
-                data={surah}
-                ref={flatListRef} // Add the ref
-                keyExtractor={(item, index) => index.toString()}
+                ref={listRef}
+                data={ayahs}
+                extraData={{ bookmarks, playingAyah }}
+                keyExtractor={(item) => bookmarkKey(item.surahNumber, item.ayahNumber)}
+                onScrollToIndexFailed={handleScrollToIndexFailed}
+                onViewableItemsChanged={onViewableItemsChanged}
+                viewabilityConfig={VIEWABILITY_CONFIG}
+                contentContainerStyle={styles.listContent}
                 renderItem={({ item, index }) => (
                     <AyahCard
-                        nomorAyat={item.nomorAyat}
-                        teksArab={item.teksArab}
-                        teksIndonesia={item.teksIndonesia}
-                        isBookmarked={item.isBookmarked} // Pass isBookmarked prop
-                        onPlay={() => playSound(index)}
-                        isPlaying={currentAyahIndex === index}
-                        onBookmarkPress={() => {
-                            if (item.isBookmarked) {
-                                removeBookmark({ nomorAyat: item.nomorAyat, teksArab: item.teksArab, namaSurah: item.namaSurah, nomorSurah: item.nomorSurah });
-                                Toast.show({
-                                    text1: "Bookmark removed",
-                                    text2: `Surah ${item.namaSurah}, Ayat  ${item.nomorAyat}`,
-                                    type: "error", // Use 'error' for better consistency
-                                    position: "top",
-                                });
-                            } else {
-                                addBookmark(item);
-                                Toast.show({
-                                    text1: "Bookmark added",
-                                    text2: `Surah ${item.namaSurah}, Ayat  ${item.nomorAyat}`,
-                                    type: "success",
-                                    position: "top",
-                                });
-                            }
-                        }}
-                        onTafsirPress={() => {
-                            // Handle tafsir press triger modal
-                            setCurrentTafsir(tafsirData[item.nomorAyat - 1].teks);
-                        }}
+                        nomorAyat={item.ayahNumber}
+                        teksArab={item.textArabic}
+                        teksIndonesia={item.translation}
+                        isBookmarked={bookmarkKey(item.surahNumber, item.ayahNumber) in bookmarks}
+                        isPlaying={playingAyah === item.ayahNumber}
+                        onPlay={() => toggleAudio(queue, index)}
+                        onBookmarkPress={() => handleBookmarkPress(item)}
+                        onTafsirPress={() => setTafsirAyah(item.ayahNumber)}
                     />
                 )}
             />
-            <Toast />
             <Portal>
-                <Modal
-                    visible={currentTafsir}
-                    onDismiss={() => setCurrentTafsir(null)}
-                    contentContainerStyle={{
-                        width: "80%",
-                        backgroundColor: "white",
-                        borderRadius: 8,
-                        padding: 20,
-                        alignSelf: "center",
-                    }}
-                >
-                    <View style={{ padding: 20, backgroundColor: "white", borderRadius: 8 }}>
-                        <PaperText>{currentTafsir}</PaperText>
-                    </View>
+                <Modal visible={tafsirAyah !== null} onDismiss={() => setTafsirAyah(null)} contentContainerStyle={styles.modal}>
+                    <PaperText variant="titleMedium" style={styles.modalTitle}>
+                        Tafsir · {surah.nameLatin} {tafsirAyah}
+                    </PaperText>
+                    {tafsirQuery.isPending ? (
+                        <ActivityIndicator color="green" />
+                    ) : tafsirText ? (
+                        <ScrollView>
+                            <PaperText style={styles.tafsirText}>{tafsirText}</PaperText>
+                        </ScrollView>
+                    ) : (
+                        <View style={styles.tafsirError}>
+                            <PaperText>Couldn't load the tafsir for this ayah.</PaperText>
+                            <Button onPress={() => tafsirQuery.refetch()} textColor="green">
+                                Try again
+                            </Button>
+                        </View>
+                    )}
                 </Modal>
             </Portal>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    listContent: {
+        padding: 12,
+    },
+    centered: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 24,
+        gap: 16,
+    },
+    message: {
+        fontSize: 16,
+        textAlign: "center",
+    },
+    modal: {
+        width: "88%",
+        maxHeight: "80%",
+        backgroundColor: "white",
+        borderRadius: 12,
+        padding: 20,
+        alignSelf: "center",
+        gap: 12,
+    },
+    modalTitle: {
+        fontWeight: "bold",
+    },
+    tafsirText: {
+        lineHeight: 22,
+    },
+    tafsirError: {
+        gap: 8,
+        alignItems: "flex-start",
+    },
+});

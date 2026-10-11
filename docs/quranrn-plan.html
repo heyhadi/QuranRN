@@ -1,0 +1,934 @@
+<title>Wird Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=IBM+Plex+Mono:wght@400;500&family=Reem+Kufi:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column for the plan, a wrapping gallery of phone mockups in the middle.
+   The page and the mockups share one token set: the page IS the app's design system. */
+:root {
+  --paper: #F4F7F4;        /* page ground, faint green bias */
+  --surface: #FFFFFF;      /* cards, phone screens */
+  --surface-2: #E9EFEB;    /* wells, chips, inactive */
+  --ink: #142520;          /* primary text */
+  --ink-2: #4E625B;        /* secondary text */
+  --line: #D3DDD7;         /* hairlines */
+  --mushaf: #0F5A46;       /* primary: deep mushaf green */
+  --mushaf-soft: #DCEDE5;  /* primary tint */
+  --brass: #A67A2C;        /* accent: brass, used sparingly (ayah markers, streaks) */
+  --brass-soft: #F3E8D3;
+  --on-mushaf: #FFFFFF;
+  --frame: #1B2622;        /* phone bezel */
+  --ok: #2E7D4F; --warn: #B7791F; --crit: #B42318;
+
+  /* tajweed (quran.com convention, tuned for contrast on light) */
+  --tj-silent: #8E9894;
+  --tj-madd-normal: #3D6BF0;
+  --tj-madd-permissible: #3442E0;
+  --tj-madd-obligatory: #1F3BB0;
+  --tj-madd-necessary: #0A1690;
+  --tj-qalqalah: #CC1016;
+  --tj-ikhfa: #8E1AA3;
+  --tj-ikhfa-shafawi: #C0169F;
+  --tj-ghunnah: #D9650A;
+  --tj-iqlab: #0E8CC4;
+  --tj-idgham-ghunnah: #127C62;
+  --tj-idgham-wo: #2C8A12;
+  --tj-idgham-shafawi: #4F9A00;
+
+  --f-display: "Reem Kufi", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --f-quran: "Amiri Quran", "Amiri", "Traditional Arabic", "Geeza Pro", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0B1310; --surface: #121D19; --surface-2: #1A2823; --ink: #E3ECE8; --ink-2: #9DB0A8;
+    --line: #26362F; --mushaf: #4FBF98; --mushaf-soft: #173A2F; --brass: #D6AE62; --brass-soft: #3A2F1A;
+    --on-mushaf: #06231A; --frame: #000000; --ok: #5CC88A; --warn: #E2AE52; --crit: #F07067;
+    --tj-silent: #7D8A85; --tj-madd-normal: #86A6FF; --tj-madd-permissible: #9AA2FF; --tj-madd-obligatory: #7C95FF;
+    --tj-madd-necessary: #6F7CFF; --tj-qalqalah: #FF6268; --tj-ikhfa: #D57AE8; --tj-ikhfa-shafawi: #F075D2;
+    --tj-ghunnah: #FFA25A; --tj-iqlab: #4CC3F5; --tj-idgham-ghunnah: #45C9A6; --tj-idgham-wo: #6AD255; --tj-idgham-shafawi: #A3E04A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0B1310; --surface: #121D19; --surface-2: #1A2823; --ink: #E3ECE8; --ink-2: #9DB0A8;
+  --line: #26362F; --mushaf: #4FBF98; --mushaf-soft: #173A2F; --brass: #D6AE62; --brass-soft: #3A2F1A;
+  --on-mushaf: #06231A; --frame: #000000; --ok: #5CC88A; --warn: #E2AE52; --crit: #F07067;
+  --tj-silent: #7D8A85; --tj-madd-normal: #86A6FF; --tj-madd-permissible: #9AA2FF; --tj-madd-obligatory: #7C95FF;
+  --tj-madd-necessary: #6F7CFF; --tj-qalqalah: #FF6268; --tj-ikhfa: #D57AE8; --tj-ikhfa-shafawi: #F075D2;
+  --tj-ghunnah: #FFA25A; --tj-iqlab: #4CC3F5; --tj-idgham-ghunnah: #45C9A6; --tj-idgham-wo: #6AD255; --tj-idgham-shafawi: #A3E04A;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.55;
+  padding-inline: 16px; padding-block: 0 64px;
+}
+.wrap { max-width: 1120px; margin-inline: auto; }
+.prose { max-width: 68ch; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.5rem, 3vw, 1.9rem); font-weight: 600; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--mushaf); }
+:focus-visible { outline: 2px solid var(--mushaf); outline-offset: 2px; border-radius: 4px; }
+.eyebrow { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.muted { color: var(--ink-2); }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+code { background: var(--surface-2); padding: 0.05em 0.35em; border-radius: 4px; }
+
+/* nav */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); margin-inline: -16px; padding: 10px 16px; }
+.nav .wrap { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.brand { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; }
+.brand-mark { width: 22px; height: 22px; }
+.nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav-links a { color: var(--ink-2); text-decoration: none; font-size: 0.92rem; padding: 4px 10px; border-radius: 999px; }
+.nav-links a:hover { background: var(--surface-2); color: var(--ink); }
+
+section { padding-block: 56px 8px; scroll-margin-top: 64px; }
+.sec-head { display: grid; gap: 8px; margin-bottom: 24px; }
+
+/* hero */
+.hero { padding-block: 48px 8px; display: grid; gap: 20px; }
+.hero .lede { font-size: 1.15rem; color: var(--ink-2); max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 0.95rem; }
+.facts div { display: flex; gap: 6px; align-items: baseline; }
+.facts b { font-family: var(--f-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+.arabic-hero { font-family: var(--f-quran); font-size: clamp(1.6rem, 4vw, 2.2rem); color: var(--mushaf); direction: rtl; line-height: 1.9; }
+
+/* design system */
+.ds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+.swatch { display: grid; gap: 6px; font-size: 0.82rem; }
+.swatch i { display: block; height: 44px; border-radius: 8px; border: 1px solid var(--line); }
+.swatch span { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-2); }
+.type-row { display: grid; gap: 2px; padding-block: 8px; border-bottom: 1px solid var(--line); }
+.type-row:last-child { border-bottom: 0; }
+.legend { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px 16px; }
+.legend button { all: unset; cursor: pointer; display: grid; grid-template-columns: 14px 1fr; gap: 2px 10px; align-items: center; padding: 6px 8px; border-radius: 8px; }
+.legend button:hover, .legend button[aria-pressed="true"] { background: var(--surface-2); }
+.legend button:focus-visible { outline: 2px solid var(--mushaf); }
+.legend .dot { width: 12px; height: 12px; border-radius: 50%; }
+.legend .nm { font-weight: 600; font-size: 0.92rem; }
+.legend .ar { grid-column: 2; font-size: 0.8rem; color: var(--ink-2); }
+.rule-note { font-size: 0.92rem; background: var(--surface-2); border-radius: 10px; padding: 12px 14px; min-height: 3.2em; }
+
+/* controls */
+.controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-bottom: 20px; }
+.seg { display: inline-flex; background: var(--surface-2); border-radius: 999px; padding: 3px; gap: 2px; }
+.seg button { all: unset; cursor: pointer; padding: 5px 14px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgb(0 0 0 / 0.12); }
+.seg button:focus-visible { outline: 2px solid var(--mushaf); }
+.ctl-label { font-size: 0.85rem; color: var(--ink-2); margin-right: 6px; }
+
+/* gallery of phones */
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 40px 28px; justify-items: center; }
+figure { margin: 0; display: grid; gap: 12px; justify-items: center; width: 100%; max-width: 312px; }
+figcaption { width: 100%; display: grid; gap: 2px; font-size: 0.92rem; }
+figcaption b { font-family: var(--f-display); font-weight: 600; font-size: 1rem; }
+.phase-tag { font-family: var(--f-mono); font-size: 0.72rem; color: var(--brass); letter-spacing: 0.04em; }
+
+.phone { width: 100%; max-width: 300px; aspect-ratio: 300 / 620; background: var(--frame); border-radius: 40px; padding: 10px; box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.45); }
+.screen { position: relative; height: 100%; border-radius: 31px; overflow: hidden; background: var(--paper); display: flex; flex-direction: column; font-size: 13px; line-height: 1.4; }
+.sbar { display: flex; justify-content: space-between; padding: 10px 22px 4px; font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; flex: none; }
+.sbar .notch { width: 72px; height: 20px; background: var(--frame); border-radius: 12px; margin-top: -4px; }
+.scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 6px 14px 12px; display: grid; gap: 10px; align-content: start; scrollbar-width: none; }
+.scroll::-webkit-scrollbar { display: none; }
+.apphead { display: flex; align-items: center; gap: 10px; padding: 4px 14px 8px; flex: none; }
+.apphead .t { flex: 1; min-width: 0; }
+.apphead .t b { display: block; font-family: var(--f-display); font-size: 15px; font-weight: 600; }
+.apphead .t span { font-size: 11px; color: var(--ink-2); }
+.ib { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--ink); flex: none; border: 0; cursor: pointer; padding: 0; }
+.ib svg { width: 16px; height: 16px; }
+.card { background: var(--surface); border-radius: 14px; padding: 12px; display: grid; gap: 6px; border: 1px solid var(--line); }
+.card.hero-card { background: var(--mushaf); color: var(--on-mushaf); border: 0; }
+.card.hero-card .sub { opacity: 0.85; font-size: 11.5px; }
+.bar { height: 5px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.hero-card .bar { background: color-mix(in srgb, var(--on-mushaf) 25%, transparent); }
+.bar i { display: block; height: 100%; background: var(--brass); border-radius: 99px; }
+.hero-card .bar i { background: var(--on-mushaf); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.k { font-size: 10.5px; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+.v { font-family: var(--f-display); font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tabs { display: flex; gap: 4px; background: var(--surface-2); border-radius: 10px; padding: 3px; }
+.tabs span, .tabs button { all: unset; flex: 1; text-align: center; padding: 5px 0; border-radius: 8px; font-weight: 600; font-size: 12px; color: var(--ink-2); cursor: pointer; }
+.tabs .on { background: var(--surface); color: var(--ink); }
+.list { display: grid; }
+.li { display: flex; align-items: center; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--line); }
+.li:last-child { border-bottom: 0; }
+.num { width: 30px; height: 30px; flex: none; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: var(--mushaf); position: relative; font-variant-numeric: tabular-nums; }
+.num::before { content: ""; position: absolute; inset: 3px; border: 1.5px solid var(--brass); transform: rotate(45deg); border-radius: 4px; }
+.num::after { content: ""; position: absolute; inset: 3px; border: 1.5px solid var(--brass); border-radius: 4px; }
+.li .t { flex: 1; min-width: 0; }
+.li .t b { display: block; font-size: 13px; }
+.li .t span { font-size: 11px; color: var(--ink-2); }
+.li .ar { font-family: var(--f-quran); font-size: 17px; color: var(--mushaf); }
+.tabbar { flex: none; display: flex; justify-content: space-around; padding: 8px 6px 14px; border-top: 1px solid var(--line); background: var(--surface); }
+.tabbar span { display: grid; justify-items: center; gap: 2px; font-size: 9.5px; color: var(--ink-2); font-weight: 600; }
+.tabbar span.on { color: var(--mushaf); }
+.tabbar svg { width: 18px; height: 18px; }
+
+/* reader */
+.bism { font-family: var(--f-quran); font-size: 20px; text-align: center; color: var(--ink); padding-block: 4px 2px; direction: rtl; }
+.ayah { padding: 10px 10px; border-radius: 12px; display: grid; gap: 6px; }
+.ayah.on { background: var(--mushaf-soft); }
+.ayah .q { font-family: var(--f-quran); font-size: 21px; line-height: 2.05; direction: rtl; text-align: right; }
+.ayah .tl { font-style: italic; color: var(--ink-2); font-size: 12px; }
+.ayah .tr { font-size: 12.5px; }
+.ayah .src { font-size: 10px; color: var(--ink-2); font-family: var(--f-mono); }
+/* Ayah end marker: a small eight-point star (two squares), same shape as the Surah numbers on Home.
+   Drawn in CSS rather than the ۝ glyph, which Amiri Quran renders much larger than the text. */
+.mk { display: inline-grid; place-items: center; width: 22px; height: 22px; position: relative; vertical-align: middle; margin-inline: 4px 2px; }
+.mk::before, .mk::after { content: ""; position: absolute; inset: 4px; border: 1.25px solid var(--brass); border-radius: 2px; }
+.mk::before { transform: rotate(45deg); }
+.mk span { position: relative; font-family: var(--f-body); font-size: 10px; font-weight: 700; line-height: 1; color: var(--brass); font-variant-numeric: tabular-nums; }
+.tj { cursor: pointer; border-radius: 3px; }
+.tj:hover { background: var(--surface-2); }
+.notj .tj { color: inherit !important; cursor: text; }
+.notj .tj:hover { background: none; }
+.r-silent { color: var(--tj-silent); } .r-madda_normal { color: var(--tj-madd-normal); } .r-madda_permissible { color: var(--tj-madd-permissible); }
+.r-madda_obligatory { color: var(--tj-madd-obligatory); } .r-madda_necessary { color: var(--tj-madd-necessary); } .r-qalaqah { color: var(--tj-qalqalah); }
+.r-ikhafa { color: var(--tj-ikhfa); } .r-ikhafa_shafawi { color: var(--tj-ikhfa-shafawi); } .r-ghunnah { color: var(--tj-ghunnah); }
+.r-iqlab { color: var(--tj-iqlab); } .r-idgham_ghunnah { color: var(--tj-idgham-ghunnah); } .r-idgham_wo_ghunnah { color: var(--tj-idgham-wo); }
+.r-idgham_shafawi { color: var(--tj-idgham-shafawi); }
+.popover { position: absolute; left: 12px; right: 12px; bottom: 82px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; box-shadow: 0 10px 28px -10px rgb(0 0 0 / 0.35); display: grid; gap: 4px; font-size: 12px; z-index: 3; }
+.popover .h { display: flex; gap: 8px; align-items: center; font-weight: 700; font-size: 13px; }
+.popover .h i { width: 10px; height: 10px; border-radius: 50%; }
+.popover .x { margin-left: auto; font-size: 16px; line-height: 1; color: var(--ink-2); cursor: pointer; border: 0; background: none; padding: 2px 4px; }
+.player { flex: none; margin: 0 10px 12px; background: var(--ink); color: var(--paper); border-radius: 16px; padding: 8px 10px; display: flex; align-items: center; gap: 10px; }
+.player .rtile { width: 36px; height: 36px; border-radius: 10px; font-size: 9px; background: var(--brass); color: var(--ink); }
+.player .t { flex: 1; min-width: 0; font-size: 11.5px; }
+.player .t b { display: block; font-size: 12px; }
+.player .t span { opacity: 0.7; }
+.player .pb { width: 32px; height: 32px; border-radius: 50%; background: var(--paper); color: var(--ink); display: grid; place-items: center; border: 0; cursor: pointer; padding: 0; }
+.player .pb svg { width: 14px; height: 14px; }
+.player .rep { font-family: var(--f-mono); font-size: 10px; opacity: 0.75; }
+
+/* sheet */
+.dim { position: absolute; inset: 0; background: rgb(0 0 0 / 0.38); z-index: 2; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; background: var(--surface); border-radius: 22px 22px 0 0; padding: 8px 14px 16px; display: grid; gap: 10px; max-height: 76%; overflow-y: auto; scrollbar-width: none; }
+.grab { width: 36px; height: 4px; border-radius: 99px; background: var(--line); justify-self: center; }
+.words { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; direction: rtl; }
+.word { direction: ltr; background: var(--surface-2); border-radius: 12px; padding: 8px 10px; display: grid; gap: 2px; text-align: center; }
+.word .a { font-family: var(--f-quran); font-size: 20px; color: var(--mushaf); line-height: 1.8; }
+.word .tl { font-style: italic; font-size: 11px; color: var(--ink-2); }
+.word .g { font-size: 12px; font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 11px; padding: 4px 9px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); font-weight: 600; border: 0; cursor: pointer; font-family: var(--f-body); }
+.chip.on { background: var(--mushaf); color: var(--on-mushaf); }
+.chip.style { background: var(--brass-soft); color: var(--brass); cursor: default; }
+.skel { display: grid; gap: 7px; }
+.skel i { display: block; height: 8px; border-radius: 4px; background: var(--surface-2); }
+.footnote { font-size: 10.5px; color: var(--ink-2); }
+
+/* reciter */
+.rc { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 12px; }
+.rc.on { background: var(--mushaf-soft); }
+/* Reciter tile: Arabic family name in Kufi over a faint eight-point star, same star as the ayah markers. */
+.rtile { position: relative; flex: none; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; overflow: hidden;
+  background: var(--surface-2); color: var(--mushaf); font-family: var(--f-display); font-weight: 600; font-size: 11px; line-height: 1; direction: rtl; }
+.rtile::before, .rtile::after { content: ""; position: absolute; inset: 7px; border: 1px solid currentColor; opacity: 0.16; border-radius: 3px; }
+.rtile::after { transform: rotate(45deg); }
+.rtile span { position: relative; padding-inline: 3px; text-align: center; }
+.rtile .en { position: absolute; bottom: 3px; left: 3px; font-family: var(--f-mono); font-size: 7.5px; font-weight: 500; direction: ltr; background: var(--brass); color: var(--surface); padding: 1px 3px; border-radius: 3px; }
+.rc.on .rtile { background: var(--mushaf); color: var(--on-mushaf); }
+.rc .t { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.rc .t b { font-size: 12.5px; }
+.rc .meta { font-size: 11px; color: var(--ink-2); }
+.rc .play { width: 26px; height: 26px; border-radius: 50%; border: 0; display: grid; place-items: center; color: var(--ink-2); background: none; cursor: pointer; padding: 0; }
+.rc .play:hover { background: var(--surface-2); color: var(--ink); }
+.rc .play svg { width: 11px; height: 11px; }
+.search { background: var(--surface-2); border-radius: 10px; padding: 8px 10px; color: var(--ink-2); font-size: 12px; display: flex; gap: 6px; align-items: center; }
+.search svg { width: 13px; height: 13px; }
+.grp { font-size: 10.5px; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700; padding: 4px 2px 0; }
+
+/* hifz */
+.hz { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.hz .q { flex: 1; font-family: var(--f-quran); font-size: 20px; direction: rtl; text-align: right; line-height: 2; transition: filter .2s; }
+.hz.hidden .q { filter: blur(7px); user-select: none; }
+.hz .st { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--line); flex: none; display: grid; place-items: center; font-size: 10px; color: var(--on-mushaf); }
+.hz .st.done { background: var(--mushaf); border-color: var(--mushaf); }
+.reps { display: flex; gap: 5px; justify-content: center; }
+.reps i { width: 22px; height: 6px; border-radius: 99px; background: var(--surface-2); }
+.reps i.on { background: var(--brass); }
+.btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn { border: 0; border-radius: 12px; padding: 10px; font-weight: 700; font-size: 12.5px; cursor: pointer; font-family: var(--f-body); }
+.btn.p { background: var(--mushaf); color: var(--on-mushaf); }
+.btn.s { background: var(--surface-2); color: var(--ink); }
+
+/* prayer */
+.pr { display: flex; justify-content: space-between; padding: 8px 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.pr:last-child { border-bottom: 0; }
+.pr.next { color: var(--mushaf); font-weight: 700; }
+.pr .tm { font-family: var(--f-mono); font-size: 12px; }
+.compass { width: 74px; height: 74px; border-radius: 50%; border: 2px solid var(--line); position: relative; flex: none; display: grid; place-items: center; }
+.compass .needle { position: absolute; width: 3px; height: 30px; background: var(--brass); top: 6px; left: calc(50% - 1.5px); transform-origin: 50% 31px; transform: rotate(-67deg); border-radius: 2px; }
+.compass .n { position: absolute; top: 2px; font-size: 9px; font-weight: 700; color: var(--ink-2); }
+.compass .c { width: 7px; height: 7px; background: var(--ink); border-radius: 50%; }
+.tasbih { display: flex; align-items: center; gap: 12px; }
+.tasbih button { width: 64px; height: 64px; border-radius: 50%; border: 0; background: var(--mushaf); color: var(--on-mushaf); font-family: var(--f-display); font-size: 20px; font-weight: 700; cursor: pointer; font-variant-numeric: tabular-nums; flex: none; }
+.sample { font-family: var(--f-mono); font-size: 9.5px; color: var(--warn); letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* roadmap */
+.phases { display: grid; gap: 14px; }
+.phase { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.phase > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto 1fr auto; gap: 4px 14px; align-items: center; padding: 16px 18px; }
+.phase > summary::-webkit-details-marker { display: none; }
+.phase .pn { font-family: var(--f-display); font-size: 1.6rem; font-weight: 700; color: var(--brass); width: 34px; text-align: center; grid-row: span 2; }
+.phase .pt { font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; }
+.phase .pd { font-size: 0.9rem; color: var(--ink-2); grid-column: 2; }
+.phase .pc { font-family: var(--f-mono); font-size: 0.8rem; color: var(--ink-2); grid-row: span 2; grid-column: 3; font-variant-numeric: tabular-nums; text-align: right; }
+.phase .pc .bar { width: 72px; margin-top: 6px; }
+.phase ul { list-style: none; margin: 0; padding: 0 18px 16px 66px; display: grid; gap: 6px; }
+.phase li label { display: grid; grid-template-columns: 18px 1fr; gap: 10px; align-items: start; cursor: pointer; font-size: 0.95rem; }
+.phase li input { margin: 4px 0 0; accent-color: var(--mushaf); width: 15px; height: 15px; }
+.phase li input:checked + span { color: var(--ink-2); text-decoration: line-through; text-decoration-color: var(--line); }
+.phase li .tag { font-family: var(--f-mono); font-size: 0.7rem; padding: 1px 6px; border-radius: 4px; margin-left: 6px; vertical-align: 1px; white-space: nowrap; }
+.tag.bug { background: color-mix(in srgb, var(--crit) 14%, transparent); color: var(--crit); }
+.tag.dev { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
+.tag.stretch { background: var(--surface-2); color: var(--ink-2); }
+@media (max-width: 520px) { .phase ul { padding-left: 18px; } .phase .pc { display: none; } .phase > summary { grid-template-columns: auto 1fr; } }
+
+/* tables */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; min-width: 560px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2); font-weight: 600; background: var(--surface-2); }
+td .mono { color: var(--ink-2); }
+
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.note { border-left: 3px solid var(--brass); padding: 4px 0 4px 14px; display: grid; gap: 4px; }
+.note b { font-family: var(--f-display); font-weight: 600; }
+footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 0.85rem; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+</style>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="var(--brass)" stroke-width="1.8"/><rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="var(--brass)" stroke-width="1.8" transform="rotate(45 12 12)"/><circle cx="12" cy="12" r="2.4" fill="var(--mushaf)"/></svg>
+      Wird
+    </a>
+    <div class="nav-links">
+      <a href="#design">Design</a><a href="#screens">Screens</a><a href="#roadmap">Roadmap</a><a href="#data">Data</a><a href="#reciters">Reciters</a><a href="#decisions">Decisions</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap" id="top">
+  <header class="hero">
+    <span class="eyebrow">Plan and redesign · October 2026</span>
+    <h1>Wird Roadmap</h1>
+    <p class="arabic-hero" lang="ar">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
+    <p class="lede">A <i>wird</i> is the portion of Quran you keep up every day. This plan turns MyQuranApp from a working prototype into a bilingual daily Quran companion: a reader with tajweed colouring, tafsir and word-by-word meaning, 25+ reciters, hifz practice, a khatam planner and worship tools, in Indonesian and English.</p>
+    <div class="facts">
+      <div><span class="muted">Today</span> <b>4 screens · ~1,200 lines</b></div>
+      <div><span class="muted">Bugs found</span> <b>7</b></div>
+      <div><span class="muted">Phases</span> <b>7</b></div>
+      <div><span class="muted">Stack</span> <b>Expo · expo-router · Zustand</b></div>
+    </div>
+  </header>
+
+  <!-- DESIGN -->
+  <section id="design">
+    <div class="sec-head">
+      <span class="eyebrow">Design system</span>
+      <h2>Mushaf green, brass and paper</h2>
+      <p class="prose muted">Today the app uses plain <code>"green"</code> and a few hex values scattered across files. The redesign uses one token set with light and dark values. Green carries the brand and the reading state. Brass is kept for things that mark place and progress: ayah markers, Surah numbers, streaks. This page uses the same tokens, so switching your system theme shows the app's dark mode.</p>
+    </div>
+    <div class="ds-grid">
+      <div class="panel">
+        <h3>Colour tokens</h3>
+        <div class="swatches">
+          <div class="swatch"><i style="background:var(--mushaf)"></i>Mushaf green<span>--mushaf</span></div>
+          <div class="swatch"><i style="background:var(--brass)"></i>Brass<span>--brass</span></div>
+          <div class="swatch"><i style="background:var(--paper)"></i>Paper<span>--paper</span></div>
+          <div class="swatch"><i style="background:var(--surface)"></i>Surface<span>--surface</span></div>
+          <div class="swatch"><i style="background:var(--mushaf-soft)"></i>Active ayah<span>--mushaf-soft</span></div>
+          <div class="swatch"><i style="background:var(--ink)"></i>Ink<span>--ink</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Type</h3>
+        <div class="type-row"><span style="font-family:var(--f-quran);font-size:1.6rem;direction:rtl;text-align:right;color:var(--mushaf)" lang="ar">قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ</span><span class="eyebrow">Amiri Quran · Quran text · user-adjustable 18–34pt</span></div>
+        <div class="type-row"><span style="font-family:var(--f-display);font-size:1.4rem;font-weight:600">Al-Falaq · Daybreak</span><span class="eyebrow">Reem Kufi · headings, Surah names</span></div>
+        <div class="type-row"><span>Say, I seek refuge in the Lord of daybreak.</span><span class="eyebrow">Source Sans 3 · translation, UI</span></div>
+      </div>
+      <div class="panel" style="grid-column: 1 / -1">
+        <h3>Tajweed colours</h3>
+        <p class="muted" style="font-size:0.92rem">Rule names come from quran.com's <code>text_uthmani_tajweed</code> markup (17 classes found in Al-Baqarah). Colours follow the quran.com convention, adjusted so each one reads on both light and dark backgrounds. Select a rule to read its explanation. The app shows the same text when you tap a coloured letter.</p>
+        <div class="legend" id="legend"></div>
+        <div class="rule-note" id="ruleNote" aria-live="polite">Select a rule to see its explanation.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREENS -->
+  <section id="screens">
+    <div class="sec-head">
+      <span class="eyebrow">Screens</span>
+      <h2>Six key screens</h2>
+      <p class="prose muted">These mockups are interactive: tap a coloured letter in the reader, switch tabs in the ayah sheet, pick a reciter, tap a hidden ayah in hifz mode, or press the tasbih. Quran text and tajweed markup are real (quran.com). Prayer times and progress figures are sample data.</p>
+    </div>
+    <div class="controls">
+      <div><span class="ctl-label">App language</span>
+        <span class="seg" role="group" aria-label="App language"><button id="langEn" aria-pressed="true">English</button><button id="langId" aria-pressed="false">Indonesia</button></span></div>
+      <div><span class="ctl-label">Tajweed</span>
+        <span class="seg" role="group" aria-label="Tajweed colouring"><button id="tjOn" aria-pressed="true">On</button><button id="tjOff" aria-pressed="false">Off</button></span></div>
+    </div>
+
+    <div class="gallery">
+      <!-- 1 HOME -->
+      <figure>
+        <div class="phone"><div class="screen">
+          <div class="sbar"><span>9:41</span><span class="notch"></span><span>5G</span></div>
+          <div class="apphead"><div class="t"><b data-i18n="greet">Assalamu'alaikum</b><span>28 Rabiʻ al-Akhir 1448</span></div><span class="ib" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span></div>
+          <div class="scroll">
+            <div class="card hero-card">
+              <span class="sub" data-i18n="continue">Continue reading</span>
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-family:var(--f-display);font-size:17px">Al-Kahf</b><span style="font-family:var(--f-quran);font-size:20px">الكهف</span></div>
+              <span class="sub"><span data-i18n="ayah">Ayah</span> 46 / 110 · Juz 15</span>
+              <div class="bar"><i style="width:42%"></i></div>
+            </div>
+            <div class="row2">
+              <div class="card"><span class="k" data-i18n="nextPrayer">Next prayer</span><span class="v">Asr 16:15</span><span class="k" style="text-transform:none;letter-spacing:0">in 1h 12m</span></div>
+              <div class="card"><span class="k" data-i18n="khatam">Khatam</span><span class="v"><span data-i18n="day">Day</span> 12/30</span><div class="bar"><i style="width:40%"></i></div></div>
+            </div>
+            <div class="tabs"><span class="on">Surah</span><span>Juz</span><span data-i18n="saved">Saved</span></div>
+            <div class="list">
+              <div class="li"><span class="num">1</span><div class="t"><b>Al-Fatihah</b><span><span data-i18n="n1">The Opening</span> · <span data-i18n="mec">Meccan</span> · 7</span></div><span class="ar">الفاتحة</span></div>
+              <div class="li"><span class="num">2</span><div class="t"><b>Al-Baqarah</b><span><span data-i18n="n2">The Cow</span> · <span data-i18n="med">Medinan</span> · 286</span></div><span class="ar">البقرة</span></div>
+              <div class="li"><span class="num">3</span><div class="t"><b>Ali 'Imran</b><span><span data-i18n="n3">Family of Imran</span> · <span data-i18n="med">Medinan</span> · 200</span></div><span class="ar">آل عمران</span></div>
+              <div class="li"><span class="num">4</span><div class="t"><b>An-Nisa'</b><span><span data-i18n="n4">The Women</span> · <span data-i18n="med">Medinan</span> · 176</span></div><span class="ar">النساء</span></div>
+              <div class="li"><span class="num">5</span><div class="t"><b>Al-Ma'idah</b><span><span data-i18n="n5">The Table Spread</span> · <span data-i18n="med">Medinan</span> · 120</span></div><span class="ar">المائدة</span></div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 21h14"/></svg><span data-i18n="tQuran">Quran</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg><span data-i18n="tHifz">Hifz</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 4-4 2 2-4z"/></svg><span data-i18n="tPrayer">Prayer</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span data-i18n="tSaved">Saved</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span data-i18n="tMore">More</span></span>
+          </div>
+        </div></div>
+        <figcaption><span class="phase-tag">PHASE 2 · 5 · 6</span><b>Home</b><span class="muted">Continue reading, next prayer and khatam progress above the Surah / Juz list. Bottom tabs replace today's Home / Qibla / Bookmark.</span></figcaption>
+      </figure>
+
+      <!-- 2 READER -->
+      <figure>
+        <div class="phone"><div class="screen" id="reader">
+          <div class="sbar"><span>9:41</span><span class="notch"></span><span>5G</span></div>
+          <div class="apphead">
+            <span class="ib" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></span>
+            <div class="t" style="text-align:center"><b>Al-Falaq</b><span><span data-i18n="daybreak">Daybreak</span> · 5 <span data-i18n="ayahs">ayahs</span> · Juz 30</span></div>
+            <span class="ib" aria-hidden="true" style="font-weight:700;font-size:12px">Aa</span>
+          </div>
+          <div class="scroll" id="readerBody">
+            <div class="bism" lang="ar">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+          </div>
+          <div class="player">
+            <span class="rtile" lang="ar"><span>العفاسي</span></span>
+            <div class="t"><b>Mishary Alafasy</b><span><span data-i18n="ayah">Ayah</span> 1 / 5 · Murattal</span></div>
+            <span class="rep">↻ 1×</span>
+            <button class="pb" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
+          </div>
+        </div></div>
+        <figcaption><span class="phase-tag">PHASE 3 · 4</span><b>Reader with tajweed</b><span class="muted">Tap a coloured letter to see its rule. The playing ayah is highlighted with its transliteration and translation. The mini-player keeps playing across screens.</span></figcaption>
+      </figure>
+
+      <!-- 3 AYAH SHEET -->
+      <figure>
+        <div class="phone"><div class="screen">
+          <div class="sbar"><span>9:41</span><span class="notch"></span><span>5G</span></div>
+          <div class="apphead"><span class="ib" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></span><div class="t" style="text-align:center"><b>Al-Fatihah</b><span data-i18n="n1">The Opening</span></div><span class="ib" aria-hidden="true"></span></div>
+          <div class="scroll"><div class="ayah"><div class="q" lang="ar">ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ <span class="mk"><span>٢</span></span></div></div></div>
+          <div class="dim"></div>
+          <div class="sheet">
+            <span class="grab"></span>
+            <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-family:var(--f-display);font-size:14px">Al-Fatihah 1:2</b><span class="chips"><span class="chip" data-i18n="copy">Copy</span><span class="chip" data-i18n="share">Share image</span></span></div>
+            <div class="tabs" role="tablist"><button class="on" data-sheet="words" data-i18n="words">Words</button><button data-sheet="tafsir">Tafsir</button><button data-sheet="notes" data-i18n="notes">Notes</button></div>
+            <div data-pane="words" class="words" id="words"></div>
+            <div data-pane="tafsir" hidden style="display:grid;gap:10px">
+              <div class="chips" id="tafsirChips"></div>
+              <div class="skel"><i style="width:96%"></i><i style="width:88%"></i><i style="width:93%"></i><i style="width:70%"></i><i style="width:90%"></i><i style="width:60%"></i></div>
+              <span class="footnote" id="tafsirSrc"></span>
+            </div>
+            <div data-pane="notes" hidden style="display:grid;gap:8px">
+              <div class="card" style="font-size:12px"><span class="k" data-i18n="yourNote">Your note · 3 Oct</span><span data-i18n="noteText">Read this before work every morning this week.</span></div>
+              <div class="chips"><span class="chip on" data-i18n="col1">Daily</span><span class="chip">Jumu'ah</span><span class="chip">+</span></div>
+            </div>
+          </div>
+        </div></div>
+        <figcaption><span class="phase-tag">PHASE 4</span><b>Ayah sheet</b><span class="muted">Word-by-word meaning with transliteration and per-word audio, a tafsir picker grouped by language, and notes with bookmark collections. Replaces today's tafsir modal.</span></figcaption>
+      </figure>
+
+      <!-- 4 RECITERS -->
+      <figure>
+        <div class="phone"><div class="screen">
+          <div class="sbar"><span>9:41</span><span class="notch"></span><span>5G</span></div>
+          <div class="apphead"><span class="ib" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></span><div class="t"><b data-i18n="reciters">Reciters</b><span>25 · <span data-i18n="perAyah">all per-ayah</span></span></div></div>
+          <div class="scroll" id="reciterList">
+            <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span data-i18n="searchR">Search reciters</span></div>
+            <div class="chips"><span class="chip on" data-i18n="all">All</span><span class="chip">Murattal</span><span class="chip">Mujawwad</span><span class="chip">Muallim</span><span class="chip" data-i18n="withEn">+ English</span></div>
+          </div>
+          <div class="card" style="margin:0 12px 14px;display:flex;flex-direction:row;align-items:center;justify-content:space-between;font-size:12px"><span data-i18n="quality">Audio quality</span><span class="seg" style="transform:scale(.85);transform-origin:right"><button aria-pressed="false" style="font-size:11px">Data saver</button><button aria-pressed="true" style="font-size:11px">High</button></span></div>
+        </div></div>
+        <figcaption><span class="phase-tag">PHASE 3</span><b>Reciter library</b><span class="muted">Favourites first, style chips, a short Al-Fatihah sample, and Basfar + Walk for listeners who want English audio. Switching reciter keeps your current ayah.</span></figcaption>
+      </figure>
+
+      <!-- 5 HIFZ -->
+      <figure>
+        <div class="phone"><div class="screen">
+          <div class="sbar"><span>9:41</span><span class="notch"></span><span>5G</span></div>
+          <div class="apphead"><span class="ib" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></span><div class="t"><b data-i18n="hifzT">Hifz · Al-Ikhlas</b><span><span id="hzCount">2</span> / 4 <span data-i18n="memorized">memorized</span> · Husary (Muallim)</span></div></div>
+          <div class="scroll" id="hifz">
+            <div class="card" style="gap:8px;text-align:center"><span class="k" data-i18n="repeat">Repeat ayah 3</span><div class="reps"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div><span style="font-size:11px" class="muted"><span data-i18n="repOf">3 of 5</span> · <span data-i18n="gap">2s gap</span></span></div>
+            <p class="muted" style="font-size:11px;text-align:center" data-i18n="tapReveal">Tap a hidden ayah to check yourself</p>
+          </div>
+          <div style="padding:0 12px 14px" class="btns"><button class="btn s" data-i18n="again">Again</button><button class="btn p" data-i18n="remember">I remember it</button></div>
+        </div></div>
+        <figcaption><span class="phase-tag">PHASE 5</span><b>Hifz mode</b><span class="muted">Repeat an ayah or range N times with a gap, hide the text to test yourself, and track what's memorized per Surah and Juz. It can use a separate reciter, such as the slow Muallim style.</span></figcaption>
+      </figure>
+
+      <!-- 6 PRAYER -->
+      <figure>
+        <div class="phone"><div class="screen">
+          <div class="sbar"><span>9:41</span><span class="notch"></span><span>5G</span></div>
+          <div class="apphead"><div class="t"><b data-i18n="today">Today</b><span>Singapore · <span class="sample" data-i18n="sampleData">sample data</span></span></div></div>
+          <div class="scroll">
+            <div class="card" style="gap:0">
+              <div class="pr"><span data-i18n="fajr">Fajr</span><span class="tm">05:38</span></div>
+              <div class="pr"><span data-i18n="dhuhr">Dhuhr</span><span class="tm">12:56</span></div>
+              <div class="pr next"><span data-i18n="asr">Asr</span><span class="tm">16:15 · <span data-i18n="in">in</span> 1h 12m</span></div>
+              <div class="pr"><span>Maghrib</span><span class="tm">18:58</span></div>
+              <div class="pr"><span data-i18n="isha">Isha</span><span class="tm">20:09</span></div>
+            </div>
+            <div class="card" style="display:flex;flex-direction:row;align-items:center;gap:12px">
+              <div class="compass" aria-hidden="true"><span class="n">N</span><span class="needle"></span><span class="c"></span></div>
+              <div style="display:grid;gap:2px"><span class="k" data-i18n="qibla">Qibla</span><span class="v">293° NW</span><span style="font-size:11px" class="muted" data-i18n="calib">Hold flat, away from metal</span></div>
+            </div>
+            <div class="card">
+              <span class="k" data-i18n="tasbih">Tasbih · Subhanallah</span>
+              <div class="tasbih"><button id="tasbihBtn" aria-label="Count">0</button><div style="display:grid;gap:4px;flex:1"><span style="font-size:12px"><span data-i18n="target">Target</span> 33</span><div class="bar"><i id="tasbihBar" style="width:0%"></i></div><span class="muted" style="font-size:11px" data-i18n="haptic">Vibrates at 33, 66, 99</span></div></div>
+            </div>
+          </div>
+        </div></div>
+        <figcaption><span class="phase-tag">PHASE 6</span><b>Prayer, Qibla, tasbih</b><span class="muted">Location-based prayer times with adhan notifications, a Qibla compass that handles location permission, and a tasbih counter with vibration.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <div class="sec-head">
+      <span class="eyebrow">Roadmap</span>
+      <h2>Seven phases, in build order</h2>
+      <p class="prose muted">Each phase builds on the ones before it, and Phase 1 has to land first. Tick items as they ship; ticks are saved in this browser only. <span class="tag bug" style="font-family:var(--f-mono);font-size:.72rem;padding:1px 6px;border-radius:4px">bug</span> is a defect in today's code, <span class="tag dev" style="font-family:var(--f-mono);font-size:.72rem;padding:1px 6px;border-radius:4px">dev build</span> needs native modules, and <span class="tag stretch" style="font-family:var(--f-mono);font-size:.72rem;padding:1px 6px;border-radius:4px">stretch</span> is optional.</p>
+    </div>
+    <div class="phases" id="phases"></div>
+  </section>
+
+  <!-- DATA -->
+  <section id="data">
+    <div class="sec-head">
+      <span class="eyebrow">Data sources</span>
+      <h2>Where each piece of content comes from</h2>
+      <p class="prose muted">All four sources are free and need no API key, and I checked each one on 11 Oct 2026. Screens never use the raw responses: <code>services/</code> converts them into the app's own types, and the results are cached so reading works offline.</p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Content</th><th>Indonesian</th><th>English</th></tr></thead>
+      <tbody>
+        <tr><td>UI text</td><td><code>locales/id.json</code></td><td><code>locales/en.json</code></td></tr>
+        <tr><td>Ayah translation</td><td>equran.id (Kemenag)</td><td>quran.com: Saheeh International (default), Abdel Haleem, Yusuf Ali, Pickthall, Usmani, Hilali-Khan. Footnotes become tappable.</td></tr>
+        <tr><td>Tafsir</td><td>equran.id (Kemenag)</td><td>quran.com: Ibn Kathir (abridged), Ma'arif al-Qur'an, Tazkirul Quran. Arabic: Muyassar, Sa'di, Tabari, Qurtubi…</td></tr>
+        <tr><td>Tajweed markup</td><td colspan="2">quran.com <code>text_uthmani_tajweed</code>; rule explanations written for the app in both languages (need review before release)</td></tr>
+        <tr><td>Word-by-word</td><td>quran.com <code>language=id</code></td><td>quran.com <code>language=en</code></td></tr>
+        <tr><td>Transliteration</td><td colspan="2">quran.com per word; equran.id per ayah</td></tr>
+        <tr><td>Audio</td><td colspan="2">equran.id (6 reciters), quran.com (12 recitations), everyayah.com (per-ayah mp3 for the rest)</td></tr>
+        <tr><td>Doa / adhkar</td><td>equran.id <code>/api/doa</code> (227 entries)</td><td>Bundled Hisnul Muslim content</td></tr>
+        <tr><td>Prayer times, Hijri date</td><td colspan="2">api.aladhan.com, localized prayer and month names</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- RECITERS -->
+  <section id="reciters">
+    <div class="sec-head">
+      <span class="eyebrow">Reciters</span>
+      <h2>Reciter library</h2>
+      <p class="prose muted">Only reciters with per-ayah files are included, because ayah highlighting, repeat and hifz mode depend on them. Each one is a single entry in <code>reciters.ts</code> mapping to a URL template. Before shipping, every reciter is checked against the first and last ayah of all 114 Surahs.</p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Reciter</th><th>Style</th><th>Source</th></tr></thead>
+      <tbody id="reciterTable"></tbody>
+    </table></div>
+  </section>
+
+  <!-- DECISIONS -->
+  <section id="decisions">
+    <div class="sec-head">
+      <span class="eyebrow">Decisions and open questions</span>
+      <h2>Before building</h2>
+    </div>
+    <div class="notes">
+      <div class="note"><b>Name: Wird</b><span class="muted">Store name "Wird Quran", subtitle "Quran, Tajweed &amp; Hifz" / "Al-Quran, Tajwid &amp; Hafalan". No app named Wird was found, but other apps use "wird" as a feature name. Before release: check the stores directly, trademarks (PDKI, USPTO) and domains.</span></div>
+      <div class="note"><b>Development build, not Expo Go</b><span class="muted">Widgets, background audio, lock-screen controls, MMKV and offline downloads all need native modules. Running locally needs Xcode or Android Studio, or EAS cloud builds.</span></div>
+      <div class="note"><b>Fully bilingual</b><span class="muted">The app follows the device language, which can be changed in Settings. Every feature works in Indonesian and English; no screen is Indonesian-only.</span></div>
+      <div class="note"><b>Tajweed explanations need review</b><span class="muted">No API provides them, so I'll write them for the app in both languages. Someone who knows tajweed should check them before release.</span></div>
+      <div class="note"><b>Reciter tiles, not photos</b><span class="muted">Each reciter is shown by the Arabic name listeners know them by, in Kufi on a faint eight-point star. No photo rights are needed, and it stays readable at small sizes.</span></div>
+      <div class="note"><b>Islam Sobhi</b><span class="muted">Popular, but no per-ayah source was found. Add him for whole-Surah playback only, or wait for a source.</span></div>
+      <div class="note"><b>Not planned now</b><span class="muted">Cloud sync and accounts. AI-generated tafsir; if it's ever added, it must quote real tafsir text and name the source.</span></div>
+    </div>
+  </section>
+
+  <footer><span>Wird · github.com/heyhadi/wird</span><span>Source of truth: <code>ROADMAP.md</code> in the repo</span></footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var lang = "en";
+
+  var RULES = {
+    silent:              { en: ["Silent letter", "Hamzat al-wasl, lam shamsiyah or a silent letter: written but not pronounced when reading continues."], id: ["Huruf tidak dibaca", "Hamzah washal, lam syamsiyah, atau huruf yang ditulis tapi tidak dibaca saat bacaan disambung."], ar: "صامت" },
+    laam_shamsiyah:      { en: ["Lam shamsiyah", "The lam of al- is not pronounced; the letter after it is doubled instead."], id: ["Lam syamsiyah", "Lam pada al- tidak dibaca; huruf sesudahnya dibaca bertasydid."], ar: "لام شمسية", color: "silent" },
+    ham_wasl:            { en: ["Hamzat al-wasl", "A connecting hamza: pronounced when you start from it, silent when you continue from the word before."], id: ["Hamzah washal", "Dibaca jika memulai darinya, tidak dibaca jika disambung dengan kata sebelumnya."], ar: "همزة وصل", color: "silent" },
+    madda_normal:        { en: ["Madd tabi'i", "Natural lengthening of 2 counts."], id: ["Mad thabi'i", "Dibaca panjang 2 harakat."], ar: "مد طبيعي" },
+    madda_permissible:   { en: ["Madd ja'iz / 'arid", "Permissible lengthening of 2, 4 or 6 counts, often when stopping at the end of an ayah."], id: ["Mad jaiz / 'aridh", "Boleh dibaca 2, 4, atau 6 harakat, sering saat berhenti di akhir ayat."], ar: "مد جائز" },
+    madda_obligatory:    { en: ["Madd wajib muttasil", "Obligatory lengthening of 4–5 counts when a hamza follows in the same word."], id: ["Mad wajib muttasil", "Wajib dibaca 4–5 harakat bila bertemu hamzah dalam satu kata."], ar: "مد واجب" },
+    madda_necessary:     { en: ["Madd lazim", "Necessary lengthening of 6 counts."], id: ["Mad lazim", "Wajib dibaca panjang 6 harakat."], ar: "مد لازم" },
+    qalaqah:             { en: ["Qalqalah", "A light echo on ق ط ب ج د when it has sukun or you stop on it."], id: ["Qalqalah", "Suara memantul pada ق ط ب ج د saat sukun atau waqaf."], ar: "قلقلة" },
+    ikhafa:              { en: ["Ikhfa", "Nun sakinah or tanwin is hidden with a nasal sound before one of 15 letters."], id: ["Ikhfa", "Nun mati atau tanwin dibaca samar dengan dengung sebelum salah satu dari 15 huruf."], ar: "إخفاء" },
+    ikhafa_shafawi:      { en: ["Ikhfa shafawi", "Mim sakinah before ب is hidden with a nasal sound."], id: ["Ikhfa syafawi", "Mim mati bertemu ب dibaca samar dengan dengung."], ar: "إخفاء شفوي" },
+    ghunnah:             { en: ["Ghunnah", "A nasal sound held for 2 counts on نّ and مّ."], id: ["Ghunnah", "Dengung 2 harakat pada نّ dan مّ."], ar: "غنة" },
+    iqlab:               { en: ["Iqlab", "Nun sakinah or tanwin before ب changes to a mim sound, with ghunnah."], id: ["Iqlab", "Nun mati atau tanwin bertemu ب berubah menjadi bunyi mim, dengan dengung."], ar: "إقلاب" },
+    idgham_ghunnah:      { en: ["Idgham with ghunnah", "Nun sakinah or tanwin merges into ي ن م و with a nasal sound."], id: ["Idgham bighunnah", "Nun mati atau tanwin melebur ke ي ن م و dengan dengung."], ar: "إدغام بغنة" },
+    idgham_wo_ghunnah:   { en: ["Idgham without ghunnah", "Nun sakinah or tanwin merges fully into ل or ر, with no nasal sound."], id: ["Idgham bilaghunnah", "Nun mati atau tanwin melebur ke ل atau ر tanpa dengung."], ar: "إدغام بلا غنة" },
+    idgham_shafawi:      { en: ["Idgham shafawi", "Mim sakinah merges into a following mim, with ghunnah."], id: ["Idgham mimi", "Mim mati bertemu mim, dilebur dengan dengung."], ar: "إدغام شفوي" }
+  };
+  var LEGEND = ["silent", "madda_normal", "madda_permissible", "madda_obligatory", "madda_necessary", "qalaqah", "ikhafa", "ikhafa_shafawi", "ghunnah", "iqlab", "idgham_ghunnah", "idgham_wo_ghunnah", "idgham_shafawi"];
+  function colorClass(rule) { return "r-" + ((RULES[rule] && RULES[rule].color) || rule); }
+
+  // Al-Falaq tajweed markup, verbatim from api.quran.com/api/v4/quran/verses/uthmani_tajweed?chapter_number=113
+  var FALAQ = [
+    'قُلْ أَعُوذُ بِرَبِّ <tajweed class=ham_wasl>ٱ</tajweed>لْفَلَ<tajweed class=qalaqah>ق</tajweed>ِ',
+    'مِ<tajweed class=ikhafa>ن ش</tajweed>َرِّ مَا خَلَ<tajweed class=qalaqah>ق</tajweed>َ',
+    'وَمِ<tajweed class=ikhafa>ن ش</tajweed>َرِّ غَاسِقٍ إِذَا وَقَ<tajweed class=qalaqah>ب</tajweed>َ',
+    'وَمِ<tajweed class=ikhafa>ن ش</tajweed>َرِّ <tajweed class=ham_wasl>ٱ</tajweed><tajweed class=laam_shamsiyah>ل</tajweed><tajweed class=ghunnah>نّ</tajweed>َفَّ<tajweed class=madda_normal>ـٰ</tajweed>ثَ<tajweed class=madda_normal>ـٰ</tajweed>تِ فِى <tajweed class=ham_wasl>ٱ</tajweed>لْعُقَ<tajweed class=qalaqah>د</tajweed>ِ',
+    'وَمِ<tajweed class=ikhafa>ن ش</tajweed>َرِّ حَاسِدٍ إِذَا حَسَ<tajweed class=qalaqah>د</tajweed>َ'
+  ];
+  var AR_NUM = ["١","٢","٣","٤","٥","٦","٧"];
+
+  // Same idea as the app's planned parser: <tajweed class=x>…</tajweed> → coloured, tappable span.
+  function renderTajweed(markup) {
+    return markup.replace(/<tajweed class=([a-z_]+)>(.*?)<\/tajweed>/g, function (_, rule, txt) {
+      return '<span class="tj ' + colorClass(rule) + '" data-rule="' + rule + '" tabindex="0" role="button">' + txt + '</span>';
+    });
+  }
+
+  var T = {
+    en: { greet: "Assalamu'alaikum", continue: "Continue reading", ayah: "Ayah", nextPrayer: "Next prayer", khatam: "Khatam", day: "Day", saved: "Saved",
+      n1: "The Opening", n2: "The Cow", n3: "Family of Imran", n4: "The Women", n5: "The Table Spread", mec: "Meccan", med: "Medinan",
+      tQuran: "Quran", tHifz: "Hifz", tPrayer: "Prayer", tSaved: "Saved", tMore: "More", daybreak: "Daybreak", ayahs: "ayahs",
+      copy: "Copy", share: "Share image", words: "Words", notes: "Notes", yourNote: "Your note · 3 Oct", noteText: "Read this before work every morning this week.", col1: "Daily",
+      reciters: "Reciters", perAyah: "all per-ayah", searchR: "Search reciters", all: "All", withEn: "+ English", quality: "Audio quality",
+      hifzT: "Hifz · Al-Ikhlas", memorized: "memorized", repeat: "Repeat ayah 3", repOf: "3 of 5", gap: "2s gap", tapReveal: "Tap a hidden ayah to check yourself", again: "Again", remember: "I remember it",
+      today: "Today", sampleData: "sample data", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", isha: "Isha", in: "in", qibla: "Qibla", calib: "Hold flat, away from metal",
+      tasbih: "Tasbih · Subhanallah", target: "Target", haptic: "Vibrates at 33, 66, 99",
+      translit: "Qul a‘ūżu birabbil-falaq", trans: "Say, “I seek refuge in the Lord of daybreak", transSrc: "Saheeh International · quran.com",
+      tafsirSrc: "Text loads from the selected source. Defaults to the app language." },
+    id: { greet: "Assalamu'alaikum", continue: "Lanjutkan membaca", ayah: "Ayat", nextPrayer: "Salat berikutnya", khatam: "Khatam", day: "Hari", saved: "Tersimpan",
+      n1: "Pembukaan", n2: "Sapi Betina", n3: "Keluarga Imran", n4: "Perempuan", n5: "Hidangan", mec: "Makkiyah", med: "Madaniyah",
+      tQuran: "Quran", tHifz: "Hafalan", tPrayer: "Salat", tSaved: "Simpanan", tMore: "Lainnya", daybreak: "Subuh", ayahs: "ayat",
+      copy: "Salin", share: "Bagikan gambar", words: "Per kata", notes: "Catatan", yourNote: "Catatanmu · 3 Okt", noteText: "Baca ini setiap pagi sebelum kerja minggu ini.", col1: "Harian",
+      reciters: "Qari", perAyah: "semua per ayat", searchR: "Cari qari", all: "Semua", withEn: "+ Inggris", quality: "Kualitas audio",
+      hifzT: "Hafalan · Al-Ikhlas", memorized: "hafal", repeat: "Ulangi ayat 3", repOf: "3 dari 5", gap: "jeda 2 dtk", tapReveal: "Ketuk ayat yang tersembunyi untuk menguji hafalan", again: "Ulangi", remember: "Saya hafal",
+      today: "Hari ini", sampleData: "data contoh", fajr: "Subuh", dhuhr: "Zuhur", asr: "Asar", isha: "Isya", in: "dalam", qibla: "Kiblat", calib: "Pegang datar, jauh dari logam",
+      tasbih: "Tasbih · Subhanallah", target: "Target", haptic: "Bergetar di 33, 66, 99",
+      translit: "Qul a‘ūżu birabbil-falaq", trans: "Katakanlah (Nabi Muhammad), “Aku berlindung kepada Tuhan yang (menjaga) fajar (subuh)", transSrc: "Kemenag · equran.id",
+      tafsirSrc: "Teks dimuat dari sumber yang dipilih. Default mengikuti bahasa aplikasi." }
+  };
+  // The prayer card shows "Maghrib" in both languages, but "Asr" changes; keep the home card label in step.
+
+  /* ---------- reader ---------- */
+  var readerBody = document.getElementById("readerBody");
+  var reader = document.getElementById("reader");
+  function buildReader() {
+    var html = '<div class="bism" lang="ar">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>';
+    FALAQ.forEach(function (m, i) {
+      html += '<div class="ayah' + (i === 0 ? " on" : "") + '"><div class="q" lang="ar">' + renderTajweed(m) +
+        ' <span class="mk"><span>' + AR_NUM[i] + '</span></span></div>';
+      if (i === 0) {
+        html += '<div class="tl">' + T[lang].translit + '</div><div class="tr">' + T[lang].trans + '</div><div class="src">' + T[lang].transSrc + '</div>';
+      }
+      html += '</div>';
+    });
+    readerBody.innerHTML = html;
+  }
+  function showRule(rule) {
+    var old = reader.querySelector(".popover"); if (old) old.remove();
+    var r = RULES[rule]; if (!r) return;
+    var p = document.createElement("div");
+    p.className = "popover"; p.setAttribute("role", "dialog");
+    p.innerHTML = '<div class="h"><i class="' + colorClass(rule) + '" style="background:currentColor"></i>' + r[lang][0] +
+      ' <span style="font-family:var(--f-quran);font-weight:400;color:var(--ink-2)">' + r.ar + '</span><button class="x" aria-label="Close">×</button></div><div>' + r[lang][1] + '</div>';
+    reader.appendChild(p);
+    p.querySelector(".x").addEventListener("click", function () { p.remove(); });
+  }
+  readerBody.addEventListener("click", function (e) {
+    var t = e.target.closest(".tj"); if (!t || reader.classList.contains("notj")) return;
+    showRule(t.dataset.rule);
+  });
+  readerBody.addEventListener("keydown", function (e) {
+    if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("tj")) { e.preventDefault(); e.target.click(); }
+  });
+
+  /* ---------- legend ---------- */
+  var legend = document.getElementById("legend"), note = document.getElementById("ruleNote"), activeRule = null;
+  function buildLegend() {
+    legend.innerHTML = LEGEND.map(function (k) {
+      return '<button data-rule="' + k + '" aria-pressed="' + (k === activeRule) + '"><i class="dot ' + colorClass(k) + '" style="background:currentColor"></i><span class="nm">' + RULES[k][lang][0] + '</span><span class="ar">' + RULES[k].ar + '</span></button>';
+    }).join("");
+  }
+  legend.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    activeRule = b.dataset.rule; buildLegend();
+    var r = RULES[activeRule];
+    note.innerHTML = '<b>' + r[lang][0] + '</b> · ' + r[lang][1];
+  });
+
+  /* ---------- ayah sheet ---------- */
+  var WORDS = [
+    ["ٱلْحَمْدُ", "al-ḥamdu", "All praises and thanks", "pujian"],
+    ["لِلَّهِ", "lillahi", "(be) to Allah", "bagi Allah"],
+    ["رَبِّ", "rabbi", "the Lord", "Tuhan"],
+    ["ٱلْعَـٰلَمِينَ", "l-ʿālamīna", "of the universe", "alam semesta"]
+  ];
+  var TAFSIRS = { en: ["Ibn Kathir", "Ma'arif al-Qur'an", "Tazkirul Quran", "Kemenag (ID)", "Muyassar (AR)"], id: ["Kemenag", "Ibn Kathir (EN)", "Ma'arif (EN)", "Muyassar (AR)", "Sa'di (AR)"] };
+  function buildSheet() {
+    document.getElementById("words").innerHTML = WORDS.map(function (w) {
+      return '<div class="word"><span class="a" lang="ar">' + w[0] + '</span><span class="tl">' + w[1] + '</span><span class="g">' + (lang === "en" ? w[2] : w[3]) + '</span></div>';
+    }).join("");
+    document.getElementById("tafsirChips").innerHTML = TAFSIRS[lang].map(function (t, i) {
+      return '<button class="chip' + (i === 0 ? " on" : "") + '">' + t + '</button>';
+    }).join("");
+    document.getElementById("tafsirSrc").textContent = T[lang].tafsirSrc;
+  }
+  document.getElementById("tafsirChips").addEventListener("click", function (e) {
+    var c = e.target.closest(".chip"); if (!c) return;
+    this.querySelectorAll(".chip").forEach(function (x) { x.classList.toggle("on", x === c); });
+  });
+  document.querySelectorAll("[data-sheet]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("[data-sheet]").forEach(function (x) { x.classList.toggle("on", x === b); });
+      document.querySelectorAll("[data-pane]").forEach(function (p) { p.hidden = p.dataset.pane !== b.dataset.sheet; });
+    });
+  });
+
+  /* ---------- reciters ---------- */
+  // ar: the name listeners know the reciter by, shown on the tile. c: country, shown in the picker.
+  var RECITERS = [
+    { n: "Mishary Rashid Alafasy", ar: "العفاسي", c: ["Kuwait", "Kuwait"], s: ["Murattal"], src: "equran 05 · quran.com 7", fav: true },
+    { n: "Yasser Al-Dosari", ar: "الدوسري", c: ["Saudi Arabia", "Arab Saudi"], s: ["Murattal"], src: "equran 06 · everyayah", fav: true },
+    { n: "Abdurrahman As-Sudais", ar: "السديس", s: ["Murattal"], src: "equran 03 · quran.com 3" },
+    { n: "Maher Al-Muaiqly", ar: "المعيقلي", c: ["Saudi Arabia", "Arab Saudi"], s: ["Murattal"], src: "everyayah" },
+    { n: "Saud Ash-Shuraym", ar: "الشريم", s: ["Murattal"], src: "quran.com 10 · everyayah" },
+    { n: "Abdul Basit Abdus Samad", ar: "عبد الباسط", c: ["Egypt", "Mesir"], s: ["Murattal", "Mujawwad"], src: "quran.com 2 / 1" },
+    { n: "Mahmoud Khalil Al-Husary", ar: "الحصري", c: ["Egypt", "Mesir"], s: ["Murattal", "Mujawwad", "Muallim"], src: "quran.com 6 / 12" },
+    { n: "Mohamed Siddiq Al-Minshawi", ar: "المنشاوي", s: ["Murattal", "Mujawwad"], src: "quran.com 9 / 8" },
+    { n: "Nasser Al-Qatami", ar: "القطامي", s: ["Murattal"], src: "everyayah" },
+    { n: "Ahmed Al-Ajamy", ar: "العجمي", s: ["Murattal"], src: "everyayah" },
+    { n: "Saad Al-Ghamdi", ar: "الغامدي", s: ["Murattal"], src: "everyayah" },
+    { n: "Abu Bakr Ash-Shatri", ar: "الشاطري", s: ["Murattal"], src: "quran.com 4" },
+    { n: "Hani Ar-Rifai", ar: "الرفاعي", s: ["Murattal"], src: "quran.com 5" },
+    { n: "Salah Al-Budair", ar: "البدير", s: ["Murattal"], src: "everyayah" },
+    { n: "Fares Abbad", ar: "عباد", s: ["Murattal"], src: "everyayah" },
+    { n: "Muhammad Jibreel", ar: "جبريل", s: ["Murattal"], src: "everyayah" },
+    { n: "Ibrahim Al-Akhdar", ar: "الأخضر", s: ["Murattal"], src: "everyayah" },
+    { n: "Abdullah Basfar", ar: "بصفر", s: ["Murattal"], src: "everyayah" },
+    { n: "Ali Al-Hudhaify", ar: "الحذيفي", s: ["Murattal"], src: "everyayah" },
+    { n: "Abdullah Al-Juhany", ar: "الجهني", s: ["Murattal"], src: "equran 01" },
+    { n: "Abdul Muhsin Al-Qasim", ar: "القاسم", s: ["Murattal"], src: "equran 02" },
+    { n: "Ibrahim Al-Dossari", ar: "إبراهيم", s: ["Murattal"], src: "equran 04" },
+    { n: "Basfar + Ibrahim Walk", ar: "بصفر", en: true, c: ["Saudi Arabia · UK", "Arab Saudi · Inggris"], s: ["Arabic + English audio"], sId: ["Arab + audio Inggris"], src: "everyayah MultiLanguage" }
+  ];
+  function tile(r) {
+    return '<span class="rtile" lang="ar"><span>' + r.ar + '</span>' + (r.en ? '<i class="en">EN</i>' : "") + '</span>';
+  }
+  var selected = 0;
+  var reciterList = document.getElementById("reciterList");
+  var reciterHead = reciterList.innerHTML;
+  var playSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>';
+  function buildReciters() {
+    var pick = [0, 1, 6, 5, 3, 22];
+    var html = reciterHead + '<div class="grp">' + (lang === "en" ? "Favourites" : "Favorit") + '</div>';
+    pick.forEach(function (idx, j) {
+      if (j === 2) html += '<div class="grp">' + (lang === "en" ? "All reciters" : "Semua qari") + '</div>';
+      var r = RECITERS[idx];
+      var styles = (lang === "id" && r.sId ? r.sId : r.s).join(", ");
+      var meta = (r.c ? r.c[lang === "en" ? 0 : 1] + " · " : "") + styles;
+      html += '<div class="rc' + (idx === selected ? " on" : "") + '" data-idx="' + idx + '" role="button" tabindex="0">' + tile(r) +
+        '<div class="t"><b>' + r.n + '</b><span class="meta">' + meta + '</span></div><button class="play" aria-label="Play sample">' + playSvg + '</button></div>';
+    });
+    reciterList.innerHTML = html;
+  }
+  reciterList.addEventListener("click", function (e) {
+    var rc = e.target.closest(".rc"); if (!rc || e.target.closest(".play")) return;
+    selected = +rc.dataset.idx; buildReciters();
+    var r = RECITERS[selected];
+    reader.querySelector(".player .rtile").outerHTML = tile(r);
+    reader.querySelector(".player .t b").textContent = r.n;
+  });
+  reciterList.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("rc")) { e.preventDefault(); e.target.click(); } });
+  document.getElementById("reciterTable").innerHTML = RECITERS.map(function (r) {
+    return '<tr><td>' + r.n + '</td><td>' + r.s.join(", ") + '</td><td><span class="mono">' + r.src + '</span></td></tr>';
+  }).join("");
+
+  /* ---------- hifz ---------- */
+  var IKHLAS = ["قُلْ هُوَ ٱللَّهُ أَحَدٌ", "ٱللَّهُ ٱلصَّمَدُ", "لَمْ يَلِدْ وَلَمْ يُولَدْ", "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ"];
+  var hz = [{ done: true, hidden: false }, { done: true, hidden: false }, { done: false, hidden: true }, { done: false, hidden: true }];
+  var hifz = document.getElementById("hifz"), hifzHead = hifz.innerHTML;
+  function buildHifz() {
+    hifz.innerHTML = hifzHead + IKHLAS.map(function (a, i) {
+      return '<div class="hz' + (hz[i].hidden ? " hidden" : "") + '" data-i="' + i + '" role="button" tabindex="0" aria-label="Ayah ' + (i + 1) + '"><span class="st' + (hz[i].done ? " done" : "") + '">' + (hz[i].done ? "✓" : "") + '</span><span class="q" lang="ar">' + a + ' <span class="mk"><span>' + AR_NUM[i] + '</span></span></span></div>';
+    }).join("");
+    document.getElementById("hzCount").textContent = hz.filter(function (x) { return x.done; }).length;
+    applyLang(hifz);
+  }
+  hifz.addEventListener("click", function (e) {
+    var h = e.target.closest(".hz"); if (!h) return;
+    var i = +h.dataset.i;
+    if (hz[i].hidden) hz[i].hidden = false; else if (!hz[i].done) hz[i].done = true; else { hz[i].hidden = true; hz[i].done = false; }
+    buildHifz();
+  });
+  hifz.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("hz")) { e.preventDefault(); e.target.click(); } });
+
+  /* ---------- tasbih ---------- */
+  var count = 0, tb = document.getElementById("tasbihBtn"), tbar = document.getElementById("tasbihBar");
+  tb.addEventListener("click", function () { count = (count + 1) % 100; tb.textContent = count; tbar.style.width = Math.min(100, (count % 33 === 0 && count ? 100 : (count % 33) / 33 * 100)) + "%"; });
+
+  /* ---------- roadmap ---------- */
+  var PHASES = [
+    { t: "Foundation and bug fixes", d: "Make the current app correct and upgradeable.", items: [
+      ["Upgrade Expo SDK 52 → current, expo-av → expo-audio, set up the development build", "dev"],
+      ["Remove unused packages (react-native-mmkv-storage, @types/axios) and Expo template leftovers"],
+      ["Typed API layer with mappers; TanStack Query cache saved to MMKV"],
+      ["Zustand stores saved to MMKV: bookmarks, settings, last-read, progress"],
+      ["Target ayah passed through the route (/surah/[id]?ayah=N) instead of a global store"],
+      ["Bookmarks keyed by ayah number only collide across Surahs → key by surah:ayah", "bug"],
+      ["Bookmark icon doesn't update when tapped", "bug"],
+      ["A failed tafsir request breaks the Surah screen; fetch Surah and tafsir in parallel", "bug"],
+      ["Three scroll effects disagree on the index (off-by-one); no onScrollToIndexFailed", "bug"],
+      ["Audio keeps playing after leaving the screen; auto-advance uses stale state", "bug"],
+      ["Modal gets a string instead of a boolean; tafsir can't scroll; console.log on every keystroke", "bug"],
+      ["Jest tests for stores, mappers and the tajweed parser"]
+    ]},
+    { t: "Design system and redesign", d: "Tokens, dark mode, bilingual UI, the new Home and Reader.", items: [
+      ["Theme tokens (colour, spacing, type) for light and dark, connected to the Paper theme"],
+      ["i18n with i18next + expo-localization; every string moved to locales/{id,en}.json"],
+      ["Home: continue-reading card, Surah / Juz tabs, search by name, meaning or number"],
+      ["Reader: ornamental ayah markers, adjustable Arabic size, translation on/off, ayah menu"],
+      ["Bookmarks: Arabic preview, swipe to delete"],
+      ["Settings: language, translation and tafsir edition, theme, font size, reciter, tajweed, word-by-word, transliteration"]
+    ]},
+    { t: "Audio", d: "One player for the whole app, and the reciter library.", items: [
+      ["Global audio player + mini-player above the tabs"],
+      ["Reciter library (25, per-ayah) with picker, style chips, samples, favourites"],
+      ["Switching reciter mid-Surah keeps the current ayah"],
+      ["Next/previous, repeat, playback speed, audio quality setting"],
+      ["Background playback + lock-screen controls", "dev"],
+      ["Sleep timer"],
+      ["Download a Surah's audio for offline listening", "dev"]
+    ]},
+    { t: "Reading depth", d: "Tajweed, tafsir, word-by-word, in both languages.", items: [
+      ["English translations with tappable footnotes"],
+      ["Tajweed colouring: tap a letter for the rule, legend in ID and EN"],
+      ["Tajweed learning cards: one per rule, example ayah and audio"],
+      ["Tafsir sheet with picker grouped by language; remembers the choice"],
+      ["Word-by-word: transliteration, meaning, per-word audio"],
+      ["Optional transliteration line under each ayah"],
+      ["Notes on ayahs and bookmark collections"],
+      ["Search inside ayah text and translations"],
+      ["Mushaf page mode (604 Madani pages)", "stretch"]
+    ]},
+    { t: "Habits", d: "Reasons to open the app every day.", items: [
+      ["Hifz mode: repeat N times, hide and reveal, progress per Surah / Juz"],
+      ["Khatam planner: target days → daily portion, streak, Juz progress"],
+      ["Daily ayah notification"],
+      ["Home-screen widgets: ayah of the day, continue reading", "dev"]
+    ]},
+    { t: "Worship tools", d: "Prayer, Qibla, adhkar, doa.", items: [
+      ["Prayer times by location + adhan notifications"],
+      ["Qibla compass with location-permission handling"],
+      ["Morning/evening adhkar (ID + EN) and tasbih counter with vibration"],
+      ["Doa (equran for ID, Hisnul Muslim for EN) and Asmaul Husna"],
+      ["Hijri date, Ramadan mode with imsak and iftar times"]
+    ]},
+    { t: "Sharing and polish", d: "Ready for the stores.", items: [
+      ["Share an ayah as an image; copy or share as text"],
+      ["Accessibility: screen-reader labels in both languages, system font scaling"],
+      ["App icon, splash screen, store listing in ID and EN"]
+    ]}
+  ];
+  var KEY = "quranrn-roadmap-v1", done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { done = {}; }
+  var TAGS = { bug: "bug", dev: "dev build", stretch: "stretch" };
+  var phasesEl = document.getElementById("phases");
+  function buildPhases() {
+    phasesEl.innerHTML = PHASES.map(function (p, pi) {
+      var n = p.items.length, c = p.items.filter(function (_, ii) { return done[pi + "." + ii]; }).length;
+      return '<details class="phase"' + (pi < 2 ? " open" : "") + '><summary><span class="pn">' + (pi + 1) + '</span><span class="pt">' + p.t + '</span><span class="pc">' + c + ' / ' + n + '<div class="bar"><i style="width:' + (c / n * 100) + '%"></i></div></span><span class="pd">' + p.d + '</span></summary><ul>' +
+        p.items.map(function (it, ii) {
+          var id = "p" + pi + "i" + ii;
+          return '<li><label for="' + id + '"><input type="checkbox" id="' + id + '" data-k="' + pi + "." + ii + '"' + (done[pi + "." + ii] ? " checked" : "") + '><span>' + it[0] + (it[1] ? '<span class="tag ' + it[1] + '">' + TAGS[it[1]] + '</span>' : "") + '</span></label></li>';
+        }).join("") + '</ul></details>';
+    }).join("");
+  }
+  phasesEl.addEventListener("change", function (e) {
+    var k = e.target.dataset.k; if (!k) return;
+    done[k] = e.target.checked;
+    try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (err) {}
+    var openSet = Array.prototype.map.call(phasesEl.querySelectorAll("details"), function (d) { return d.open; });
+    buildPhases();
+    phasesEl.querySelectorAll("details").forEach(function (d, i) { d.open = openSet[i]; });
+  });
+
+  /* ---------- language + tajweed toggles ---------- */
+  function applyLang(root) {
+    (root || document).querySelectorAll("[data-i18n]").forEach(function (el) {
+      var v = T[lang][el.dataset.i18n]; if (v) el.textContent = v;
+    });
+  }
+  function setLang(l) {
+    lang = l;
+    document.getElementById("langEn").setAttribute("aria-pressed", l === "en");
+    document.getElementById("langId").setAttribute("aria-pressed", l === "id");
+    var pop = reader.querySelector(".popover"); if (pop) pop.remove();
+    applyLang(); buildReader(); buildLegend(); buildSheet(); buildReciters(); buildHifz();
+    if (activeRule) note.innerHTML = '<b>' + RULES[activeRule][lang][0] + '</b> · ' + RULES[activeRule][lang][1];
+  }
+  document.getElementById("langEn").addEventListener("click", function () { setLang("en"); });
+  document.getElementById("langId").addEventListener("click", function () { setLang("id"); });
+  function setTj(on) {
+    reader.classList.toggle("notj", !on);
+    document.getElementById("tjOn").setAttribute("aria-pressed", on);
+    document.getElementById("tjOff").setAttribute("aria-pressed", !on);
+    if (!on) { var pop = reader.querySelector(".popover"); if (pop) pop.remove(); }
+  }
+  document.getElementById("tjOn").addEventListener("click", function () { setTj(true); });
+  document.getElementById("tjOff").addEventListener("click", function () { setTj(false); });
+
+  buildPhases();
+  setLang("en");
+  showRule("qalaqah"); // open state in the first frame, so the reader shows what a tap does
+})();
+</script>

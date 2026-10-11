@@ -1,33 +1,24 @@
-import axios from 'axios';
+import { getJson } from "./http";
+import {
+    mapSurahDetail,
+    mapSurahList,
+    mapTafsir,
+    type EquranSurahDetailResponse,
+    type EquranSurahListResponse,
+    type EquranTafsirResponse,
+} from "./mappers";
+import type { SurahDetail, SurahSummary, TafsirEntry } from "./types";
 
-const API_BASE_URL = 'https://equran.id/api/v2';
+const API_BASE_URL = "https://equran.id/api/v2";
 
-export const getSurahList = async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/surat`);
-    return response.data; // Assuming the data is directly in the response
-  } catch (error) {
-    console.error('Error fetching Surah list:', error);
-    return null; // Or throw the error if you prefer
-  }
-};
+export async function getSurahList(): Promise<SurahSummary[]> {
+    return mapSurahList(await getJson<EquranSurahListResponse>(`${API_BASE_URL}/surat`));
+}
 
-export const getSurahDetail = async (surahNumber: number) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/surat/${surahNumber}`);
-      return response.data; // Assuming the data is directly in the response
-    } catch (error) {
-      console.error('Error fetching Surah detail:', error);
-      return null; // Or throw the error if you prefer
-    }
-  };
+export async function getSurahDetail(surahNumber: number): Promise<SurahDetail> {
+    return mapSurahDetail(await getJson<EquranSurahDetailResponse>(`${API_BASE_URL}/surat/${surahNumber}`));
+}
 
-  export const getTafsDetail = async (tafNumber: number) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/tafsir/${tafNumber}`);
-      return response.data; // Assuming the data is directly in the response
-    } catch (error) {
-      console.error('Error fetching Tafsir detail:', error);
-      return null; // Or throw the error if you prefer
-    }
-  }
+export async function getTafsir(surahNumber: number): Promise<TafsirEntry[]> {
+    return mapTafsir(await getJson<EquranTafsirResponse>(`${API_BASE_URL}/tafsir/${surahNumber}`));
+}

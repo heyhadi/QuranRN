@@ -1,117 +1,128 @@
-import { useState, useEffect } from "react";
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
-import { useRouter, Link } from "expo-router";
-import { TextInput } from "react-native-paper";
-import { getSurahList } from "../../services/quranService";
-import SurahCard from "../../components/Surahcard";
-import { StyleSheet } from 'react-native';
-
-// Define the Surah type (crucial for type safety)
-interface Surah {
-    nomor: number;
-    nama: string;
-    arti: string;
-    jumlahAyat: number;
-    tempatTurun: string;
-    namaLatin: string;
-    // Add other properties as needed
-}
+import { Link } from "expo-router";
+import { useMemo, useState } from "react";
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { Button, TextInput } from "react-native-paper";
+import SurahCard from "@/components/Surahcard";
+import { useSurahList } from "@/services/queries";
+import { filterSurahs } from "@/services/surahSearch";
+import { useReadingProgressStore } from "@/store/readingProgress";
 
 export default function Home() {
-    const router = useRouter();
-    const [surahs, setSurahs] = useState<Surah[] | null>(null); // Correctly typed state
-    const [filteredSurahs, setFilteredSurahs] = useState<Surah[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { data: surahs, isPending, isError, refetch } = useSurahList();
     const [searchQuery, setSearchQuery] = useState("");
+    const lastRead = useReadingProgressStore((state) => state.lastRead);
 
-    useEffect(() => {
-        const fetchSurahs = async () => {
-            const surahData = await getSurahList();
+    const filteredSurahs = useMemo(() => (surahs ? filterSurahs(surahs, searchQuery) : []), [surahs, searchQuery]);
 
-            if (surahData && surahData.data) {
-                // Check if data and data.data exist
-                setSurahs(surahData.data);
-                setFilteredSurahs(surahData.data);
-            } else {
-                console.error("Invalid surah data received:", surahData);
-                // Handle the error appropriately, e.g., display an error message to the user
-            }
-            setIsLoading(false);
-        };
-
-        fetchSurahs();
-    }, []);
-
-    const handleSearch = (text: string) => {
-        // Type the text parameter
-        setSearchQuery(text);
-        if (surahs) {
-            // Check if surahs is not null before filtering
-            const filteredData = surahs.filter((surah) => {
-                console.log(surah);
-
-                return surah.namaLatin.toLowerCase().includes(text.toLowerCase());
-            });
-            console.log(filteredData);
-
-            setFilteredSurahs(filteredData);
-        } else {
-            setFilteredSurahs([]);
-        }
-    };
-
-    if (isLoading) {
+    if (isPending) {
         return (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <ActivityIndicator size="large" color="#0000ff" />
+            <View style={styles.centered}>
+                <ActivityIndicator size="large" color="green" />
             </View>
         );
     }
 
-    if (!surahs) {
-        return <Text>Error loading Surahs.</Text>;
+    if (isError) {
+        return (
+            <View style={styles.centered}>
+                <Text style={styles.errorText}>Couldn't load the Surah list. Check your connection and try again.</Text>
+                <Button mode="contained" buttonColor="green" onPress={() => refetch()}>
+                    Try again
+                </Button>
+            </View>
+        );
     }
 
     return (
-        <View style={{}}>
+        <View style={styles.container}>
             <TextInput
                 label="Search Surahs"
                 value={searchQuery}
-                onChangeText={handleSearch}
-                placeholder="Enter Surah name"
-                mode="outlined" // Use outlined mode for a cleaner look
+                onChangeText={setSearchQuery}
+                placeholder="Name, meaning or number"
+                mode="outlined"
                 style={styles.textInput}
-                theme={{
-                    colors: {
-                        primary: "#27ae60", // Green primary color
-                        background: "#FFFFFF",
-                    },
-                }}
+                theme={{ colors: { primary: "#27ae60", background: "#FFFFFF" } }}
             />
             <FlatList
                 data={filteredSurahs}
-                keyExtractor={(item) => item.nomor.toString()}
+                keyExtractor={(item) => item.number.toString()}
+                keyboardShouldPersistTaps="handled"
+                ListHeaderComponent={
+                    lastRead && !searchQuery ? (
+                        <Link href={{ pathname: "/surah/[id]", params: { id: lastRead.surahNumber, ayah: lastRead.ayahNumber } }} asChild>
+                            <Pressable style={styles.continueCard} accessibilityRole="button">
+                                <Text style={styles.continueLabel}>Continue reading</Text>
+                                <Text style={styles.continueTitle}>
+                                    {lastRead.surahNameLatin} · Ayah {lastRead.ayahNumber}
+                                </Text>
+                            </Pressable>
+                        </Link>
+                    ) : null
+                }
+                ListEmptyComponent={<Text style={styles.emptyText}>No Surah matches "{searchQuery}".</Text>}
                 renderItem={({ item }) => (
-                    <Link href={`/surah/${item.nomor}`} asChild>
-                        <TouchableOpacity>
-                            <SurahCard number={item.nomor} name={item.nama} translation={item.arti} ayahCount={item.jumlahAyat} type={item.tempatTurun} namaLatin={item.namaLatin} />
-                        </TouchableOpacity>
+                    <Link href={{ pathname: "/surah/[id]", params: { id: item.number } }} asChild>
+                        <Pressable accessibilityRole="button">
+                            <SurahCard
+                                number={item.number}
+                                name={item.nameArabic}
+                                translation={item.meaning}
+                                ayahCount={item.ayahCount}
+                                type={item.revelationPlace}
+                                namaLatin={item.nameLatin}
+                            />
+                        </Pressable>
                     </Link>
                 )}
             />
         </View>
     );
-
-    
 }
 
-
 const styles = StyleSheet.create({
-  textInput: {
-      marginHorizontal: 20,
-      marginBottom: 10,
-      marginTop: 10,
-      backgroundColor: 'white', // Ensure background is white for contrast
-      borderRadius: 8, // Add some border radius
-  },
+    container: {
+        flex: 1,
+    },
+    centered: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 24,
+        gap: 16,
+    },
+    errorText: {
+        fontSize: 16,
+        textAlign: "center",
+    },
+    textInput: {
+        marginHorizontal: 20,
+        marginBottom: 10,
+        marginTop: 10,
+        backgroundColor: "white",
+        borderRadius: 8,
+    },
+    continueCard: {
+        backgroundColor: "green",
+        borderRadius: 16,
+        padding: 16,
+        marginHorizontal: 16,
+        marginBottom: 12,
+    },
+    continueLabel: {
+        color: "#ffffffcc",
+        fontSize: 13,
+    },
+    continueTitle: {
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold",
+        marginTop: 2,
+    },
+    emptyText: {
+        textAlign: "center",
+        marginTop: 32,
+        fontSize: 16,
+        color: "#777777",
+    },
 });

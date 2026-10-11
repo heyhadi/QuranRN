@@ -1,0 +1,22 @@
+{
+  "code": 200,
+  "message": "Data retrieved successfully",
+  "data": {
+    "nomor": 112,
+    "nama": "الاخلاص",
+    "namaLatin": "Al-Ikhlas",
+    "jumlahAyat": 4,
+    "tempatTurun": "Mekah",
+    "arti": "Ikhlas",
+    "tafsir": [
+      {
+        "ayat": 1,
+        "teks": "Pada ayat ini, Allah menyuruh Nabi Muhammad menjawab pertanyaan orang-orang yang menanyakan tentang sifat Tuhannya, bahw"
+      },
+      {
+        "ayat": 2,
+        "teks": "Allah menambahkan dalam ayat ini penjelasan tentang sifat Tuhan Yang Maha Esa itu, yaitu Dia adalah Tuhan tempat meminta"
+      }
+    ]
+  }
+}
