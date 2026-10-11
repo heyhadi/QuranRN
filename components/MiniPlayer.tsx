@@ -9,8 +9,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import { ReciterTile } from "@/components/ui/ReciterTile";
 import { useTheme } from "@/components/useTheme";
 import { getReciter } from "@/constants/reciters";
-import { useAudioPlayerStore, useCurrentTrack } from "@/store/audioPlayer";
-import { useSettingsStore } from "@/store/settings";
+import { useActiveReciterId, useAudioPlayerStore, useCurrentTrack } from "@/store/audioPlayer";
 
 /**
  * The bar above the tabs while anything is playing. It stays on every screen, so recitation
@@ -30,7 +29,7 @@ export function MiniPlayer({ safeBottom = false }: { /** Pad for the home indica
     const previous = useAudioPlayerStore((state) => state.previous);
     const stop = useAudioPlayerStore((state) => state.stop);
     const hasNext = useAudioPlayerStore((state) => state.currentIndex !== null && state.currentIndex + 1 < state.queue.length);
-    const reciter = getReciter(useSettingsStore((state) => state.reciterId));
+    const reciter = getReciter(useActiveReciterId());
     const insets = useSafeAreaInsets();
     const [optionsOpen, setOptionsOpen] = useState(false);
 

@@ -267,3 +267,30 @@ describe("word clips", () => {
         expect(state().clipUrl).toBeNull();
     });
 });
+
+describe("session reciter (hifz practice)", () => {
+    it("plays with the override instead of the chosen reciter", () => {
+        state().playFrom(queue, 0, { reciterId: "husary-muallim" });
+
+        expect(playingUrl()).toBe("https://everyayah.com/data/Husary_Muallim_128kbps/112001.mp3");
+        expect(state().reciterOverrideId).toBe("husary-muallim");
+    });
+
+    it("keeps the override across ayahs and drops it when playback stops", () => {
+        state().playFrom(queue, 0, { reciterId: "husary-muallim" });
+        finishCurrentAyah();
+        expect(playingUrl()).toMatch(/Husary_Muallim_128kbps\/112002\.mp3$/);
+
+        state().stop();
+        expect(state().reciterOverrideId).toBeNull();
+    });
+
+    it("is not changed by a different reciter chosen in Settings meanwhile", () => {
+        state().playFrom(queue, 0, { reciterId: "husary-muallim" });
+        mockPlayer.replace.mockClear();
+
+        useSettingsStore.getState().setReciterId("rifai");
+
+        expect(mockPlayer.replace).not.toHaveBeenCalled();
+    });
+});

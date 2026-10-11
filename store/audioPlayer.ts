@@ -31,9 +31,11 @@ interface AudioPlayerState {
     previewReciterId: string | null;
     /** URL of the single word or clip playing now, or null. */
     clipUrl: string | null;
+    /** A reciter used just for the current session (hifz practice), instead of the chosen one. */
+    reciterOverrideId: string | null;
 
     /** Play `queue` from `index`, continuing to the next ayah when each one finishes. */
-    playFrom: (queue: Track[], index: number) => void;
+    playFrom: (queue: Track[], index: number, options?: { reciterId?: string }) => void;
     /** Tapping the ayah that is playing stops playback; tapping another ayah plays from there. */
     toggle: (queue: Track[], index: number) => void;
     pause: () => void;
@@ -83,8 +85,14 @@ function getPlayer(): AudioPlayer {
     return player;
 }
 
+/** The reciter in use: the session's override (hifz practice) if there is one, else the chosen reciter. */
+export function activeReciterId(): string {
+    return useAudioPlayerStore.getState().reciterOverrideId ?? useSettingsStore.getState().reciterId;
+}
+
 function playTrack(track: Track) {
-    const { reciterId, playbackRate } = useSettingsStore.getState();
+    const { playbackRate } = useSettingsStore.getState();
+    const reciterId = activeReciterId();
     const audio = getPlayer();
     replayPending = false;
     // A downloaded file plays without a connection; anything missing streams as usual.
@@ -119,10 +127,11 @@ export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
         sleepChoice: null,
         previewReciterId: null,
         clipUrl: null,
+        reciterOverrideId: null,
 
-        playFrom: (queue, index) => {
+        playFrom: (queue, index, options) => {
             if (!queue[index]) return;
-            set({ queue, previewReciterId: null, clipUrl: null });
+            set({ queue, previewReciterId: null, clipUrl: null, reciterOverrideId: options?.reciterId ?? null });
             startAt(index);
         },
 
@@ -198,7 +207,7 @@ export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
             repeatsLeft = 0;
             player?.pause();
             player?.clearLockScreenControls();
-            set({ queue: [], currentIndex: null, status: "stopped", previewReciterId: null, clipUrl: null });
+            set({ queue: [], currentIndex: null, status: "stopped", previewReciterId: null, clipUrl: null, reciterOverrideId: null });
         },
 
         advance: () => {
@@ -251,7 +260,8 @@ useSettingsStore.subscribe((state, previous) => {
     const { status, currentIndex, queue } = useAudioPlayerStore.getState();
     if (status === "stopped" || currentIndex === null) return;
     if (state.playbackRate !== previous.playbackRate) player?.setPlaybackRate(state.playbackRate);
-    if (state.reciterId !== previous.reciterId) {
+    // A session reciter (hifz practice) is not changed by the Settings choice.
+    if (state.reciterId !== previous.reciterId && !useAudioPlayerStore.getState().reciterOverrideId) {
         const wasPaused = status === "paused";
         playTrack(queue[currentIndex]);
         if (wasPaused) {
@@ -282,5 +292,12 @@ export function resetAudioPlayerForTests() {
     player = null;
     repeatsLeft = 0;
     replayPending = false;
-    useAudioPlayerStore.setState({ queue: [], currentIndex: null, status: "stopped", repeatEach: 1, gapMs: 1500, loopQueue: false, sleepAt: null, sleepChoice: null, previewReciterId: null, clipUrl: null });
+    useAudioPlayerStore.setState({ queue: [], currentIndex: null, status: "stopped", repeatEach: 1, gapMs: 1500, loopQueue: false, sleepAt: null, sleepChoice: null, previewReciterId: null, clipUrl: null, reciterOverrideId: null });
+}
+
+/** The reciter heard right now (and shown in the mini-player). */
+export function useActiveReciterId(): string {
+    const override = useAudioPlayerStore((state) => state.reciterOverrideId);
+    const chosen = useSettingsStore((state) => state.reciterId);
+    return override ?? chosen;
 }

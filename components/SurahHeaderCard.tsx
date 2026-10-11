@@ -20,7 +20,7 @@ interface SurahHeaderCardProps {
 export function SurahHeaderCard({ number, nameArabic, nameLatin, meaning, details }: SurahHeaderCardProps) {
     const { colors, fonts } = useTheme();
     const { heroBackground, heroInk, heroAccent } = colors;
-    const watermark = { position: "absolute" as const, width: 200, height: 200, borderWidth: 14, borderColor: heroAccent, opacity: 0.1, borderRadius: 26 };
+    const watermark = { position: "absolute" as const, width: 150, height: 150, borderWidth: 10, borderColor: heroAccent, opacity: 0.08, borderRadius: 20 };
 
     return (
         <View style={[styles.card, { backgroundColor: heroBackground }]}>
@@ -31,15 +31,15 @@ export function SurahHeaderCard({ number, nameArabic, nameLatin, meaning, detail
             <View style={[styles.frame, { borderColor: heroAccent }]} />
 
             <View style={styles.content}>
-                <StarNumber value={number} size={48} accent={heroAccent} ink={heroInk} />
+                <StarNumber value={number} size={38} accent={heroAccent} ink={heroInk} />
                 <Text style={[styles.arabic, { fontFamily: fonts.quranBold, color: heroInk }]} accessibilityLabel={nameLatin}>
                     {nameArabic}
                 </Text>
-                <AppText variant="title" color={heroAccent} style={styles.center}>
-                    {nameLatin}
-                </AppText>
-                <AppText color={heroInk} style={[styles.center, styles.meaning]}>
-                    {meaning}
+                <AppText color={heroInk} style={styles.center}>
+                    <AppText variant="heading" color={heroAccent}>
+                        {nameLatin}
+                    </AppText>
+                    {`  ·  ${meaning}`}
                 </AppText>
                 <View style={styles.chips}>
                     {details.map((detail) => (
@@ -56,15 +56,14 @@ export function SurahHeaderCard({ number, nameArabic, nameLatin, meaning, detail
 }
 
 const styles = StyleSheet.create({
-    card: { borderRadius: 24, overflow: "hidden", paddingVertical: 28, paddingHorizontal: 20 },
-    disc: { position: "absolute", width: 260, height: 260, borderRadius: 130, bottom: -150, left: -70, opacity: 0.18 },
-    watermarkOne: { right: -70, top: -70 },
-    frame: { position: "absolute", top: 8, left: 8, right: 8, bottom: 8, borderWidth: StyleSheet.hairlineWidth * 2, borderRadius: 17, opacity: 0.55 },
+    card: { borderRadius: 20, overflow: "hidden", paddingVertical: 18, paddingHorizontal: 16 },
+    disc: { position: "absolute", width: 200, height: 200, borderRadius: 100, bottom: -120, left: -60, opacity: 0.18 },
+    watermarkOne: { right: -55, top: -55 },
+    frame: { position: "absolute", top: 6, left: 6, right: 6, bottom: 6, borderWidth: StyleSheet.hairlineWidth * 2, borderRadius: 15, opacity: 0.5 },
     content: { alignItems: "center", gap: 4 },
-    arabic: { fontSize: 46, lineHeight: 84, textAlign: "center", writingDirection: "rtl", marginTop: 4 },
+    arabic: { fontSize: 36, lineHeight: 62, textAlign: "center", writingDirection: "rtl" },
     center: { textAlign: "center" },
-    meaning: { opacity: 0.85, textAlign: "center" },
-    chips: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 8, marginTop: 14 },
-    chip: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 999 },
+    chips: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 6, marginTop: 10 },
+    chip: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
     chipText: { fontWeight: "600" },
 });

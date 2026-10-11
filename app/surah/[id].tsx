@@ -24,6 +24,7 @@ import { translationText } from "@/services/richText";
 import type { Ayah } from "@/services/types";
 import { usePlayingAyah, useAudioPlayerStore, type Track } from "@/store/audioPlayer";
 import { bookmarkKey, useBookmarksStore } from "@/store/bookmarks";
+import { useKhatamStore } from "@/store/khatam";
 import { useNotesStore } from "@/store/notes";
 import { useReadingProgressStore } from "@/store/readingProgress";
 import { useSettingsStore } from "@/store/settings";
@@ -72,6 +73,7 @@ export default function Surah() {
     const playingAyah = usePlayingAyah(surahNumber);
     const toggleAudio = useAudioPlayerStore((state) => state.toggle);
     const setLastRead = useReadingProgressStore((state) => state.setLastRead);
+    const recordRead = useKhatamStore((state) => state.recordRead);
 
     const [sheetAyah, setSheetAyah] = useState<Ayah | null>(null);
     const [sheetTab, setSheetTab] = useState<SheetTab>("words");
@@ -126,18 +128,23 @@ export default function Surah() {
     const surahNameRef = useRef<string | null>(null);
     surahNameRef.current = surah?.nameLatin ?? null;
 
+    // Every ayah that was on screen at some point counts as read, for the khatam planner and streak.
+    const seenAyahs = useRef(new Set<number>());
     const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken<Ayah>[] }) => {
-        const first = viewableItems.find((token) => token.isViewable)?.item;
-        if (first) lastVisibleAyah.current = first.ayahNumber;
+        const visible = viewableItems.filter((token) => token.isViewable && token.item);
+        if (visible[0]) lastVisibleAyah.current = visible[0].item.ayahNumber;
+        for (const token of visible) seenAyahs.current.add(token.item.ayahNumber);
     }).current;
 
     useEffect(() => {
+        const seen = seenAyahs.current;
         return () => {
             if (lastVisibleAyah.current !== null && surahNameRef.current) {
                 setLastRead({ surahNumber, ayahNumber: lastVisibleAyah.current, surahNameLatin: surahNameRef.current });
             }
+            recordRead(surahNumber, [...seen]);
         };
-    }, [surahNumber, setLastRead]);
+    }, [surahNumber, setLastRead, recordRead]);
 
     const handleBookmarkPress = useCallback(
         (ayah: Ayah) => {
@@ -249,7 +256,12 @@ export default function Surah() {
             <Stack.Screen
                 options={{
                     title: surah.nameLatin,
-                    headerRight: () => <IconButton icon="text-outline" size={34} onPress={() => setDisplayOpen(true)} accessibilityLabel={t("reader.displaySettings")} />,
+                    headerRight: () => (
+                        <View style={styles.headerButtons}>
+                            <IconButton icon="school-outline" size={34} onPress={() => router.push({ pathname: "/hifz/[id]", params: { id: surah.number } })} accessibilityLabel={t("hifz.open")} />
+                            <IconButton icon="text-outline" size={34} onPress={() => setDisplayOpen(true)} accessibilityLabel={t("reader.displaySettings")} />
+                        </View>
+                    ),
                 }}
             />
             <FlatList
@@ -389,6 +401,7 @@ function DisplaySettings({ arabicSize, sampleText, surahNumber, ayahCount, isEng
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
+    headerButtons: { flexDirection: "row", gap: 8 },
     flex: { flex: 1 },
     centered: { flex: 1, justifyContent: "center", alignItems: "center", padding: 24, gap: 16 },
     centerText: { textAlign: "center" },

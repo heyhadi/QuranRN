@@ -17,6 +17,10 @@ import type { AyahSearchResult } from "@/services/quranCom";
 import { parseHighlight } from "@/services/richText";
 import { filterSurahs } from "@/services/surahSearch";
 import type { SurahSummary } from "@/services/types";
+import { dateKey, dailyTarget } from "@/services/khatam";
+import { TOTAL_AYAHS } from "@/constants/ayahCounts";
+import { useHifzStore } from "@/store/hifz";
+import { useKhatamStore, useReadCount } from "@/store/khatam";
 import { useReadingProgressStore } from "@/store/readingProgress";
 
 type ListMode = "surah" | "juz" | "ayah";
@@ -29,6 +33,10 @@ export default function Home() {
     const surahList = useSurahList();
     const englishMeanings = useEnglishSurahMeanings(language === "en");
     const lastRead = useReadingProgressStore((state) => state.lastRead);
+    const readCount = useReadCount();
+    const khatamPlan = useKhatamStore((state) => state.plan);
+    const todayRead = useKhatamStore((state) => state.log[dateKey(new Date())] ?? 0);
+    const memorizedTotal = useHifzStore((state) => Object.keys(state.memorized).length);
     const [searchQuery, setSearchQuery] = useState("");
     const [mode, setMode] = useState<ListMode>("surah");
 
@@ -98,6 +106,37 @@ export default function Home() {
                         {surahByNumber.get(lastRead.surahNumber)?.nameArabic ?? ""}
                     </AppText>
                 </Pressable>
+            ) : null}
+
+            {!searchQuery ? (
+                <View style={styles.tiles}>
+                    <Pressable
+                        onPress={() => router.push("/khatam")}
+                        accessibilityRole="button"
+                        style={[styles.tile, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg }]}
+                    >
+                        <AppText variant="label" muted>
+                            {t("khatam.tile")}
+                        </AppText>
+                        <AppText variant="title">{t("khatam.percent", { value: Math.floor((readCount / TOTAL_AYAHS) * 100) })}</AppText>
+                        <AppText variant="caption" muted>
+                            {khatamPlan ? t("khatam.todayRead", { read: todayRead, goal: dailyTarget(khatamPlan.targetDays) }) : t("khatam.start")}
+                        </AppText>
+                    </Pressable>
+                    <Pressable
+                        onPress={() => router.push("/hifz")}
+                        accessibilityRole="button"
+                        style={[styles.tile, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg }]}
+                    >
+                        <AppText variant="label" muted>
+                            {t("hifz.tile")}
+                        </AppText>
+                        <AppText variant="title">{memorizedTotal}</AppText>
+                        <AppText variant="caption" muted numberOfLines={1}>
+                            {t("hifz.count", { count: memorizedTotal })}
+                        </AppText>
+                    </Pressable>
+                </View>
             ) : null}
 
             <View style={[styles.search, { backgroundColor: colors.surface2, borderRadius: radius.md }]}>
@@ -238,6 +277,8 @@ const styles = StyleSheet.create({
     continueCard: { flexDirection: "row", alignItems: "center", padding: 16, gap: 12 },
     continueText: { flex: 1, gap: 2 },
     dim: { opacity: 0.85 },
+    tiles: { flexDirection: "row", gap: 12 },
+    tile: { flex: 1, borderWidth: StyleSheet.hairlineWidth, padding: 14, gap: 2 },
     search: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 12 },
     searchInput: { flex: 1, fontSize: 16, paddingVertical: 10 },
     result: { paddingVertical: 12, gap: 4, borderBottomWidth: StyleSheet.hairlineWidth },

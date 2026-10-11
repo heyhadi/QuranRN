@@ -134,6 +134,9 @@ function RootLayoutNav() {
                             <Stack.Screen name="surah/[id]" />
                             <Stack.Screen name="reciters" />
                             <Stack.Screen name="tajweed" />
+                            <Stack.Screen name="khatam" />
+                            <Stack.Screen name="hifz/index" />
+                            <Stack.Screen name="hifz/[id]" />
                         </Stack>
                         <Toast />
                     </ThemeProvider>
