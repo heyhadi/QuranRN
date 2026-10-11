@@ -36,7 +36,8 @@ export default function TabLayout() {
         >
             <Tabs.Screen name="index" options={{ title: t("tabs.quran"), tabBarIcon: tabIcon("book", "book-outline") }} />
             <Tabs.Screen name="bookmark" options={{ title: t("tabs.saved"), tabBarIcon: tabIcon("bookmark", "bookmark-outline") }} />
-            <Tabs.Screen name="qibla" options={{ title: t("tabs.qibla"), tabBarIcon: tabIcon("compass", "compass-outline") }} />
+            <Tabs.Screen name="prayer" options={{ title: t("tabs.prayer"), tabBarIcon: tabIcon("moon", "moon-outline") }} />
+            <Tabs.Screen name="more" options={{ title: t("tabs.more"), tabBarIcon: tabIcon("apps", "apps-outline") }} />
             <Tabs.Screen name="settings" options={{ title: t("tabs.settings"), tabBarIcon: tabIcon("settings", "settings-outline") }} />
         </Tabs>
     );

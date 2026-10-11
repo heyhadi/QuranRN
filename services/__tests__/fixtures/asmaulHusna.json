@@ -1,0 +1,28 @@
+{
+ "data": [
+  {
+   "name": "الرَّحْمَنُ",
+   "transliteration": "Ar Rahmaan",
+   "number": 1,
+   "en": {
+    "meaning": "The Beneficent"
+   }
+  },
+  {
+   "name": "الرَّحِيمُ",
+   "transliteration": "Ar Raheem",
+   "number": 2,
+   "en": {
+    "meaning": "The Merciful"
+   }
+  },
+  {
+   "name": "الصَّبُورُ",
+   "transliteration": "As Saboor",
+   "number": 99,
+   "en": {
+    "meaning": "The Patient One"
+   }
+  }
+ ]
+}

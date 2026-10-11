@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { TafsirId } from "@/constants/editions";
+import { getAsmaulHusna, getDuas } from "./duas";
 import { getFootnote, getQuranComTafsir, getTajweed, getTajweedVerse, getTranslation, getWords, searchAyahs } from "./quranCom";
 import { getEnglishSurahMeanings, getSurahDetail, getSurahList, getTafsir } from "./quranService";
 
@@ -90,4 +91,13 @@ export function useAyahSearch(query: string, language: "en" | "id") {
 /** One ayah with tajweed colours, e.g. a rule's example. */
 export function useTajweedVerse(verseKey: string) {
     return useQuery({ queryKey: ["tajweedVerse", verseKey], queryFn: () => getTajweedVerse(verseKey), staleTime: Infinity });
+}
+
+/** Indonesian doa from equran.id; saved on the device once fetched, like the Surahs. */
+export function useDuas() {
+    return useQuery({ queryKey: ["duas"], queryFn: getDuas, staleTime: Infinity });
+}
+
+export function useAsmaulHusna() {
+    return useQuery({ queryKey: ["asmaulHusna"], queryFn: getAsmaulHusna, staleTime: Infinity });
 }
