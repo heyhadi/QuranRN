@@ -247,3 +247,23 @@ describe("downloaded audio", () => {
         expect(playingUrl()).toMatch(/^https:\/\/everyayah\.com/);
     });
 });
+
+describe("word clips", () => {
+    it("plays a clip and stops it when tapped again", () => {
+        state().toggleClip("https://verses.quran.com/wbw/112_001_001.mp3");
+        expect(playingUrl()).toBe("https://verses.quran.com/wbw/112_001_001.mp3");
+        expect(state().clipUrl).not.toBeNull();
+
+        state().toggleClip("https://verses.quran.com/wbw/112_001_001.mp3");
+        expect(state().clipUrl).toBeNull();
+    });
+
+    it("clears when the clip finishes, and replaces a running recitation", () => {
+        state().playFrom(queue, 0);
+        state().toggleClip("https://verses.quran.com/wbw/112_001_002.mp3");
+        expect(state().status).toBe("stopped");
+
+        finishCurrentAyah();
+        expect(state().clipUrl).toBeNull();
+    });
+});

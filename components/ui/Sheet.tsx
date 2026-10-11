@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { Modal, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import { KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { useTheme } from "@/components/useTheme";
@@ -25,7 +25,7 @@ export function Sheet({ visible, onDismiss, title, children, maxHeightRatio = 0.
 
     return (
         <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss} statusBarTranslucent>
-            <View style={styles.root}>
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.root}>
                 <Pressable
                     style={[StyleSheet.absoluteFill, { backgroundColor: scheme === "dark" ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0.4)" }]}
                     onPress={onDismiss}
@@ -56,7 +56,7 @@ export function Sheet({ visible, onDismiss, title, children, maxHeightRatio = 0.
                     </View>
                     {children}
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         </Modal>
     );
 }

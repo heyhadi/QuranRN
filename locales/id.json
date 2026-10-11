@@ -58,7 +58,9 @@
     "downloadFailed": "Unduhan berhenti. Periksa koneksi internet, lalu coba lagi.",
     "removeDownload": "Hapus unduhan",
     "cancelDownload": "Batal",
-    "audio": "Audio"
+    "audio": "Audio",
+    "translationFallback": "Terjemahan bahasa Inggris tidak dapat dimuat, jadi terjemahan Indonesia ditampilkan.",
+    "tajweedLegend": "Warna tajwid"
   },
   "saved": {
     "title": "Tersimpan",
@@ -93,7 +95,7 @@
     "reading": "Membaca",
     "arabicSize": "Ukuran teks Arab",
     "showTranslation": "Tampilkan terjemahan",
-    "translationNote": "Terjemahan: Kemenag RI. Terjemahan bahasa Inggris hadir di pembaruan berikutnya.",
+    "translationNote": "Indonesia: Kemenag RI. Inggris: edisi yang Anda pilih di bawah.",
     "audio": "Audio",
     "reciter": "Qari",
     "about": "Tentang",
@@ -142,5 +144,154 @@
     "selected": "Dipilih",
     "englishAudio": "Audio Inggris",
     "hint": "Mengganti qari saat mendengarkan tidak menghilangkan posisi Anda."
+  },
+  "tajweed": {
+    "title": "Tajwid",
+    "legend": "Warna tajwid",
+    "legendHint": "Ketuk huruf berwarna pada teks untuk melihat hukumnya.",
+    "learn": "Pelajari hukum tajwid",
+    "learnTitle": "Hukum tajwid",
+    "learnIntro": "Setiap hukum punya warna pada teks, penjelasan singkat, dan contoh nyata yang bisa didengar.",
+    "what": "Pengertian",
+    "how": "Cara membacanya",
+    "example": "Contoh",
+    "playExample": "Dengar {{reference}}",
+    "stopExample": "Hentikan",
+    "show": "Warnai teks menurut hukum tajwid",
+    "colorError": "Warna tajwid tidak dapat dimuat, jadi teks polos ditampilkan.",
+    "rules": {
+      "ham_wasl": {
+        "name": "Hamzah washal",
+        "what": "Hamzah penyambung di awal kata.",
+        "how": "Dibaca hanya saat Anda memulai bacaan dari kata ini. Jika disambung dari kata sebelumnya, tidak dibaca; sambungkan bunyinya."
+      },
+      "laam_shamsiyah": {
+        "name": "Lam syamsiyah",
+        "what": "Lam pada “al-” yang bertemu huruf syamsiyah.",
+        "how": "Lam tidak dibaca. Bacalah huruf sesudahnya dengan tasydid, seolah-olah dobel."
+      },
+      "silent": {
+        "name": "Huruf tidak dibaca",
+        "what": "Huruf yang ditulis tetapi tidak dibaca.",
+        "how": "Lewati saat membaca. Tetap tidak dibaca, baik berhenti maupun disambung."
+      },
+      "madda_normal": {
+        "name": "Mad thabi'i (asli)",
+        "what": "Bunyi panjang asli: alif setelah fathah, wau setelah dammah, ya setelah kasrah.",
+        "how": "Panjangkan 2 harakat, tidak lebih dan tidak kurang."
+      },
+      "madda_permissible": {
+        "name": "Mad jaiz",
+        "what": "Panjang yang boleh 2, 4, atau 6 harakat. Umum terjadi saat berhenti di akhir ayat.",
+        "how": "Pilih satu panjang dan pertahankan sama sepanjang bacaan."
+      },
+      "madda_obligatory": {
+        "name": "Mad wajib muttasil",
+        "what": "Huruf mad yang bertemu hamzah dalam satu kata.",
+        "how": "Panjangkan 4 sampai 5 harakat."
+      },
+      "madda_necessary": {
+        "name": "Mad lazim",
+        "what": "Huruf mad yang bertemu huruf bersukun atau bertasydid dalam satu kata.",
+        "how": "Panjangkan 6 harakat."
+      },
+      "qalaqah": {
+        "name": "Qalqalah (memantul)",
+        "what": "Huruf ق ط ب ج د yang bersukun atau saat berhenti padanya.",
+        "how": "Pantulkan huruf dengan ringan, tanpa menambah harakat."
+      },
+      "ikhafa": {
+        "name": "Ikhfa (samar)",
+        "what": "Nun mati atau tanwin sebelum salah satu dari 15 huruf.",
+        "how": "Samarkan nun: bunyikan dengan dengung sekitar 2 harakat sambil lidah bergerak ke huruf berikutnya."
+      },
+      "ikhafa_shafawi": {
+        "name": "Ikhfa syafawi",
+        "what": "Mim mati sebelum huruf ب.",
+        "how": "Samarkan mim dengan dengung ringan, bibir hanya menempel tipis."
+      },
+      "ghunnah": {
+        "name": "Ghunnah (dengung)",
+        "what": "Nun atau mim bertasydid (نّ, مّ).",
+        "how": "Dengungkan 2 harakat lewat hidung."
+      },
+      "iqlab": {
+        "name": "Iqlab (mengubah)",
+        "what": "Nun mati atau tanwin sebelum huruf ب.",
+        "how": "Ubah nun menjadi bunyi mim yang disamarkan, dengan dengung sekitar 2 harakat."
+      },
+      "idgham_ghunnah": {
+        "name": "Idgham bighunnah",
+        "what": "Nun mati atau tanwin sebelum ي ن م atau و.",
+        "how": "Lebur nun ke huruf berikutnya dengan dengung, seolah-olah dobel."
+      },
+      "idgham_wo_ghunnah": {
+        "name": "Idgham bilaghunnah",
+        "what": "Nun mati atau tanwin sebelum ل atau ر.",
+        "how": "Lebur nun sepenuhnya ke huruf berikutnya, tanpa dengung."
+      },
+      "idgham_shafawi": {
+        "name": "Idgham syafawi",
+        "what": "Mim mati bertemu mim.",
+        "how": "Lebur mim pertama ke mim kedua dengan dengung 2 harakat."
+      },
+      "idgham_mutajanisayn": {
+        "name": "Idgham mutajanisain",
+        "what": "Dua huruf dengan tempat keluar yang sama, huruf pertama bersukun.",
+        "how": "Lebur huruf pertama ke huruf kedua, dibaca sekali dengan tasydid."
+      },
+      "idgham_mutaqaribayn": {
+        "name": "Idgham mutaqaribain",
+        "what": "Dua huruf dengan tempat keluar yang berdekatan, huruf pertama bersukun.",
+        "how": "Lebur huruf pertama ke huruf kedua, dibaca sekali dengan tasydid."
+      }
+    }
+  },
+  "ayahSheet": {
+    "title": "{{surah}} {{ayah}}",
+    "words": "Per kata",
+    "tafsir": "Tafsir",
+    "notes": "Catatan",
+    "wordsLoading": "Memuat kata-kata…",
+    "wordsError": "Kata-kata untuk ayat ini tidak dapat dimuat.",
+    "tapWord": "Ketuk kata untuk mendengarnya.",
+    "playWord": "Putar kata {{word}}",
+    "wordsSource": "Per kata: quran.com",
+    "tafsirError": "Tafsir ini tidak dapat dimuat. Periksa koneksi internet, lalu coba lagi.",
+    "tafsirArabic": "Tafsir ini berbahasa Arab.",
+    "chooseTafsir": "Tafsir",
+    "noteLabel": "Catatan Anda",
+    "notePlaceholder": "Tulis arti ayat ini bagi Anda…",
+    "noteSaved": "Tersimpan",
+    "collection": "Koleksi",
+    "noCollection": "Tidak ada",
+    "newCollection": "Koleksi baru",
+    "newCollectionPlaceholder": "Nama, mis. Harian",
+    "addCollection": "Tambah",
+    "removeCollection": "Hapus “{{name}}”",
+    "copy": "Salin teks",
+    "copied": "Disalin"
+  },
+  "footnote": {
+    "title": "Catatan kaki",
+    "error": "Catatan kaki tidak dapat dimuat."
+  },
+  "search": {
+    "surah": "Surah",
+    "ayah": "Ayat",
+    "ayahHint": "Cari semua ayat menurut artinya, mis. “sabar”.",
+    "ayahMin": "Ketik minimal 3 huruf.",
+    "ayahError": "Pencarian memerlukan koneksi internet. Coba lagi saat Anda daring.",
+    "ayahNone": "Tidak ada ayat yang cocok dengan “{{query}}”.",
+    "ayahResult": "{{surah}} {{ayah}}"
+  },
+  "settingsReading": {
+    "tajweed": "Warna tajwid",
+    "tajweedNote": "Mewarnai setiap hukum tajwid pada teks Arab.",
+    "legend": "Panduan warna dan hukum",
+    "transliteration": "Transliterasi",
+    "translationEdition": "Terjemahan bahasa Inggris",
+    "tafsir": "Tafsir utama",
+    "tafsirFollow": "Mengikuti bahasa aplikasi"
   }
 }

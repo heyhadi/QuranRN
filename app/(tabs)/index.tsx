@@ -77,20 +77,20 @@ export default function Home() {
                 <Pressable
                     onPress={() => openSurah(lastRead.surahNumber, lastRead.ayahNumber)}
                     accessibilityRole="button"
-                    style={({ pressed }) => [styles.continueCard, { backgroundColor: colors.mushaf, borderRadius: radius.lg, opacity: pressed ? 0.9 : 1 }]}
+                    style={({ pressed }) => [styles.continueCard, { backgroundColor: colors.heroBackground, borderRadius: radius.lg, opacity: pressed ? 0.9 : 1 }]}
                 >
                     <View style={styles.continueText}>
-                        <AppText variant="caption" color={colors.onMushaf} style={styles.dim}>
+                        <AppText variant="caption" color={colors.heroAccent} style={styles.dim}>
                             {t("home.continueReading")}
                         </AppText>
-                        <AppText variant="title" color={colors.onMushaf}>
+                        <AppText variant="title" color={colors.heroInk}>
                             {lastRead.surahNameLatin}
                         </AppText>
-                        <AppText variant="caption" color={colors.onMushaf} style={styles.dim}>
+                        <AppText variant="caption" color={colors.heroInk} style={styles.dim}>
                             {t("home.continueAyah", { ayah: lastRead.ayahNumber, juz: juzOf(lastRead.surahNumber, lastRead.ayahNumber) })}
                         </AppText>
                     </View>
-                    <AppText style={{ fontFamily: fonts.quran, fontSize: 26, lineHeight: 48, color: colors.onMushaf }}>
+                    <AppText style={{ fontFamily: fonts.quran, fontSize: 26, lineHeight: 48, color: colors.heroAccent }}>
                         {surahByNumber.get(lastRead.surahNumber)?.nameArabic ?? ""}
                     </AppText>
                 </Pressable>

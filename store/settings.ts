@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { DEFAULT_ENGLISH_TRANSLATION_ID, type TafsirId } from "@/constants/editions";
 import { DEFAULT_RECITER_ID, legacyReciterIds } from "@/constants/reciters";
 import { arabicFontSize } from "@/constants/theme";
 import { zustandStorage } from "./storage";
@@ -19,6 +20,14 @@ interface SettingsState {
     /** Arabic text size in points. */
     arabicFontSize: number;
     showTranslation: boolean;
+    /** Colour the Arabic text by tajweed rule. */
+    tajweedEnabled: boolean;
+    /** Show the Latin transliteration under each ayah. */
+    showTransliteration: boolean;
+    /** quran.com translation shown when the app is in English. */
+    englishTranslationId: number;
+    /** The tafsir to open; null follows the app language. */
+    tafsirChoice: TafsirId | null;
     setReciterId: (reciterId: string) => void;
     toggleFavouriteReciter: (reciterId: string) => void;
     setPlaybackRate: (rate: number) => void;
@@ -27,6 +36,10 @@ interface SettingsState {
     /** Step the Arabic size up (+1) or down (-1), staying inside the allowed range. */
     stepArabicFontSize: (direction: 1 | -1) => void;
     setShowTranslation: (show: boolean) => void;
+    setTajweedEnabled: (enabled: boolean) => void;
+    setShowTransliteration: (show: boolean) => void;
+    setEnglishTranslationId: (id: number) => void;
+    setTafsirChoice: (choice: TafsirId | null) => void;
 }
 
 export function clampArabicFontSize(size: number): number {
@@ -43,6 +56,10 @@ export const useSettingsStore = create<SettingsState>()(
             languagePreference: "system",
             arabicFontSize: arabicFontSize.default,
             showTranslation: true,
+            tajweedEnabled: true,
+            showTransliteration: false,
+            englishTranslationId: DEFAULT_ENGLISH_TRANSLATION_ID,
+            tafsirChoice: null,
             setReciterId: (reciterId) => set({ reciterId }),
             toggleFavouriteReciter: (reciterId) =>
                 set((state) => ({
@@ -56,6 +73,10 @@ export const useSettingsStore = create<SettingsState>()(
             stepArabicFontSize: (direction) =>
                 set((state) => ({ arabicFontSize: clampArabicFontSize(state.arabicFontSize + direction * arabicFontSize.step) })),
             setShowTranslation: (showTranslation) => set({ showTranslation }),
+            setTajweedEnabled: (tajweedEnabled) => set({ tajweedEnabled }),
+            setShowTransliteration: (showTransliteration) => set({ showTransliteration }),
+            setEnglishTranslationId: (englishTranslationId) => set({ englishTranslationId }),
+            setTafsirChoice: (tafsirChoice) => set({ tafsirChoice }),
         }),
         {
             name: "settings",

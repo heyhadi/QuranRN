@@ -29,6 +29,8 @@ interface AudioPlayerState {
     sleepChoice: number | null;
     /** The reciter whose sample (Al-Fatihah 1) is playing in the picker, or null. */
     previewReciterId: string | null;
+    /** URL of the single word or clip playing now, or null. */
+    clipUrl: string | null;
 
     /** Play `queue` from `index`, continuing to the next ayah when each one finishes. */
     playFrom: (queue: Track[], index: number) => void;
@@ -48,6 +50,8 @@ interface AudioPlayerState {
     setSleepTimer: (minutes: number | null) => void;
     /** Play the first ayah with a given reciter without changing the chosen one; again to stop it. */
     togglePreview: (reciterId: string) => void;
+    /** Play a short clip such as one word; again to stop it. Replaces any recitation. */
+    toggleClip: (url: string) => void;
 }
 
 // One player for the whole app, created on first use. State lives in the store and is read with
@@ -71,7 +75,7 @@ function getPlayer(): AudioPlayer {
         player.addListener("playbackStatusUpdate", (status) => {
             if (!status.didJustFinish) return;
             const store = useAudioPlayerStore.getState();
-            if (store.previewReciterId) useAudioPlayerStore.setState({ previewReciterId: null });
+            if (store.previewReciterId || store.clipUrl) useAudioPlayerStore.setState({ previewReciterId: null, clipUrl: null });
             else store.advance();
         });
         void setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true, interruptionMode: "doNotMix" });
@@ -114,10 +118,11 @@ export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
         sleepAt: null,
         sleepChoice: null,
         previewReciterId: null,
+        clipUrl: null,
 
         playFrom: (queue, index) => {
             if (!queue[index]) return;
-            set({ queue, previewReciterId: null });
+            set({ queue, previewReciterId: null, clipUrl: null });
             startAt(index);
         },
 
@@ -173,13 +178,27 @@ export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
             set({ previewReciterId: reciterId });
         },
 
+        toggleClip: (url) => {
+            if (get().clipUrl === url) {
+                player?.pause();
+                set({ clipUrl: null });
+                return;
+            }
+            get().stop();
+            const audio = getPlayer();
+            audio.replace({ uri: url });
+            audio.setPlaybackRate(1);
+            audio.play();
+            set({ clipUrl: url });
+        },
+
         stop: () => {
             clearGap();
             replayPending = false;
             repeatsLeft = 0;
             player?.pause();
             player?.clearLockScreenControls();
-            set({ queue: [], currentIndex: null, status: "stopped", previewReciterId: null });
+            set({ queue: [], currentIndex: null, status: "stopped", previewReciterId: null, clipUrl: null });
         },
 
         advance: () => {
@@ -263,5 +282,5 @@ export function resetAudioPlayerForTests() {
     player = null;
     repeatsLeft = 0;
     replayPending = false;
-    useAudioPlayerStore.setState({ queue: [], currentIndex: null, status: "stopped", repeatEach: 1, gapMs: 1500, loopQueue: false, sleepAt: null, sleepChoice: null, previewReciterId: null });
+    useAudioPlayerStore.setState({ queue: [], currentIndex: null, status: "stopped", repeatEach: 1, gapMs: 1500, loopQueue: false, sleepAt: null, sleepChoice: null, previewReciterId: null, clipUrl: null });
 }
