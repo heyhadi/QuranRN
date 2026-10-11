@@ -67,3 +67,42 @@ describe("mapTajweedChapter", () => {
         expect(plainText(byAyah[2])).toBe(stripped(verse("112:2")));
     });
 });
+
+describe("parseTajweed with the per-word tag", () => {
+    it("reads <rule class=…> the same way as <tajweed class=…>", () => {
+        expect(parseTajweed("ا<rule class=madda_necessary>لٓ</rule><rule class=madda_necessary>مٓ</rule>")).toEqual([
+            { text: "ا" },
+            { text: "لٓ", rule: "madda_necessary" },
+            { text: "مٓ", rule: "madda_necessary" },
+        ]);
+    });
+});
+
+describe("parseTajweed with nested rules", () => {
+    it("colours the inner rule's letters with the inner rule and the rest with the outer one", () => {
+        const markup = "تُسۡرِف<rule class=madda_obligatory_monfasel>ُوٓ<rule class=slnt>اۡ</rule>\u200cۚ</rule>";
+
+        expect(parseTajweed(markup)).toEqual([
+            { text: "تُسۡرِف" },
+            { text: "ُوٓ", rule: "madda_permissible" },
+            { text: "اۡ", rule: "silent" },
+            { text: "\u200cۚ", rule: "madda_permissible" },
+        ]);
+    });
+
+    it("lets a wrapper class we do not know leave its letters to the rule around it", () => {
+        expect(parseTajweed("ذ<rule class=madda_normal><rule class=custom-alef-maksora>ٰ</rule></rule>لِكَ")).toEqual([{ text: "ذ" }, { text: "ٰ", rule: "madda_normal" }, { text: "لِكَ" }]);
+    });
+
+    it("leaves no markup behind", () => {
+        const parsed = parseTajweed("a<rule class=qalaqah>b<rule class=slnt>c</rule></rule>d<span class=end>٢</span>");
+        expect(parsed.map((segment) => segment.text).join("")).toBe("abcd");
+    });
+});
+
+describe("the mushaf's two obligatory madd classes", () => {
+    it("reads the connected madd as obligatory and the separated madd as permissible", () => {
+        expect(parseTajweed("<rule class=madda_obligatory_mottasel>ءَا</rule>")[0].rule).toBe("madda_obligatory");
+        expect(parseTajweed("<rule class=madda_obligatory_monfasel>ءَا</rule>")[0].rule).toBe("madda_permissible");
+    });
+});

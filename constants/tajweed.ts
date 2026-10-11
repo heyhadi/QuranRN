@@ -52,9 +52,18 @@ export const tajweedRules: TajweedRule[] = [
 
 const byApiClass = new Map(tajweedRules.map((rule) => [rule.apiClass, rule]));
 
+/**
+ * The per-word text of a mushaf page splits the obligatory madd in two: the connected madd (muttasil) is
+ * obligatory, and the separated madd (munfasil) is permissible, so each uses that rule's colour.
+ */
+const apiClassAliases: Record<string, string> = {
+    madda_obligatory_mottasel: "madda_obligatory",
+    madda_obligatory_monfasel: "madda_permissible",
+};
+
 /** Our rule for a class name in quran.com's markup, or undefined for one we don't know. */
 export function ruleForApiClass(apiClass: string): TajweedRule | undefined {
-    return byApiClass.get(apiClass);
+    return byApiClass.get(apiClassAliases[apiClass] ?? apiClass);
 }
 
 export function getTajweedRule(id: TajweedRuleId): TajweedRule {

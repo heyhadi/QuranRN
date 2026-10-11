@@ -22,6 +22,7 @@ export default function MoreScreen() {
     const memorized = useHifzStore((state) => Object.keys(state.memorized).length);
 
     const items: { icon: IconName; title: string; subtitle: string; onPress: () => void }[] = [
+        { icon: "documents-outline", title: t("mushaf.title"), subtitle: t("mushaf.subtitle"), onPress: () => router.push("/mushaf") },
         { icon: "flag-outline", title: t("khatam.title"), subtitle: khatamPlan ? t("khatam.daysLeft", { count: Math.max(0, khatamPlan.targetDays) }) : t("khatam.intro"), onPress: () => router.push("/khatam") },
         { icon: "repeat-outline", title: t("hifz.title"), subtitle: t("hifz.count", { count: memorized }), onPress: () => router.push("/hifz") },
         { icon: "sunny-outline", title: t("adhkar.title"), subtitle: t("adhkar.subtitle"), onPress: () => router.push("/adhkar") },
