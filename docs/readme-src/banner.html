@@ -1,0 +1,56 @@
+<!doctype html>
+<!-- 1280×800 README banner: headline + subline on mushaf green, with up to three real Simulator
+     screenshots in phone frames. Filled from the query string (h, s, shot=...&shot=...).
+     Rendered by scripts/readme-images.sh. -->
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Amiri Quran"; src: url("../../assets/fonts/AmiriQuran-Regular.ttf"); }
+  html, body { margin: 0; width: 1280px; height: 800px; overflow: hidden; }
+  body {
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    color: #F4F7F4;
+    background:
+      radial-gradient(60% 80% at 8% 0%, rgba(201, 163, 90, 0.22) 0%, transparent 60%),
+      linear-gradient(160deg, #126B54 0%, #0F5A46 45%, #082F25 100%);
+    position: relative;
+  }
+  /* faint eight-point star in the corner, same shape as the icon and ayah markers */
+  .mark { position: absolute; right: -120px; top: -120px; width: 420px; height: 420px; opacity: 0.09; }
+  .mark i { position: absolute; inset: 0; border: 10px solid #C9A35A; border-radius: 30px; }
+  .mark i:last-child { transform: rotate(45deg); }
+  .copy { position: absolute; left: 64px; top: 64px; width: 560px; display: grid; gap: 14px; }
+  h1 { margin: 0; font-size: 50px; line-height: 1.06; font-weight: 800; letter-spacing: -0.02em; }
+  p { margin: 0; font-size: 21px; line-height: 1.45; color: rgba(244, 247, 244, 0.82); }
+  .eyebrow { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: #E2C98F; font-weight: 700; }
+  .phones { position: absolute; right: 56px; bottom: -150px; display: flex; gap: 26px; align-items: flex-end; }
+  .phone { width: 300px; border-radius: 48px; padding: 11px; background: #0B0F0D; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7), 0 0 0 1.5px rgba(255,255,255,0.08) inset; }
+  .phone img { display: block; width: 100%; border-radius: 38px; }
+  .phone:nth-child(2) { transform: translateY(-40px); }
+  .phones.one { right: 120px; }
+  .phones.three .phone { width: 250px; }
+  .phones.three { right: 40px; }
+</style>
+<div class="mark"><i></i><i></i></div>
+<div class="copy">
+  <span class="eyebrow" id="e"></span>
+  <h1 id="h"></h1>
+  <p id="s"></p>
+</div>
+<div class="phones" id="phones"></div>
+<script>
+  const q = new URLSearchParams(location.search);
+  document.getElementById("e").textContent = q.get("e") || "Wird";
+  document.getElementById("h").textContent = q.get("h") || "";
+  document.getElementById("s").textContent = q.get("s") || "";
+  const shots = q.getAll("shot");
+  const phones = document.getElementById("phones");
+  phones.className = "phones " + ["", "one", "two", "three"][shots.length];
+  for (const src of shots) {
+    const frame = document.createElement("div");
+    frame.className = "phone";
+    const img = document.createElement("img");
+    img.src = src;
+    frame.appendChild(img);
+    phones.appendChild(frame);
+  }
+</script>

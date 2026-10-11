@@ -1,0 +1,17 @@
+<!doctype html>
+<!-- Wird mark: brass eight-point star (two squares, as in the ayah markers) on mushaf green,
+     with وِرْد set in Amiri Quran. Rendered to docs/images/icon.png by scripts/readme-images.sh. -->
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Amiri Quran"; src: url("../../assets/fonts/AmiriQuran-Regular.ttf"); }
+  html, body { margin: 0; width: 512px; height: 512px; background: transparent; }
+  .tile { width: 512px; height: 512px; border-radius: 112px; background: radial-gradient(120% 120% at 30% 20%, #17765C 0%, #0F5A46 55%, #0A3F31 100%); position: relative; overflow: hidden; }
+  .star { position: absolute; inset: 104px; }
+  .star i { position: absolute; inset: 0; border: 14px solid #C9A35A; border-radius: 26px; }
+  .star i:last-child { transform: rotate(45deg); }
+  .word { position: absolute; inset: 0; display: grid; place-items: center; font-family: "Amiri Quran", serif; font-size: 150px; color: #F3E8D3; padding-bottom: 58px; direction: rtl; }
+</style>
+<div class="tile">
+  <div class="star"><i></i><i></i></div>
+  <div class="word">ورد</div>
+</div>
