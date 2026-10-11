@@ -13,6 +13,25 @@ interface AppTextProps extends TextProps {
     size?: number;
 }
 
+/**
+ * How far each style grows with the phone's font size setting. Body text follows it generously; big
+ * headings and tiny labels are capped so layouts hold; Quran text has its own size setting instead.
+ */
+export function maxScaleFor(variant: TextVariant): number {
+    switch (variant) {
+        case "arabic":
+            return 1;
+        case "display":
+        case "title":
+            return 1.3;
+        case "label":
+        case "caption":
+            return 1.5;
+        default:
+            return 1.8;
+    }
+}
+
 /** Text in the Wird type scale: Reem Kufi for headings, Source Sans 3 for UI, Amiri Quran for Quran text. */
 export function AppText({ variant = "body", muted, color, size, style, ...rest }: AppTextProps) {
     const { colors, fonts } = useTheme();
@@ -34,6 +53,7 @@ export function AppText({ variant = "body", muted, color, size, style, ...rest }
     };
     return (
         <Text
+            maxFontSizeMultiplier={maxScaleFor(variant)}
             style={[variants[variant], { color: color ?? (muted ? colors.ink2 : colors.ink) }, style]}
             {...rest}
         />
