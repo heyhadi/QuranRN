@@ -9,8 +9,8 @@ const mockPlayer = {
     setPlaybackRate: jest.fn(),
     setActiveForLockScreen: jest.fn(),
     clearLockScreenControls: jest.fn(),
-    listener: null as null | ((status: { didJustFinish: boolean }) => void),
-    addListener(_event: string, listener: (status: { didJustFinish: boolean }) => void) {
+    listener: null as null | ((status: { didJustFinish: boolean; isLoaded?: boolean; isBuffering?: boolean }) => void),
+    addListener(_event: string, listener: (status: { didJustFinish: boolean; isLoaded?: boolean; isBuffering?: boolean }) => void) {
         this.listener = listener;
     },
 };
@@ -343,5 +343,40 @@ describe("hifz practice does not leak into normal listening", () => {
         state().setRepeatEach(1, 0);
 
         expect(state().sessionRepeat).toBeNull();
+    });
+});
+
+describe("loading", () => {
+    const report = (status: { isLoaded: boolean; isBuffering?: boolean }) => mockPlayer.listener?.({ didJustFinish: false, ...status });
+
+    it("is loading while a streamed ayah starts, and clears once the player has it", () => {
+        state().playFrom(queue, 0);
+        expect(state().loading).toBe(true);
+
+        report({ isLoaded: false });
+        expect(state().loading).toBe(true);
+        report({ isLoaded: true, isBuffering: true });
+        expect(state().loading).toBe(true);
+        report({ isLoaded: true, isBuffering: false });
+        expect(state().loading).toBe(false);
+    });
+
+    it("is not loading for a downloaded ayah", () => {
+        mockLocalUri.mockReturnValue("file:///audio/112001.mp3");
+        state().playFrom(queue, 0);
+
+        expect(state().loading).toBe(false);
+    });
+
+    it("clears when paused or stopped", () => {
+        state().playFrom(queue, 0);
+        state().pause();
+        expect(state().loading).toBe(false);
+
+        state().resume();
+        state().playFrom(queue, 1);
+        expect(state().loading).toBe(true);
+        state().stop();
+        expect(state().loading).toBe(false);
     });
 });

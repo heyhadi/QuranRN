@@ -4,12 +4,15 @@ import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
 import { Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { NextPrayerCard } from "@/components/NextPrayerCard";
 import { QiblaCompass } from "@/components/QiblaCompass";
+import { OrnateCard } from "@/components/ui/Plate";
 import { AppText } from "@/components/ui/AppText";
 import { usePrayerTimes } from "@/components/usePrayerTimes";
 import { useTheme } from "@/components/useTheme";
 import { dailyAyahFor } from "@/constants/dailyAyahs";
 import { calculationMethods, minutesUntil, nextPrayer, PRAYER_NAMES, type PrayerName } from "@/services/prayerTimes";
+import { SUHOOR_LEAD_MINUTES } from "@/services/ramadan";
 import { getNotificationPermission, requestNotificationPermission, rescheduleReminders, type PermissionState } from "@/services/notifications";
 import { useKhatamStore } from "@/store/khatam";
 import { usePrayerStore } from "@/store/prayer";
@@ -52,16 +55,17 @@ export default function PrayerScreen() {
                 dailyAyahTime: prayer.dailyAyahTime,
                 khatamReminderEnabled: prayer.khatamReminderEnabled,
                 khatamReminderTime: prayer.khatamReminderTime,
+                ramadanEnabled: prayer.ramadanEnabled,
             },
             state.days,
             state.timezone,
         );
-    }, [state, prayer.adhanEnabled, prayer.dailyAyahEnabled, prayer.dailyAyahTime, prayer.khatamReminderEnabled, prayer.khatamReminderTime, permission]);
+    }, [state, prayer.adhanEnabled, prayer.dailyAyahEnabled, prayer.dailyAyahTime, prayer.khatamReminderEnabled, prayer.khatamReminderTime, prayer.ramadanEnabled, permission]);
 
     const next = useMemo(() => (state.status === "ready" ? nextPrayer(state.days, state.timezone, now) : null), [state, now]);
 
     const allowNotifications = async () => setPermission(await requestNotificationPermission());
-    const wantsReminders = Object.values(prayer.adhanEnabled).some(Boolean) || prayer.dailyAyahEnabled || prayer.khatamReminderEnabled;
+    const wantsReminders = Object.values(prayer.adhanEnabled).some(Boolean) || prayer.dailyAyahEnabled || prayer.khatamReminderEnabled || prayer.ramadanEnabled;
 
     const toggle = async (apply: () => void, enabling: boolean) => {
         if (enabling && permission !== "granted") {
@@ -114,23 +118,14 @@ export default function PrayerScreen() {
         const { today } = state;
         body = (
             <View style={{ gap: spacing.lg }}>
-                {next ? (
-                    <View style={[styles.hero, { backgroundColor: colors.heroBackground, borderRadius: radius.lg, padding: spacing.xl }]}>
-                        <AppText variant="caption" color={colors.heroAccent}>
-                            {t("prayer.next")}
-                        </AppText>
-                        <AppText style={[styles.heroName, { color: colors.heroInk }]}>{t(`prayer.names.${next.name}`)}</AppText>
-                        <AppText variant="title" color={colors.heroAccent}>
-                            {t("prayer.in", { time: countdown(next.at) })}
-                        </AppText>
-                    </View>
-                ) : null}
+                <NextPrayerCard next={next} timezone={state.timezone} countdown={countdown} />
 
-                <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg }]}>
+                <OrnateCard>
                     {PRAYER_NAMES.map((name, index) => {
                         const isNext = next?.name === name && next.at.getTime() === next.at.getTime();
                         return (
                             <View key={name} style={[styles.row, index > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line }]}>
+                                <View style={[styles.marker, { backgroundColor: isNext ? colors.brass : "transparent" }]} />
                                 <AppText variant={isNext ? "bodyStrong" : "body"} color={isNext ? colors.mushaf : colors.ink} style={styles.flex}>
                                     {t(`prayer.names.${name}`)}
                                 </AppText>
@@ -140,7 +135,7 @@ export default function PrayerScreen() {
                             </View>
                         );
                     })}
-                </View>
+                </OrnateCard>
                 {state.isStale ? (
                     <AppText variant="caption" muted>
                         {t("prayer.offline")}
@@ -227,6 +222,15 @@ export default function PrayerScreen() {
                             </View>
                             <Switch value={prayer.dailyAyahEnabled} onValueChange={(value) => void toggle(() => prayer.setDailyAyahEnabled(value), value)} trackColor={{ true: colors.mushaf }} accessibilityLabel={t("reminders.dailyAyah")} />
                         </View>
+                        <View style={styles.row}>
+                            <View style={styles.flex}>
+                                <AppText variant="bodyStrong">{t("ramadan.reminders")}</AppText>
+                                <AppText variant="caption" muted>
+                                    {t("ramadan.remindersHint", { minutes: SUHOOR_LEAD_MINUTES })}
+                                </AppText>
+                            </View>
+                            <Switch value={prayer.ramadanEnabled} onValueChange={(value) => void toggle(() => prayer.setRamadanEnabled(value), value)} trackColor={{ true: colors.mushaf }} accessibilityLabel={t("ramadan.reminders")} />
+                        </View>
                         {khatamPlan ? (
                             <View style={styles.row}>
                                 <View style={styles.flex}>
@@ -267,6 +271,7 @@ const styles = StyleSheet.create({
     card: { borderWidth: StyleSheet.hairlineWidth },
     row: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 16, paddingVertical: 12 },
     time: { fontVariant: ["tabular-nums"] },
+    marker: { width: 8, height: 8, borderRadius: 2, transform: [{ rotate: "45deg" }] },
     chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
     chip: { paddingHorizontal: 12, paddingVertical: 7 },
     bold: { fontWeight: "600" },

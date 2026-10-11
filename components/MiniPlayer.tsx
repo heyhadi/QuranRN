@@ -9,7 +9,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import { ReciterTile } from "@/components/ui/ReciterTile";
 import { useTheme } from "@/components/useTheme";
 import { getReciter } from "@/constants/reciters";
-import { useActiveReciterId, useAudioPlayerStore, useCurrentTrack } from "@/store/audioPlayer";
+import { useActiveReciterId, useAudioPlayerStore, useCurrentTrack, useIsLoading } from "@/store/audioPlayer";
 
 /**
  * The bar above the tabs while anything is playing. It stays on every screen, so recitation
@@ -24,6 +24,7 @@ export function MiniPlayer({ safeBottom = false }: { /** Pad for the home indica
     const barForeground = scheme === "dark" ? colors.ink : colors.paper;
     const track = useCurrentTrack();
     const status = useAudioPlayerStore((state) => state.status);
+    const loading = useIsLoading();
     const togglePause = useAudioPlayerStore((state) => state.togglePause);
     const next = useAudioPlayerStore((state) => state.next);
     const previous = useAudioPlayerStore((state) => state.previous);
@@ -51,7 +52,7 @@ export function MiniPlayer({ safeBottom = false }: { /** Pad for the home indica
                                 {`${track.surahName} · ${track.ayahNumber}`}
                             </AppText>
                             <AppText variant="caption" color={barForeground} style={styles.dim} numberOfLines={1}>
-                                {reciter.name}
+                                {loading ? t("player.loading") : reciter.name}
                             </AppText>
                         </View>
                     </Pressable>
@@ -59,6 +60,7 @@ export function MiniPlayer({ safeBottom = false }: { /** Pad for the home indica
                         <IconButton icon="play-skip-back" plain size={34} color={barForeground} onPress={previous} accessibilityLabel={t("player.previous")} />
                         <IconButton
                             icon={status === "playing" ? "pause" : "play"}
+                            loading={loading}
                             size={40}
                             primary
                             onPress={togglePause}

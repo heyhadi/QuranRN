@@ -38,6 +38,7 @@ export function StarNumber({ value, size = 32, active, accent, ink }: StarNumber
             <View style={square} />
             <View style={[square, { transform: [{ rotate: "45deg" }] }]} />
             <Text
+                allowFontScaling={false}
                 style={{
                     fontFamily: fonts.bodyBold,
                     fontSize: size * (digits > 2 ? 0.28 : 0.34),

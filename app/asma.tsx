@@ -3,6 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
+import { OrnateCard } from "@/components/ui/Plate";
 import { AppText } from "@/components/ui/AppText";
 import { StarNumber } from "@/components/ui/StarNumber";
 import { useTheme } from "@/components/useTheme";
@@ -46,7 +47,8 @@ export default function AsmaScreen() {
                         </View>
                     }
                     renderItem={({ item }) => (
-                        <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg, padding: spacing.md }]}>
+                        <View style={styles.cell}>
+                        <OrnateCard style={[styles.cardContent, { padding: spacing.md }]}>
                             <StarNumber value={item.number} size={32} />
                             <AppText variant="arabic" size={28} style={styles.center}>
                                 {item.arabic}
@@ -57,6 +59,7 @@ export default function AsmaScreen() {
                             <AppText variant="caption" muted style={styles.center}>
                                 {item.meaning}
                             </AppText>
+                        </OrnateCard>
                         </View>
                     )}
                 />
@@ -69,5 +72,6 @@ const styles = StyleSheet.create({
     screen: { flex: 1 },
     center: { textAlign: "center" },
     centered: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24, gap: 16 },
-    card: { flex: 1, borderWidth: StyleSheet.hairlineWidth, alignItems: "center", gap: 4 },
+    cell: { flex: 1 },
+    cardContent: { alignItems: "center", gap: 4 },
 });

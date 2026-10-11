@@ -58,7 +58,7 @@
     "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}",
     "download": "Download this Surah for offline listening",
     "downloadWith": "Reciter: {{name}}",
-    "downloading": "Downloading {{done}} of {{total}}",
+    "downloading": "Downloading {{done}} of {{total}} · {{percent}}%",
     "downloaded": "Downloaded · plays without internet",
     "downloadFailed": "Download stopped. Check your connection and try again.",
     "removeDownload": "Remove download",
@@ -115,7 +115,11 @@
     "feedbackNote": "Email needs a mail app on your phone. GitHub needs a GitHub account. Only the app version, your phone's system and the app language are added to a report; nothing you read or saved.",
     "sendEmail": "Send feedback by email",
     "sendEmailHint": "No account needed. Opens your mail app.",
-    "openFailed": "Couldn't open it. Use this instead:"
+    "openFailed": "Couldn't open it. Use this instead:",
+    "audioQuality": "Audio quality",
+    "qualityStandard": "Standard",
+    "qualityDataSaver": "Data saver",
+    "qualityHint": "Data saver uses smaller files, half the data or less, where a reciter offers them ({{count}} of {{total}}). Other reciters stay as they are. Surahs you already downloaded keep their quality."
   },
   "notFound": {
     "title": "Page not found",
@@ -139,7 +143,8 @@
     "sleepMinutes": "{{count}} min",
     "sleepEnds": "Stops at {{time}}",
     "reciter": "Reciter",
-    "changeReciter": "Change reciter"
+    "changeReciter": "Change reciter",
+    "loading": "Loading…"
   },
   "reciters": {
     "title": "Reciters",
@@ -465,5 +470,24 @@
     "todayTitle_morning": "Morning adhkar",
     "todayTitle_evening": "Evening adhkar",
     "todayProgress": "{{done}} of {{total}} done"
+  },
+  "ramadan": {
+    "day": "Ramadan · day {{day}}",
+    "imsakIn": "Imsak in {{time}}",
+    "iftarIn": "Iftar in {{time}}",
+    "fastDone": "The fast is done. Taqabbal Allahu minna wa minkum.",
+    "times": "Imsak {{imsak}} · Iftar {{iftar}}",
+    "reminders": "Suhoor and iftar",
+    "remindersHint": "During Ramadan: a reminder {{minutes}} minutes before imsak, and at iftar.",
+    "suhoorTitle": "Time for suhoor",
+    "suhoorBody": "Imsak is at {{time}}, in {{minutes}} minutes.",
+    "iftarTitle": "Time to break the fast",
+    "iftarBody": "Maghrib has come. Bismillah."
+  },
+  "share": {
+    "title": "Share ayah",
+    "image": "Share as image",
+    "text": "Share as text",
+    "failed": "Couldn't share the image. Try again, or share it as text."
   }
 }

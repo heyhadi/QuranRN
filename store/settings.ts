@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { DEFAULT_ENGLISH_TRANSLATION_ID, type TafsirId } from "@/constants/editions";
-import { DEFAULT_RECITER_ID, legacyReciterIds } from "@/constants/reciters";
+import { DEFAULT_RECITER_ID, legacyReciterIds, type AudioQuality } from "@/constants/reciters";
 import { arabicFontSize } from "@/constants/theme";
 import { zustandStorage } from "./storage";
 
@@ -12,6 +12,8 @@ export const PLAYBACK_RATES = [0.75, 1, 1.25, 1.5] as const;
 
 interface SettingsState {
     reciterId: string;
+    /** "dataSaver" streams and downloads the smaller files where a reciter has them. */
+    audioQuality: AudioQuality;
     /** Reciters pinned to the top of the picker. */
     favouriteReciterIds: string[];
     playbackRate: number;
@@ -29,6 +31,7 @@ interface SettingsState {
     /** The tafsir to open; null follows the app language. */
     tafsirChoice: TafsirId | null;
     setReciterId: (reciterId: string) => void;
+    setAudioQuality: (quality: AudioQuality) => void;
     toggleFavouriteReciter: (reciterId: string) => void;
     setPlaybackRate: (rate: number) => void;
     setThemePreference: (preference: ThemePreference) => void;
@@ -50,17 +53,19 @@ export const useSettingsStore = create<SettingsState>()(
     persist(
         (set) => ({
             reciterId: DEFAULT_RECITER_ID,
+            audioQuality: "standard",
             favouriteReciterIds: [],
             playbackRate: 1,
-            themePreference: "system",
+            themePreference: "dark",
             languagePreference: "system",
             arabicFontSize: arabicFontSize.default,
             showTranslation: true,
             tajweedEnabled: true,
-            showTransliteration: false,
+            showTransliteration: true,
             englishTranslationId: DEFAULT_ENGLISH_TRANSLATION_ID,
             tafsirChoice: null,
             setReciterId: (reciterId) => set({ reciterId }),
+            setAudioQuality: (audioQuality) => set({ audioQuality }),
             toggleFavouriteReciter: (reciterId) =>
                 set((state) => ({
                     favouriteReciterIds: state.favouriteReciterIds.includes(reciterId)

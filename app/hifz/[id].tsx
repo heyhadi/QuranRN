@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
 import { Button } from "react-native-paper";
 import { MiniPlayer } from "@/components/MiniPlayer";
+import { OrnateCard, PlateCard } from "@/components/ui/Plate";
 import { AppText } from "@/components/ui/AppText";
 import { IconButton } from "@/components/ui/IconButton";
 import { ReciterTile } from "@/components/ui/ReciterTile";
@@ -164,7 +165,7 @@ export default function HifzScreen() {
 
     const header = (
         <View style={{ gap: spacing.lg, padding: spacing.lg }}>
-            <View style={[styles.hero, { backgroundColor: colors.heroBackground, borderRadius: radius.lg, padding: spacing.lg, gap: spacing.sm }]}>
+            <PlateCard style={{ padding: spacing.xl, gap: spacing.sm }}>
                 <AppText variant="title" color={colors.heroInk}>
                     {surah.nameLatin}
                 </AppText>
@@ -174,9 +175,9 @@ export default function HifzScreen() {
                 <View style={[styles.track, { backgroundColor: "rgba(255,255,255,0.18)" }]}>
                     <View style={[styles.fill, { backgroundColor: colors.heroAccent, width: `${total ? Math.round((memorized / total) * 100) : 0}%` }]} />
                 </View>
-            </View>
+            </PlateCard>
 
-            <View style={[styles.panel, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg, padding: spacing.lg, gap: spacing.md }]}>
+            <OrnateCard style={{ padding: spacing.lg, gap: spacing.md }}>
                 <AppText variant="label" muted>
                     {t("hifz.range")}
                 </AppText>
@@ -238,7 +239,7 @@ export default function HifzScreen() {
                 <Button mode="contained" icon={isPlaying ? "stop" : "play"} onPress={() => (isPlaying ? stop() : startPractice(rangeFrom, rangeTo))}>
                     {isPlaying ? t("hifz.stop") : t("hifz.play")}
                 </Button>
-            </View>
+            </OrnateCard>
         </View>
     );
 

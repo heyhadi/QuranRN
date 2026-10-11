@@ -1,11 +1,12 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, FlatList, Pressable, Share, StyleSheet, Switch, View, type ViewToken } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Switch, View, type ViewToken } from "react-native";
 import { Button } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import AyahCard from "@/components/AyahCard";
 import { AyahSheet } from "@/components/AyahSheet";
+import { ShareAyahSheet, type ShareAyahPayload } from "@/components/ShareAyahSheet";
 import { DownloadAudioRow } from "@/components/DownloadAudioRow";
 import { FootnoteSheet } from "@/components/FootnoteSheet";
 import { MiniPlayer } from "@/components/MiniPlayer";
@@ -22,7 +23,7 @@ import { juzOf } from "@/services/juz";
 import { useEnglishSurahMeanings, useEnglishTranslation, useSurahDetail, useTajweed } from "@/services/queries";
 import { translationText } from "@/services/richText";
 import type { Ayah } from "@/services/types";
-import { usePlayingAyah, useAudioPlayerStore, type Track } from "@/store/audioPlayer";
+import { useIsLoading, usePlayingAyah, useAudioPlayerStore, type Track } from "@/store/audioPlayer";
 import { bookmarkKey, useBookmarksStore } from "@/store/bookmarks";
 import { useKhatamStore } from "@/store/khatam";
 import { useNotesStore } from "@/store/notes";
@@ -71,6 +72,7 @@ export default function Surah() {
     const toggleBookmark = useBookmarksStore((state) => state.toggleBookmark);
     const notes = useNotesStore((state) => state.notes);
     const playingAyah = usePlayingAyah(surahNumber);
+    const audioLoading = useIsLoading();
     const toggleAudio = useAudioPlayerStore((state) => state.toggle);
     const setLastRead = useReadingProgressStore((state) => state.setLastRead);
     const recordRead = useKhatamStore((state) => state.recordRead);
@@ -165,13 +167,14 @@ export default function Surah() {
         [surah, toggleBookmark, t],
     );
 
+    const [sharePayload, setSharePayload] = useState<ShareAyahPayload | null>(null);
     const handleShare = useCallback(
         (ayah: Ayah) => {
             if (!surah) return;
             const reference = t("reader.shareSuffix", { surah: surah.nameLatin, surahNumber: surah.number, ayah: ayah.ayahNumber });
             const english = isEnglish ? englishTranslation.data?.[ayah.ayahNumber] : undefined;
             const meaning = english ? translationText(english) : ayah.translation;
-            void Share.share({ message: `${ayah.textArabic}\n\n${meaning}\n\n— ${reference}` });
+            setSharePayload({ arabic: ayah.textArabic, meaning, reference });
         },
         [surah, t, isEnglish, englishTranslation.data],
     );
@@ -258,8 +261,8 @@ export default function Surah() {
                     title: surah.nameLatin,
                     headerRight: () => (
                         <View style={styles.headerButtons}>
-                            <IconButton icon="school-outline" size={34} onPress={() => router.push({ pathname: "/hifz/[id]", params: { id: surah.number } })} accessibilityLabel={t("hifz.open")} />
-                            <IconButton icon="text-outline" size={34} onPress={() => setDisplayOpen(true)} accessibilityLabel={t("reader.displaySettings")} />
+                            <IconButton plain icon="school-outline" size={40} onPress={() => router.push({ pathname: "/hifz/[id]", params: { id: surah.number } })} accessibilityLabel={t("hifz.open")} />
+                            <IconButton plain icon="text-outline" size={40} onPress={() => setDisplayOpen(true)} accessibilityLabel={t("reader.displaySettings")} />
                         </View>
                     ),
                 }}
@@ -267,7 +270,7 @@ export default function Surah() {
             <FlatList
                 ref={listRef}
                 data={ayahs}
-                extraData={{ bookmarks, notes, playingAyah, arabicSize, showTranslation, showTransliteration, tajweedEnabled, tajweed: tajweed.data, english: englishTranslation.data }}
+                extraData={{ bookmarks, notes, playingAyah, audioLoading, arabicSize, showTranslation, showTransliteration, tajweedEnabled, tajweed: tajweed.data, english: englishTranslation.data }}
                 keyExtractor={(item) => bookmarkKey(item.surahNumber, item.ayahNumber)}
                 onScrollToIndexFailed={handleScrollToIndexFailed}
                 onViewableItemsChanged={onViewableItemsChanged}
@@ -288,6 +291,7 @@ export default function Surah() {
                             isBookmarked={key in bookmarks}
                             hasNote={key in notes}
                             isPlaying={playingAyah === item.ayahNumber}
+                            isLoading={audioLoading && playingAyah === item.ayahNumber}
                             onPlay={() => toggleAudio(queue, index)}
                             onBookmarkPress={() => handleBookmarkPress(item)}
                             onWordsPress={() => openSheet(item, "words")}
@@ -301,6 +305,7 @@ export default function Surah() {
                 }}
             />
 
+            <ShareAyahSheet payload={sharePayload} onDismiss={() => setSharePayload(null)} />
             <AyahSheet ayah={sheetAyah} surahName={surah.nameLatin} initialTab={sheetTab} onDismiss={() => setSheetAyah(null)} />
             <RuleSheet ruleId={ruleId} onDismiss={() => setRuleId(null)} />
             <LegendSheet visible={legendOpen} onDismiss={() => setLegendOpen(false)} />

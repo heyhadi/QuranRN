@@ -1,4 +1,4 @@
-import { cleanTime, dayFor, instantFor, mapCalendar, minutesUntil, nextPrayer, zoneOffsetMinutes } from "../prayerTimes";
+import { cleanTime, dayFor, instantFor, mapCalendar, minutesUntil, nextPrayer, zoneOffsetMinutes, formatClock } from "../prayerTimes";
 import calendar from "./fixtures/prayerCalendar.json";
 
 // Fixture: three real days (10 to 12 Oct 2026) from api.aladhan.com for Singapore, method 11 (MUIS).
@@ -79,5 +79,14 @@ describe("minutesUntil", () => {
 
         expect(minutesUntil(new Date("2026-10-11T08:06:30Z"), now)).toBe(7);
         expect(minutesUntil(new Date("2026-10-11T07:00:00Z"), now)).toBe(0);
+    });
+});
+
+describe("formatClock", () => {
+    it("shows the time in the given zone, not the phone's", () => {
+        const at = new Date("2026-10-11T21:32:00Z");
+        expect(formatClock(at, "Asia/Singapore")).toBe("05:32");
+        expect(formatClock(at, "Asia/Jakarta")).toBe("04:32");
+        expect(formatClock(at, "UTC")).toBe("21:32");
     });
 });

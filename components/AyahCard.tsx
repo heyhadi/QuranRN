@@ -21,6 +21,8 @@ interface AyahCardProps {
     translationHtml?: string;
     showTransliteration: boolean;
     isPlaying: boolean;
+    /** The ayah is playing but its audio is still loading. */
+    isLoading?: boolean;
     isBookmarked: boolean;
     hasNote: boolean;
     onPlay: () => void;
@@ -41,6 +43,7 @@ const AyahCard = React.memo(function AyahCard({
     translationHtml,
     showTransliteration,
     isPlaying,
+    isLoading,
     isBookmarked,
     hasNote,
     onPlay,
@@ -72,7 +75,7 @@ const AyahCard = React.memo(function AyahCard({
             <View style={styles.toolbar}>
                 <StarNumber value={n} size={34} active={isPlaying} />
                 <View style={styles.actions}>
-                    <IconButton icon={isPlaying ? "stop" : "play"} primary={isPlaying} size={32} onPress={onPlay} accessibilityLabel={t(isPlaying ? "reader.stop" : "reader.play", { ayah: n })} />
+                    <IconButton icon={isPlaying ? "stop" : "play"} loading={isLoading} primary={isPlaying} size={32} onPress={onPlay} accessibilityLabel={t(isPlaying ? "reader.stop" : "reader.play", { ayah: n })} />
                     <IconButton
                         icon={isBookmarked ? "bookmark" : "bookmark-outline"}
                         color={isBookmarked ? colors.brass : undefined}

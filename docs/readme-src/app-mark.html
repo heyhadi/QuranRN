@@ -1,0 +1,21 @@
+<!doctype html>
+<!-- The Wird mark at app-icon size. Query: ?v=icon (full-bleed square), ?v=adaptive (Android foreground, inside
+     the safe zone, transparent) or ?v=splash (transparent, centred). Rendered by scripts/app-icons.mjs. -->
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Amiri Quran"; src: url("../../assets/fonts/AmiriQuran-Regular.ttf"); }
+  html, body { margin: 0; width: 1024px; height: 1024px; background: transparent; }
+  .tile { width: 1024px; height: 1024px; position: relative; overflow: hidden; }
+  body.icon .tile { background: radial-gradient(120% 120% at 30% 20%, #17765C 0%, #0F5A46 55%, #0A3F31 100%); }
+  .star { position: absolute; }
+  .star i { position: absolute; inset: 0; border-style: solid; border-color: #C9A35A; }
+  .star i:last-child { transform: rotate(45deg); }
+  .word { position: absolute; inset: 0; display: grid; place-items: center; font-family: "Amiri Quran", serif; color: #F3E8D3; direction: rtl; }
+  /* sizes per variant */
+  body.icon .star { inset: 224px; } body.icon .star i { border-width: 28px; border-radius: 52px; } body.icon .word { font-size: 290px; padding-bottom: 110px; }
+  body.adaptive .star { inset: 290px; } body.adaptive .star i { border-width: 22px; border-radius: 40px; } body.adaptive .word { font-size: 220px; padding-bottom: 84px; }
+  body.splash .star { inset: 200px; } body.splash .star i { border-width: 26px; border-radius: 48px; } body.splash .word { font-size: 270px; padding-bottom: 102px; }
+</style>
+<body>
+<div class="tile"><div class="star"><i></i><i></i></div><div class="word">ورد</div></div>
+<script>document.body.className = new URLSearchParams(location.search).get('v') || 'icon';</script>

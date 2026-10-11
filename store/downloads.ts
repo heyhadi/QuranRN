@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { deleteSurahAudio, downloadSurahAudio } from "@/services/audioDownloads";
+import { useSettingsStore } from "./settings";
 import { zustandStorage } from "./storage";
 
 export const downloadKey = (reciterId: string, surahNumber: number) => `${reciterId}:${surahNumber}`;
@@ -45,6 +46,7 @@ export const useDownloadsStore = create<DownloadsState>()(
                         reciterId,
                         surahNumber,
                         ayahCount,
+                        quality: useSettingsStore.getState().audioQuality,
                         onProgress: (done) => set((state) => ({ active: { ...state.active, [key]: { done, total: ayahCount, failed: false } } })),
                         shouldCancel: () => cancelled.has(key),
                     });

@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet } from "react-native";
 import { useTheme } from "@/components/useTheme";
 
 interface IconButtonProps {
@@ -14,9 +14,11 @@ interface IconButtonProps {
     color?: string;
     size?: number;
     disabled?: boolean;
+    /** Show a spinner in place of the icon, for something that is still loading. */
+    loading?: boolean;
 }
 
-export function IconButton({ icon, onPress, accessibilityLabel, primary, plain, color, size = 36, disabled }: IconButtonProps) {
+export function IconButton({ icon, onPress, accessibilityLabel, primary, plain, color, size = 36, disabled, loading }: IconButtonProps) {
     const { colors } = useTheme();
     return (
         <Pressable
@@ -24,7 +26,7 @@ export function IconButton({ icon, onPress, accessibilityLabel, primary, plain, 
             disabled={disabled}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
-            accessibilityState={{ disabled }}
+            accessibilityState={{ disabled, busy: loading }}
             hitSlop={6}
             style={({ pressed }) => [
                 styles.button,
@@ -37,7 +39,11 @@ export function IconButton({ icon, onPress, accessibilityLabel, primary, plain, 
                 },
             ]}
         >
-            <Ionicons name={icon} size={size * 0.5} color={color ?? (primary ? colors.onMushaf : colors.ink)} />
+            {loading ? (
+                <ActivityIndicator size="small" color={color ?? (primary ? colors.onMushaf : colors.ink)} />
+            ) : (
+                <Ionicons name={icon} size={size * 0.5} color={color ?? (primary ? colors.onMushaf : colors.ink)} />
+            )}
         </Pressable>
     );
 }

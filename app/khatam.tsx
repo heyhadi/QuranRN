@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
+import { OrnateCard, PlateCard } from "@/components/ui/Plate";
 import { AppText } from "@/components/ui/AppText";
 import { useTheme } from "@/components/useTheme";
 import { TOTAL_AYAHS } from "@/constants/ayahCounts";
@@ -43,7 +44,7 @@ export default function KhatamScreen() {
             <Stack.Screen options={{ title: t("khatam.title") }} />
 
             {/* Progress */}
-            <View style={[styles.hero, { backgroundColor: colors.heroBackground, borderRadius: radius.lg, padding: spacing.xl, gap: spacing.md }]}>
+            <PlateCard style={{ padding: spacing.xl, gap: spacing.md }}>
                 <View style={styles.heroRow}>
                     <AppText style={[styles.bigNumber, { color: colors.heroInk }]}>{t("khatam.percent", { value: percent })}</AppText>
                     <View style={styles.heroSide}>
@@ -65,11 +66,11 @@ export default function KhatamScreen() {
                         {t("khatam.paceNeeded", { count: progress.perDayToFinish })}
                     </AppText>
                 ) : null}
-            </View>
+            </PlateCard>
 
             {/* Plan setup, or today's goal */}
             {plan ? (
-                <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg, padding: spacing.lg, gap: spacing.sm }]}>
+                <OrnateCard style={{ padding: spacing.lg, gap: spacing.sm }}>
                     <AppText variant="label" muted>
                         {t("khatam.today")}
                     </AppText>
@@ -80,9 +81,9 @@ export default function KhatamScreen() {
                             {t("khatam.todayDone")}
                         </AppText>
                     ) : null}
-                </View>
+                </OrnateCard>
             ) : (
-                <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg, padding: spacing.lg, gap: spacing.md }]}>
+                <OrnateCard style={{ padding: spacing.lg, gap: spacing.md }}>
                     <AppText muted>{t("khatam.intro")}</AppText>
                     <AppText variant="label" muted>
                         {t("khatam.chooseDays")}
@@ -111,7 +112,7 @@ export default function KhatamScreen() {
                     <Button mode="contained" onPress={() => startPlan(chosenDays)}>
                         {t("khatam.start")}
                     </Button>
-                </View>
+                </OrnateCard>
             )}
 
             {/* Streak */}

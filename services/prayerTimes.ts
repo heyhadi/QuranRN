@@ -141,3 +141,8 @@ export function minutesUntil(at: Date, now: Date): number {
 export function dayFor(month: PrayerMonth, date: string): DayTimes | undefined {
     return month.days.find((day) => day.date === date);
 }
+
+/** "05:32": an instant as a 24-hour clock time in the prayer location's own time zone. */
+export function formatClock(at: Date, timezone: string): string {
+    return new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: timezone }).format(at);
+}

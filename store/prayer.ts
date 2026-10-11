@@ -23,6 +23,8 @@ interface PrayerState {
     /** Remind to read the day's khatam portion. */
     khatamReminderEnabled: boolean;
     khatamReminderTime: string;
+    /** Suhoor and iftar reminders during Ramadan. */
+    ramadanEnabled: boolean;
     /** Saved months, keyed "YYYY-MM:method:lat:lon" (rounded), so a month is fetched once. */
     months: Record<string, PrayerMonth>;
     setLocation: (latitude: number, longitude: number) => void;
@@ -32,6 +34,7 @@ interface PrayerState {
     setDailyAyahTime: (time: string) => void;
     setKhatamReminderEnabled: (enabled: boolean) => void;
     setKhatamReminderTime: (time: string) => void;
+    setRamadanEnabled: (enabled: boolean) => void;
     saveMonth: (key: string, month: PrayerMonth) => void;
 }
 
@@ -50,6 +53,7 @@ export const usePrayerStore = create<PrayerState>()(
             dailyAyahTime: "07:00",
             khatamReminderEnabled: false,
             khatamReminderTime: "20:00",
+            ramadanEnabled: false,
             months: {},
             setLocation: (latitude, longitude) => set({ location: { latitude, longitude, savedAt: Date.now() } }),
             setMethodId: (methodId) => set({ methodId }),
@@ -58,6 +62,7 @@ export const usePrayerStore = create<PrayerState>()(
             setDailyAyahTime: (dailyAyahTime) => set({ dailyAyahTime }),
             setKhatamReminderEnabled: (khatamReminderEnabled) => set({ khatamReminderEnabled }),
             setKhatamReminderTime: (khatamReminderTime) => set({ khatamReminderTime }),
+            setRamadanEnabled: (ramadanEnabled) => set({ ramadanEnabled }),
             saveMonth: (key, month) =>
                 set((state) => {
                     const months = { ...state.months, [key]: month };
