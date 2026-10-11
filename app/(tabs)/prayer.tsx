@@ -10,6 +10,7 @@ import { usePrayerTimes } from "@/components/usePrayerTimes";
 import { useTheme } from "@/components/useTheme";
 import { dailyAyahFor } from "@/constants/dailyAyahs";
 import { calculationMethods, minutesUntil, nextPrayer, PRAYER_NAMES, type PrayerName } from "@/services/prayerTimes";
+import { SUHOOR_LEAD_MINUTES } from "@/services/ramadan";
 import { getNotificationPermission, requestNotificationPermission, rescheduleReminders, type PermissionState } from "@/services/notifications";
 import { useKhatamStore } from "@/store/khatam";
 import { usePrayerStore } from "@/store/prayer";
@@ -52,16 +53,17 @@ export default function PrayerScreen() {
                 dailyAyahTime: prayer.dailyAyahTime,
                 khatamReminderEnabled: prayer.khatamReminderEnabled,
                 khatamReminderTime: prayer.khatamReminderTime,
+                ramadanEnabled: prayer.ramadanEnabled,
             },
             state.days,
             state.timezone,
         );
-    }, [state, prayer.adhanEnabled, prayer.dailyAyahEnabled, prayer.dailyAyahTime, prayer.khatamReminderEnabled, prayer.khatamReminderTime, permission]);
+    }, [state, prayer.adhanEnabled, prayer.dailyAyahEnabled, prayer.dailyAyahTime, prayer.khatamReminderEnabled, prayer.khatamReminderTime, prayer.ramadanEnabled, permission]);
 
     const next = useMemo(() => (state.status === "ready" ? nextPrayer(state.days, state.timezone, now) : null), [state, now]);
 
     const allowNotifications = async () => setPermission(await requestNotificationPermission());
-    const wantsReminders = Object.values(prayer.adhanEnabled).some(Boolean) || prayer.dailyAyahEnabled || prayer.khatamReminderEnabled;
+    const wantsReminders = Object.values(prayer.adhanEnabled).some(Boolean) || prayer.dailyAyahEnabled || prayer.khatamReminderEnabled || prayer.ramadanEnabled;
 
     const toggle = async (apply: () => void, enabling: boolean) => {
         if (enabling && permission !== "granted") {
@@ -226,6 +228,15 @@ export default function PrayerScreen() {
                                 </AppText>
                             </View>
                             <Switch value={prayer.dailyAyahEnabled} onValueChange={(value) => void toggle(() => prayer.setDailyAyahEnabled(value), value)} trackColor={{ true: colors.mushaf }} accessibilityLabel={t("reminders.dailyAyah")} />
+                        </View>
+                        <View style={styles.row}>
+                            <View style={styles.flex}>
+                                <AppText variant="bodyStrong">{t("ramadan.reminders")}</AppText>
+                                <AppText variant="caption" muted>
+                                    {t("ramadan.remindersHint", { minutes: SUHOOR_LEAD_MINUTES })}
+                                </AppText>
+                            </View>
+                            <Switch value={prayer.ramadanEnabled} onValueChange={(value) => void toggle(() => prayer.setRamadanEnabled(value), value)} trackColor={{ true: colors.mushaf }} accessibilityLabel={t("ramadan.reminders")} />
                         </View>
                         {khatamPlan ? (
                             <View style={styles.row}>

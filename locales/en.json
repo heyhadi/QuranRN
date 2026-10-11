@@ -465,5 +465,18 @@
     "todayTitle_morning": "Morning adhkar",
     "todayTitle_evening": "Evening adhkar",
     "todayProgress": "{{done}} of {{total}} done"
+  },
+  "ramadan": {
+    "day": "Ramadan · day {{day}}",
+    "imsakIn": "Imsak in {{time}}",
+    "iftarIn": "Iftar in {{time}}",
+    "fastDone": "The fast is done. Taqabbal Allahu minna wa minkum.",
+    "times": "Imsak {{imsak}} · Iftar {{iftar}}",
+    "reminders": "Suhoor and iftar",
+    "remindersHint": "During Ramadan: a reminder {{minutes}} minutes before imsak, and at iftar.",
+    "suhoorTitle": "Time for suhoor",
+    "suhoorBody": "Imsak is at {{time}}, in {{minutes}} minutes.",
+    "iftarTitle": "Time to break the fast",
+    "iftarBody": "Maghrib has come. Bismillah."
   }
 }

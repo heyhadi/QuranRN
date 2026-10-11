@@ -4,6 +4,7 @@ import i18n from "@/i18n";
 import { dailyAyahFor } from "@/constants/dailyAyahs";
 import { dateKey } from "./khatam";
 import type { PrayerName } from "./prayerTimes";
+import { SUHOOR_LEAD_MINUTES } from "./ramadan";
 import { planReminders, type PlannedReminder, type ReminderSettings } from "./reminders";
 import type { DayTimes } from "./prayerTimes";
 
@@ -45,6 +46,10 @@ function contentFor(reminder: PlannedReminder): Notifications.NotificationConten
             // The text is not known at scheduling time (it comes from the network), so the reminder
             // names the ayah and opens it.
             return { title: t("reminders.dailyAyahTitle"), body: t("reminders.dailyAyahBody", { reference: dailyAyahFor(reminder.at) }), data: { open: dailyAyahFor(reminder.at) } };
+        case "suhoor":
+            return { title: t("ramadan.suhoorTitle"), body: t("ramadan.suhoorBody", { time: reminder.imsak ?? "", minutes: SUHOOR_LEAD_MINUTES }), sound: true };
+        case "iftar":
+            return { title: t("ramadan.iftarTitle"), body: t("ramadan.iftarBody"), sound: true };
         case "khatam":
             return { title: t("reminders.khatamTitle"), body: t("reminders.khatamBody"), data: { open: "khatam" } };
     }
@@ -56,7 +61,7 @@ function contentFor(reminder: PlannedReminder): Notifications.NotificationConten
  */
 export async function rescheduleReminders(settings: ReminderSettings, days: DayTimes[], timezone: string): Promise<number> {
     await Notifications.cancelAllScheduledNotificationsAsync();
-    const anyEnabled = settings.dailyAyahEnabled || settings.khatamReminderEnabled || Object.values(settings.adhanEnabled).some(Boolean);
+    const anyEnabled = settings.ramadanEnabled || settings.dailyAyahEnabled || settings.khatamReminderEnabled || Object.values(settings.adhanEnabled).some(Boolean);
     if (!anyEnabled) return 0;
     if ((await getNotificationPermission()) !== "granted") return 0;
     await ensureChannel();

@@ -1,9 +1,10 @@
 import { instantFor, PRAYER_NAMES, type DayTimes, type PrayerName } from "./prayerTimes";
+import { ramadanDayOf, SUHOOR_LEAD_MINUTES } from "./ramadan";
 
 // Pure planning of which local notifications to schedule. The native scheduling lives in
 // services/notifications.ts; keeping the planning here makes it testable without a device.
 
-export type ReminderKind = "adhan" | "dailyAyah" | "khatam";
+export type ReminderKind = "adhan" | "dailyAyah" | "khatam" | "suhoor" | "iftar";
 
 export interface PlannedReminder {
     /** Stable id, so rescheduling replaces rather than duplicates. */
@@ -12,6 +13,8 @@ export interface PlannedReminder {
     at: Date;
     /** Which prayer, for adhan reminders. */
     prayer?: PrayerName;
+    /** The imsak time ("HH:MM"), for suhoor reminders. */
+    imsak?: string;
 }
 
 export interface ReminderSettings {
@@ -20,6 +23,8 @@ export interface ReminderSettings {
     dailyAyahTime: string;
     khatamReminderEnabled: boolean;
     khatamReminderTime: string;
+    /** Suhoor and iftar reminders on the days of Ramadan. */
+    ramadanEnabled: boolean;
 }
 
 /** iOS keeps at most 64 pending local notifications; stay under it and keep room for the daily ones. */
@@ -46,6 +51,17 @@ export function planReminders(settings: ReminderSettings, days: DayTimes[], time
             if (!settings.adhanEnabled[prayer]) continue;
             const at = instantFor(day.date, day.times[prayer], timezone);
             if (at.getTime() > now.getTime()) planned.push({ id: `adhan-${day.date}-${prayer}`, kind: "adhan", at, prayer });
+        }
+    }
+
+    if (settings.ramadanEnabled) {
+        for (const day of days) {
+            if (ramadanDayOf(day.date) === null) continue;
+            const imsak = instantFor(day.date, day.times.imsak, timezone);
+            const suhoor = new Date(imsak.getTime() - SUHOOR_LEAD_MINUTES * 60_000);
+            if (suhoor.getTime() > now.getTime()) planned.push({ id: `suhoor-${day.date}`, kind: "suhoor", at: suhoor, imsak: day.times.imsak });
+            const iftar = instantFor(day.date, day.times.maghrib, timezone);
+            if (iftar.getTime() > now.getTime()) planned.push({ id: `iftar-${day.date}`, kind: "iftar", at: iftar });
         }
     }
 

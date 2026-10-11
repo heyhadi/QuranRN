@@ -14,6 +14,7 @@ import { currentStreak, dailyTarget, dateKey } from "@/services/khatam";
 import { formatDates } from "@/services/hijri";
 import { minutesUntil, nextPrayer } from "@/services/prayerTimes";
 import { useEnglishTranslation, useSurahDetail } from "@/services/queries";
+import { fastStatus, ramadanDay } from "@/services/ramadan";
 import { translationText } from "@/services/richText";
 import { completedIn, countsFor, useAdhkarStore } from "@/store/adhkar";
 import { useHifzStore } from "@/store/hifz";
@@ -72,6 +73,8 @@ export default function TodayScreen() {
         return minutes >= 60 ? t("prayer.inHours", { hours: Math.floor(minutes / 60), minutes: minutes % 60 }) : t("prayer.inMinutes", { minutes });
     };
 
+    const ramadan = state.status === "ready" ? ramadanDay(new Date(`${state.today.date}T12:00:00`)) : null;
+    const fast = state.status === "ready" && ramadan !== null ? fastStatus(state.today, state.timezone, now) : null;
     const hour = now.getHours();
     const greeting = hour < 11 ? t("today.morning") : hour < 15 ? t("today.afternoon") : hour < 18 ? t("today.evening") : t("today.night");
     const goalDone = goal > 0 && todayRead >= goal;
@@ -125,6 +128,24 @@ export default function TodayScreen() {
                         <AppText style={{ color: colors.heroInk }}>{state.status === "loading" ? t("prayer.locating") : t("today.setupPrayer")}</AppText>
                     )}
                 </Pressable>
+
+                {fast && ramadan !== null && state.status === "ready" ? (
+                    <View style={[card, { borderColor: colors.brass }]}>
+                        <AppText variant="label" color={colors.brass}>
+                            {t("ramadan.day", { day: ramadan })}
+                        </AppText>
+                        <AppText variant="title">
+                            {fast.phase === "before"
+                                ? t("ramadan.imsakIn", { time: countdown(fast.imsak) })
+                                : fast.phase === "fasting"
+                                  ? t("ramadan.iftarIn", { time: countdown(fast.iftar) })
+                                  : t("ramadan.fastDone")}
+                        </AppText>
+                        <AppText variant="caption" muted>
+                            {t("ramadan.times", { imsak: state.today.times.imsak, iftar: state.today.times.maghrib })}
+                        </AppText>
+                    </View>
+                ) : null}
 
                 <View style={card}>
                     <View style={styles.row}>

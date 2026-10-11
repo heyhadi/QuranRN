@@ -465,5 +465,18 @@
     "todayTitle_morning": "Zikir pagi",
     "todayTitle_evening": "Zikir petang",
     "todayProgress": "{{done}} dari {{total}} selesai"
+  },
+  "ramadan": {
+    "day": "Ramadan · hari ke-{{day}}",
+    "imsakIn": "Imsak dalam {{time}}",
+    "iftarIn": "Berbuka dalam {{time}}",
+    "fastDone": "Puasa hari ini selesai. Taqabbalallahu minna wa minkum.",
+    "times": "Imsak {{imsak}} · Berbuka {{iftar}}",
+    "reminders": "Sahur dan berbuka",
+    "remindersHint": "Selama Ramadan: pengingat {{minutes}} menit sebelum imsak, dan saat berbuka.",
+    "suhoorTitle": "Waktunya sahur",
+    "suhoorBody": "Imsak pukul {{time}}, {{minutes}} menit lagi.",
+    "iftarTitle": "Waktunya berbuka",
+    "iftarBody": "Maghrib telah tiba. Bismillah."
   }
 }

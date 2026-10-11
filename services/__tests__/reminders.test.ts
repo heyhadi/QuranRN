@@ -9,6 +9,7 @@ const none: ReminderSettings = {
     dailyAyahTime: "07:00",
     khatamReminderEnabled: false,
     khatamReminderTime: "20:00",
+    ramadanEnabled: false,
 };
 // A phone date helper: today is 11 Oct 2026, so offset 0 is that day.
 const localDate = (offset: number) => {
@@ -83,5 +84,33 @@ describe("planReminders", () => {
 
         expect(reminders).toHaveLength(MAX_PENDING);
         expect(reminders[0].at.getTime()).toBeLessThanOrEqual(reminders[MAX_PENDING - 1].at.getTime());
+    });
+});
+
+describe("Ramadan reminders", () => {
+    const base = month.days[0];
+    // Two real dates: 28 Feb 2025 is the last day of Sha'ban, 1 Mar 2025 is the first of Ramadan (Umm al-Qura).
+    const days = ["2025-02-28", "2025-03-01"].map((date) => ({ date, times: base.times }));
+    const ramadan = { ...none, ramadanEnabled: true };
+    const run = (settings: ReminderSettings) => planReminders(settings, days, month.timezone, new Date("2025-02-27T00:00:00Z"), localDate);
+
+    it("plans suhoor and iftar only on days of Ramadan", () => {
+        const reminders = run(ramadan);
+        expect(reminders.map((reminder) => reminder.id)).toEqual(["suhoor-2025-03-01", "iftar-2025-03-01"]);
+    });
+
+    it("sets suhoor 30 minutes before imsak and iftar at Maghrib", () => {
+        const [suhoor, iftar] = run(ramadan);
+        expect(suhoor.imsak).toBe(base.times.imsak);
+        // imsak on the fixture day, 30 minutes earlier, in Singapore time (UTC+8)
+        const [hour, minute] = base.times.imsak.split(":").map(Number);
+        const expected = Date.UTC(2025, 2, 1, hour - 8, minute - 30);
+        expect(suhoor.at.getTime()).toBe(expected);
+        const [maghribHour, maghribMinute] = base.times.maghrib.split(":").map(Number);
+        expect(iftar.at.getTime()).toBe(Date.UTC(2025, 2, 1, maghribHour - 8, maghribMinute));
+    });
+
+    it("plans nothing when the setting is off", () => {
+        expect(run(none)).toEqual([]);
     });
 });
