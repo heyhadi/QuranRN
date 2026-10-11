@@ -8,7 +8,7 @@ import { useTheme } from "@/components/useTheme";
 import { BISMILLAH } from "@/constants/surahPages";
 import { tajweedColorKey, type TajweedRuleId } from "@/constants/tajweed";
 import type { MushafLine, MushafWord } from "@/services/mushaf";
-import { useEnglishSurahMeanings, useMushafPage, useSurahList } from "@/services/queries";
+import { useMushafPage, useSurahList } from "@/services/queries";
 
 /** The pages have fifteen lines; a line is justified only when its words already fill most of the width. */
 export const LINES_PER_PAGE = 15;
@@ -82,50 +82,47 @@ function TextLine({ words, width, height, fontSize, tajweed, onWordPress, onRule
     );
 }
 
+/** A header line takes this many ordinary lines of height: the plate, plus clear space under it. */
+export const HEADER_WEIGHT = 1.45;
+
+/** One eight-point star (two squares), drawn so it can sit over the end of the plate. */
+function Finial({ size, fill, line }: { size: number; fill: string; line: string }) {
+    const square = { position: "absolute" as const, top: size * 0.17, left: size * 0.17, right: size * 0.17, bottom: size * 0.17, borderWidth: 2, borderColor: line, borderRadius: size * 0.1, backgroundColor: fill };
+    return (
+        <View pointerEvents="none" style={{ width: size, height: size }}>
+            <View style={square} />
+            <View style={[square, { transform: [{ rotate: "45deg" }] }]} />
+        </View>
+    );
+}
+
 /**
- * The Surah title as an information plate: the name in calligraphy in the middle, the Surah's ayah count and
- * where it was revealed on one side, its Latin name and meaning on the other.
+ * The Surah title: a deep green plate with a brass double frame, the name in calligraphy in the middle and an
+ * eight-point star over each end.
  */
 function TitleLine({ surahNumber, width, height, fontSize }: { surahNumber: number; width: number; height: number; fontSize: number }) {
-    const { t, i18n } = useTranslation();
     const { colors, fonts } = useTheme();
     const surahs = useSurahList();
-    const englishMeanings = useEnglishSurahMeanings(i18n.language !== "id");
-    const surah = surahs.data?.find((entry) => entry.number === surahNumber);
-    const meaning = i18n.language !== "id" ? englishMeanings.data?.[surahNumber] ?? surah?.meaning : surah?.meaning;
-    const small = { fontFamily: fonts.body, fontSize: Math.max(10, fontSize * 0.5), lineHeight: Math.max(13, fontSize * 0.66) };
+    const name = surahs.data?.find((surah) => surah.number === surahNumber)?.nameArabic;
+    const unit = height / HEADER_WEIGHT;
+    const plateHeight = unit * 0.82;
+    const top = unit * 0.14;
+    const finial = plateHeight * 0.74;
 
     return (
-        <View style={{ width, height, justifyContent: "center", paddingVertical: height * 0.06 }}>
-            <View style={[styles.plate, { backgroundColor: colors.heroBackground, borderColor: colors.heroAccent }]}>
+        // The plate sits at the top of its slot; what is left of the slot is the space under it.
+        <View style={{ width, height, justifyContent: "flex-start", paddingTop: top, paddingHorizontal: finial / 2 }}>
+            <View style={[styles.plate, { height: plateHeight, backgroundColor: colors.heroBackground, borderColor: colors.heroAccent }]}>
                 <View pointerEvents="none" style={[styles.plateInner, { borderColor: colors.heroAccent }]} />
-                <View style={styles.sideLeft}>
-                    {surah ? (
-                        <>
-                            <Text style={[small, { color: colors.heroInk }]} numberOfLines={1}>
-                                {t("common.ayahCount", { count: surah.ayahCount })}
-                            </Text>
-                            <Text style={[small, { color: colors.heroInk, opacity: 0.8 }]} numberOfLines={1}>
-                                {t(`common.place.${surah.revelationPlace}`)}
-                            </Text>
-                        </>
-                    ) : null}
-                </View>
-                <Text style={{ fontFamily: fonts.quranBold, fontSize: fontSize * 1.1, lineHeight: fontSize * 2, color: colors.heroAccent, includeFontPadding: false }} accessibilityRole="header">
-                    {surah?.nameArabic ?? ""}
+                <Text style={{ fontFamily: fonts.quranBold, fontSize: Math.min(fontSize * 1.4, plateHeight * 0.62), lineHeight: plateHeight * 0.95, color: colors.heroAccent, includeFontPadding: false }} accessibilityRole="header">
+                    {name ?? ""}
                 </Text>
-                <View style={styles.sideRight}>
-                    {surah ? (
-                        <>
-                            <Text style={[small, { color: colors.heroInk, textAlign: "right" }]} numberOfLines={1}>
-                                {surah.nameLatin}
-                            </Text>
-                            <Text style={[small, { color: colors.heroInk, opacity: 0.8, textAlign: "right" }]} numberOfLines={1}>
-                                {meaning ?? ""}
-                            </Text>
-                        </>
-                    ) : null}
-                </View>
+            </View>
+            <View pointerEvents="none" style={[styles.finial, { left: 0, top: top + (plateHeight - finial) / 2 }]}>
+                <Finial size={finial} fill={colors.heroBackground} line={colors.heroAccent} />
+            </View>
+            <View pointerEvents="none" style={[styles.finial, { right: 0, top: top + (plateHeight - finial) / 2 }]}>
+                <Finial size={finial} fill={colors.heroBackground} line={colors.heroAccent} />
             </View>
         </View>
     );
@@ -145,7 +142,9 @@ export function MushafPageView({ pageNumber, width, height, tajweed, onWordPress
     const { t } = useTranslation();
     const { colors, fonts } = useTheme();
     const page = useMushafPage(pageNumber);
-    const lineHeight = height / LINES_PER_PAGE;
+    // The title lines are a little taller than text lines; the fifteen slots still fill the page.
+    const headerCount = page.data?.lines.filter((line) => line.kind === "header").length ?? 0;
+    const lineHeight = height / (LINES_PER_PAGE + (HEADER_WEIGHT - 1) * headerCount);
     const fontSize = Math.min(width / FONT_FROM_WIDTH, lineHeight * 0.62);
 
     if (page.isPending) {
@@ -168,7 +167,7 @@ export function MushafPageView({ pageNumber, width, height, tajweed, onWordPress
 
     const renderLine = (line: MushafLine) => {
         if (line.kind === "text") return <TextLine key={line.lineNumber} words={line.words} width={width} height={lineHeight} fontSize={fontSize} tajweed={tajweed} onWordPress={onWordPress} onRulePress={onRulePress} />;
-        if (line.kind === "header") return <TitleLine key={line.lineNumber} surahNumber={line.surahNumber} width={width} height={lineHeight} fontSize={fontSize} />;
+        if (line.kind === "header") return <TitleLine key={line.lineNumber} surahNumber={line.surahNumber} width={width} height={lineHeight * HEADER_WEIGHT} fontSize={fontSize} />;
         return (
             <View key={line.lineNumber} style={{ width, height: lineHeight, alignItems: "center", justifyContent: "center" }}>
                 <Text style={{ fontFamily: fonts.quran, fontSize: fontSize * 1.05, color: colors.ink, includeFontPadding: false }}>{BISMILLAH}</Text>
@@ -184,9 +183,8 @@ const styles = StyleSheet.create({
     centerText: { textAlign: "center" },
     natural: { flexDirection: "row-reverse", alignSelf: "flex-start" },
     line: { flexDirection: "row-reverse", alignItems: "center" },
-    plate: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, overflow: "hidden" },
-    plateInner: { position: "absolute", top: 3, left: 3, right: 3, bottom: 3, borderWidth: StyleSheet.hairlineWidth, borderRadius: 9, opacity: 0.55 },
-    sideLeft: { flex: 1, alignItems: "flex-start", justifyContent: "center" },
-    sideRight: { flex: 1, alignItems: "flex-end", justifyContent: "center" },
+    plate: { borderWidth: 2, borderRadius: 6, alignItems: "center", justifyContent: "center", overflow: "hidden" },
+    plateInner: { position: "absolute", top: 4, left: 4, right: 4, bottom: 4, borderWidth: StyleSheet.hairlineWidth, borderRadius: 3, opacity: 0.6 },
+    finial: { position: "absolute" },
 });
 
