@@ -64,5 +64,56 @@ export function mapTajweedChapter(response: QuranComTajweedResponse): Record<num
 
 /** The text without any colouring, e.g. to copy or share. */
 export function plainText(segments: TajweedSegment[]): string {
-    return segments.map((segment) => segment.text).join("");
+    return segments.map((segment) => segment.text).join("").replace(/\u200D/g, "");
+}
+
+// ---- Safe to draw on Android ----
+//
+// Android shapes every coloured run of a nested <Text> separately, so at each colour boundary a letter loses
+// its connection to its neighbour, and a vowel mark that starts a run has no letter to sit on. iOS shapes
+// across runs and hides the problem. The two steps below make the runs safe to draw on Android.
+
+const MARK = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED\u08D3-\u08FF]/;
+/** Letters that take a joined form on at least one side (hamza on its own never joins). */
+const JOINING_LETTER = /[\u0622-\u064A\u0640\u066E-\u06D3\u0750-\u077F]/;
+/** Letters that never join to the letter after them. */
+const NO_JOIN_FORWARD = /[\u0621-\u0625\u0627\u0629\u062F-\u0632\u0648\u0671-\u0673\u0675-\u0677\u0688-\u0699\u06D2\u06D3]/;
+const ZWJ = "\u200D";
+
+/**
+ * Re-cut the colour runs so Android draws them right. A letter and its vowel marks always stay in one run
+ * (the whole group takes the colour of the rule on its marks, or its own), and where two runs meet in the
+ * middle of a joined word a zero-width joiner keeps the letters connected.
+ */
+export function shapeSafe(segments: TajweedSegment[]): TajweedSegment[] {
+    // 1. Groups of a letter and its marks, each with one rule.
+    const groups: { text: string; rule?: TajweedRuleId }[] = [];
+    for (const segment of segments) {
+        for (const char of segment.text) {
+            const last = groups[groups.length - 1];
+            if (last && MARK.test(char)) {
+                last.text += char;
+                if (segment.rule) last.rule = segment.rule;
+            } else groups.push({ text: char, rule: segment.rule });
+        }
+    }
+
+    // 2. Neighbouring groups with the same rule become one run again.
+    const runs: TajweedSegment[] = [];
+    for (const group of groups) {
+        const last = runs[runs.length - 1];
+        if (last && last.rule === group.rule) last.text += group.text;
+        else runs.push(group.rule ? { text: group.text, rule: group.rule } : { text: group.text });
+    }
+
+    // 3. Keep the letters joined across a boundary between two runs.
+    for (let i = 1; i < runs.length; i++) {
+        const lastLetter = [...runs[i - 1].text].reverse().find((char) => !MARK.test(char) && char !== ZWJ);
+        const firstChar = runs[i].text[0];
+        if (lastLetter && JOINING_LETTER.test(lastLetter) && !NO_JOIN_FORWARD.test(lastLetter) && JOINING_LETTER.test(firstChar)) {
+            runs[i - 1].text += ZWJ;
+            runs[i].text = ZWJ + runs[i].text;
+        }
+    }
+    return runs;
 }

@@ -1,6 +1,9 @@
 import { tajweedRules } from "@/constants/tajweed";
-import { mapTajweedChapter, parseTajweed, plainText, type QuranComTajweedResponse } from "../tajweed";
+import { mapTajweedChapter, parseTajweed, plainText, shapeSafe, type QuranComTajweedResponse } from "../tajweed";
 import fixture from "./fixtures/tajweed.json";
+import page604 from "./fixtures/mushafPage604.json";
+import page187 from "./fixtures/mushafPage187.json";
+import page2 from "./fixtures/mushafPage2.json";
 
 // Fixture: real api.quran.com text_uthmani_tajweed for Surahs 112 and 113 plus one short example ayah per rule.
 const verse = (key: string) => fixture.verses.find((candidate) => candidate.verse_key === key)!.text_uthmani_tajweed;
@@ -104,5 +107,61 @@ describe("the mushaf's two obligatory madd classes", () => {
     it("reads the connected madd as obligatory and the separated madd as permissible", () => {
         expect(parseTajweed("<rule class=madda_obligatory_mottasel>ءَا</rule>")[0].rule).toBe("madda_obligatory");
         expect(parseTajweed("<rule class=madda_obligatory_monfasel>ءَا</rule>")[0].rule).toBe("madda_permissible");
+    });
+});
+
+describe("shapeSafe (drawing coloured text on Android)", () => {
+    const ZWJ = "\u200D";
+    const MARK = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED\u08D3-\u08FF]/;
+
+    it("keeps a vowel mark with its letter instead of starting a run with it", () => {
+        // ذ + a coloured dagger alef + لِكَ: the mark must not be cut off from the ذ.
+        expect(shapeSafe([{ text: "ذ" }, { text: "ٰ", rule: "madda_normal" }, { text: "لِكَ" }])).toEqual([
+            { text: "ذٰ", rule: "madda_normal" },
+            { text: "لِكَ" },
+        ]);
+    });
+
+    it("joins the letters on both sides of a colour boundary in the middle of a word", () => {
+        expect(shapeSafe([{ text: "ب" }, { text: "س", rule: "qalaqah" }, { text: "م" }])).toEqual([
+            { text: `ب${ZWJ}` },
+            { text: `${ZWJ}س${ZWJ}`, rule: "qalaqah" },
+            { text: `${ZWJ}م` },
+        ]);
+    });
+
+    it("adds no joiner after a letter that never joins forward", () => {
+        expect(shapeSafe([{ text: "ر" }, { text: "ب", rule: "qalaqah" }])).toEqual([{ text: "ر" }, { text: "ب", rule: "qalaqah" }]);
+        expect(shapeSafe([{ text: "ٱ" }, { text: "ل", rule: "laam_shamsiyah" }])).toEqual([{ text: "ٱ" }, { text: "ل", rule: "laam_shamsiyah" }]);
+    });
+
+    it("adds no joiner before a space or a hamza on its own", () => {
+        expect(shapeSafe([{ text: "ب" }, { text: " ", rule: "qalaqah" }])).toEqual([{ text: "ب" }, { text: " ", rule: "qalaqah" }]);
+        expect(shapeSafe([{ text: "ب" }, { text: "ء", rule: "qalaqah" }])).toEqual([{ text: "ب" }, { text: "ء", rule: "qalaqah" }]);
+    });
+
+    it("merges neighbouring groups that share a rule and keeps the text intact", () => {
+        const segments = [{ text: "مَ" }, { text: "ن", rule: "ghunnah" as const }, { text: "ّ", rule: "ghunnah" as const }, { text: "ا" }];
+        const shaped = shapeSafe(segments);
+
+        expect(plainText(shaped)).toBe("مَنّا");
+        expect(shaped.filter((segment) => segment.rule === "ghunnah")).toHaveLength(1);
+    });
+
+    it("never changes the letters, never starts a run with a mark, and never leaves a joiner at the ends of a word", () => {
+        for (const page of [page2, page187, page604]) {
+            for (const verse of page.verses) {
+                for (const word of verse.words) {
+                    if (!word.text_uthmani_tajweed) continue;
+                    const original = parseTajweed(word.text_uthmani_tajweed);
+                    const shaped = shapeSafe(original);
+
+                    expect(plainText(shaped)).toBe(plainText(original));
+                    for (const run of shaped) expect(MARK.test(run.text.replace(ZWJ, "")[0] ?? "")).toBe(false);
+                    expect(shaped[0]?.text.startsWith(ZWJ)).toBe(false);
+                    expect(shaped[shaped.length - 1]?.text.endsWith(ZWJ)).toBe(false);
+                }
+            }
+        }
     });
 });
