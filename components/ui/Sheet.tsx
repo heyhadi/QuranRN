@@ -42,6 +42,10 @@ export function Sheet({ visible, onDismiss, title, children, maxHeightRatio = 0.
                             borderTopRightRadius: radius.xl,
                             paddingBottom: Math.max(insets.bottom, spacing.lg),
                             maxHeight: height * maxHeightRatio,
+                            // On a tablet the sheet stays a sensible width, centred at the bottom.
+                            width: "100%",
+                            maxWidth: 640,
+                            alignSelf: "center",
                         },
                     ]}
                 >

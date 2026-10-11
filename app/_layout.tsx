@@ -14,6 +14,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider, type MD3Theme } from "react-native-paper";
 import "react-native-reanimated";
 import Toast from "react-native-toast-message";
+import { AppColumn } from "@/components/AppColumn";
+import { lockPhoneToPortrait } from "@/constants/device";
 import { useTheme } from "@/components/useTheme";
 import i18n, { resolveLanguage } from "@/i18n";
 import { useSettingsStore } from "@/store/settings";
@@ -41,6 +43,11 @@ const queryClient = new QueryClient({
 });
 
 export default function RootLayout() {
+    // The app allows every orientation; only tablets get to turn.
+    useEffect(() => {
+        void lockPhoneToPortrait();
+    }, []);
+
     const [loaded, error] = useFonts({
         // Amiri, not Amiri Quran: the Quran variant is a colour font that paints vowel marks red and blue.
         Amiri_400Regular,
@@ -120,6 +127,7 @@ function RootLayoutNav() {
                 <PaperProvider theme={paperTheme}>
                     <ThemeProvider value={navigationTheme}>
                         <StatusBar style={scheme === "dark" ? "light" : "dark"} />
+                        <AppColumn>
                         <Stack
                             screenOptions={{
                                 headerStyle: { backgroundColor: colors.paper },
@@ -143,6 +151,7 @@ function RootLayoutNav() {
                             <Stack.Screen name="hifz/index" />
                             <Stack.Screen name="hifz/[id]" />
                         </Stack>
+                        </AppColumn>
                         <Toast />
                     </ThemeProvider>
                 </PaperProvider>

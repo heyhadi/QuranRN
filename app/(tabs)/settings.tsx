@@ -12,6 +12,7 @@ import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { useTheme } from "@/components/useTheme";
 import { defaultTafsirFor, englishTranslations, tafsirEditions } from "@/constants/editions";
 import { dataSaverCount, getReciter, reciters, styleLabel, type AudioQuality } from "@/constants/reciters";
+import { versionLabel } from "@/constants/build";
 import { FEEDBACK_EMAIL, issueUrl, mailUrl, REPO_URL } from "@/constants/links";
 import { arabicFontSize } from "@/constants/theme";
 import { useSettingsStore, type LanguagePreference, type ThemePreference } from "@/store/settings";
@@ -213,7 +214,7 @@ export default function SettingsScreen() {
                 </Section>
 
                 <Section title={t("settings.about")}>
-                    <AppText variant="bodyStrong">{`Wird · ${t("settings.version", { version: Constants.expoConfig?.version ?? "1.0.0" })}`}</AppText>
+                    <AppText variant="bodyStrong">{`Wird · ${t("settings.version", { version: versionLabel(Constants.expoConfig?.version, Constants.expoConfig?.extra?.build) })}`}</AppText>
                     <AppText variant="caption" muted>
                         {t("settings.credits")}
                     </AppText>
