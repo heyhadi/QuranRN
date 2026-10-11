@@ -1,14 +1,26 @@
 {
   "common": {
     "tryAgain": "Try again",
+    "loading": "Loading…",
     "close": "Close",
     "ayah": "Ayah",
     "ayahCount_one": "{{count}} ayah",
     "ayahCount_other": "{{count}} ayahs",
     "juz": "Juz {{number}}",
-    "place": { "Mekah": "Meccan", "Madinah": "Medinan" }
+    "place": {
+      "Mekah": "Meccan",
+      "Madinah": "Medinan"
+    }
   },
-  "tabs": { "quran": "Quran", "saved": "Saved", "qibla": "Qibla", "settings": "Settings" },
+  "tabs": {
+    "quran": "Quran",
+    "saved": "Saved",
+    "qibla": "Qibla",
+    "settings": "Settings",
+    "more": "More",
+    "prayer": "Prayer",
+    "today": "Today"
+  },
   "home": {
     "greeting": "Assalamu'alaikum",
     "continueReading": "Continue reading",
@@ -18,7 +30,8 @@
     "loadError": "Couldn't load the Surah list. Check your connection and try again.",
     "tabSurah": "Surah",
     "tabJuz": "Juz",
-    "juzStartsAt": "Starts at {{surah}} {{ayah}}"
+    "juzStartsAt": "Starts at {{surah}} {{ayah}}",
+    "tabAll": "All"
   },
   "reader": {
     "loadError": "Couldn't load this Surah. Check your connection and try again.",
@@ -42,10 +55,19 @@
     "bookmarkDetail": "{{surah}}, ayah {{ayah}}",
     "next": "Next: {{name}}",
     "previous": "Previous: {{name}}",
-    "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}"
+    "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}",
+    "download": "Download this Surah for offline listening",
+    "downloadWith": "Reciter: {{name}}",
+    "downloading": "Downloading {{done}} of {{total}}",
+    "downloaded": "Downloaded · plays without internet",
+    "downloadFailed": "Download stopped. Check your connection and try again.",
+    "removeDownload": "Remove download",
+    "cancelDownload": "Cancel",
+    "audio": "Audio",
+    "translationFallback": "The English translation couldn't load, so the Indonesian one is shown.",
+    "tajweedLegend": "Tajweed colours"
   },
   "saved": {
-    "title": "Saved",
     "empty": "No bookmarks yet. Tap the bookmark icon on any ayah to save it here.",
     "hint": "Swipe a bookmark left, then tap Remove.",
     "remove": "Remove"
@@ -63,18 +85,385 @@
   "settings": {
     "title": "Settings",
     "appearance": "Appearance",
-    "theme": { "system": "System", "light": "Light", "dark": "Dark" },
+    "theme": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
     "language": "Language",
-    "languageOption": { "system": "System", "id": "Indonesia", "en": "English" },
+    "languageOption": {
+      "system": "System",
+      "id": "Indonesia",
+      "en": "English"
+    },
     "reading": "Reading",
     "arabicSize": "Arabic text size",
     "showTranslation": "Show translation",
-    "translationNote": "Translation: Kemenag RI (Indonesian). English translations arrive in a later update.",
+    "translationNote": "Indonesian: Kemenag RI. English: the edition you pick below.",
     "audio": "Audio",
     "reciter": "Reciter",
     "about": "About",
     "version": "Version {{version}}",
-    "credits": "Quran text, translation, tafsir and audio via equran.id. Amiri typeface by Khaled Hosny."
+    "credits": "Quran text, translation, tafsir and audio via equran.id; tajweed, English translations and word-by-word via quran.com; adhkar and English dua from fitrahive/dua-dhikr. Amiri typeface by Khaled Hosny.",
+    "reciterRow": "Reciter",
+    "feedback": "Feedback",
+    "reportProblem": "Report a problem",
+    "reportProblemHint": "Something broken or wrong? Tell us.",
+    "suggestIdea": "Suggest an idea",
+    "suggestIdeaHint": "A feature or a fix you would like.",
+    "github": "View on GitHub",
+    "feedbackNote": "Email needs a mail app on your phone. GitHub needs a GitHub account. Only the app version, your phone's system and the app language are added to a report; nothing you read or saved.",
+    "sendEmail": "Send feedback by email",
+    "sendEmailHint": "No account needed. Opens your mail app.",
+    "openFailed": "Couldn't open it. Use this instead:"
   },
-  "notFound": { "title": "Page not found", "message": "This screen doesn't exist.", "goHome": "Go to the Surah list" }
+  "notFound": {
+    "title": "Page not found",
+    "message": "This screen doesn't exist.",
+    "goHome": "Go to the Surah list"
+  },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "next": "Next ayah",
+    "previous": "Previous ayah",
+    "close": "Stop and close player",
+    "options": "Player options",
+    "openSurah": "Open {{surah}}, ayah {{ayah}}",
+    "speed": "Speed",
+    "repeat": "Repeat each ayah",
+    "repeatTimes": "{{count}}×",
+    "loop": "Repeat the whole Surah",
+    "sleep": "Sleep timer",
+    "sleepOff": "Off",
+    "sleepMinutes": "{{count}} min",
+    "sleepEnds": "Stops at {{time}}",
+    "reciter": "Reciter",
+    "changeReciter": "Change reciter"
+  },
+  "reciters": {
+    "title": "Reciters",
+    "count": "{{count}} reciters",
+    "search": "Search reciters",
+    "favourites": "Favourites",
+    "popular": "Popular",
+    "all": "All reciters",
+    "none": "No reciter matches “{{query}}”.",
+    "filterAll": "All",
+    "filterEnglish": "+ English",
+    "preview": "Play a sample",
+    "stopPreview": "Stop the sample",
+    "favourite": "Add {{name}} to favourites",
+    "unfavourite": "Remove {{name}} from favourites",
+    "selected": "Selected",
+    "englishAudio": "English audio",
+    "hint": "Switching reciter while listening keeps your place."
+  },
+  "tajweed": {
+    "title": "Tajweed",
+    "legend": "Tajweed colours",
+    "legendHint": "Tap a coloured letter in the text to see its rule.",
+    "learn": "Learn the rules",
+    "learnTitle": "Tajweed rules",
+    "learnIntro": "Each rule has a colour in the text, a short explanation, and a real example you can hear.",
+    "what": "What it is",
+    "how": "How to say it",
+    "example": "Example",
+    "playExample": "Hear {{reference}}",
+    "stopExample": "Stop",
+    "show": "Colour the text by tajweed rule",
+    "colorError": "Tajweed colours couldn't load, so the plain text is shown.",
+    "rules": {
+      "ham_wasl": {
+        "name": "Hamzat al-wasl",
+        "what": "A connecting hamza at the start of a word.",
+        "how": "Say it only when you begin reciting from this word. When you continue from the word before, skip it and join the sounds."
+      },
+      "laam_shamsiyah": {
+        "name": "Lam shamsiyah (sun letter)",
+        "what": "The lam of “al-” before a sun letter.",
+        "how": "Do not pronounce the lam. Say the letter after it with a shaddah, as if it were doubled."
+      },
+      "silent": {
+        "name": "Silent letter",
+        "what": "A letter that is written but not pronounced.",
+        "how": "Skip it when you read. It stays silent whether you stop or continue."
+      },
+      "madda_normal": {
+        "name": "Madd tabi'i (natural)",
+        "what": "A vowel that is naturally long: alif after a fathah, waw after a dammah, ya after a kasrah.",
+        "how": "Hold the sound for 2 counts: no more, no less."
+      },
+      "madda_permissible": {
+        "name": "Madd ja'iz (permissible)",
+        "what": "A lengthening that may be held for 2, 4 or 6 counts. It is common when you stop at the end of an ayah.",
+        "how": "Pick one length and keep it the same through your recitation."
+      },
+      "madda_obligatory": {
+        "name": "Madd wajib muttasil (obligatory, joined)",
+        "what": "A madd letter followed by a hamza in the same word.",
+        "how": "Hold the sound for 4 to 5 counts."
+      },
+      "madda_necessary": {
+        "name": "Madd lazim (necessary)",
+        "what": "A madd letter followed by a letter with a sukun or shaddah in the same word.",
+        "how": "Hold the sound for 6 counts."
+      },
+      "qalaqah": {
+        "name": "Qalqalah (echo)",
+        "what": "The letters ق ط ب ج د with a sukun, or when you stop on them.",
+        "how": "Give the letter a light bounce or echo, without adding a vowel."
+      },
+      "ikhafa": {
+        "name": "Ikhfa (hiding)",
+        "what": "A nun sakinah or tanwin before one of 15 letters.",
+        "how": "Hide the nun: say it with a nasal sound for about 2 counts while your tongue moves toward the next letter."
+      },
+      "ikhafa_shafawi": {
+        "name": "Ikhfa shafawi (lip hiding)",
+        "what": "A mim sakinah before the letter ب.",
+        "how": "Hide the mim with a light nasal sound, lips just touching."
+      },
+      "ghunnah": {
+        "name": "Ghunnah (nasal sound)",
+        "what": "A doubled nun or mim (نّ, مّ).",
+        "how": "Hold a nasal sound for 2 counts, resonating through the nose."
+      },
+      "iqlab": {
+        "name": "Iqlab (switching)",
+        "what": "A nun sakinah or tanwin before the letter ب.",
+        "how": "Change the nun into a hidden mim sound, with a nasal sound for about 2 counts."
+      },
+      "idgham_ghunnah": {
+        "name": "Idgham with ghunnah (merging)",
+        "what": "A nun sakinah or tanwin before ي ن م or و.",
+        "how": "Merge the nun into the next letter with a nasal sound, as if it were doubled."
+      },
+      "idgham_wo_ghunnah": {
+        "name": "Idgham without ghunnah",
+        "what": "A nun sakinah or tanwin before ل or ر.",
+        "how": "Merge the nun fully into the next letter, with no nasal sound."
+      },
+      "idgham_shafawi": {
+        "name": "Idgham shafawi (lip merging)",
+        "what": "A mim sakinah before another mim.",
+        "how": "Merge the first mim into the second, with a nasal sound held for 2 counts."
+      },
+      "idgham_mutajanisayn": {
+        "name": "Idgham mutajanisayn",
+        "what": "Two letters from the same place in the mouth, the first with a sukun.",
+        "how": "Merge the first letter into the second, saying it once with a shaddah."
+      },
+      "idgham_mutaqaribayn": {
+        "name": "Idgham mutaqaribayn",
+        "what": "Two letters from nearby places in the mouth, the first with a sukun.",
+        "how": "Merge the first letter into the second, saying it once with a shaddah."
+      }
+    }
+  },
+  "ayahSheet": {
+    "title": "{{surah}} {{ayah}}",
+    "words": "Words",
+    "tafsir": "Tafsir",
+    "notes": "Notes",
+    "wordsLoading": "Loading the words…",
+    "wordsError": "Couldn't load the words for this ayah.",
+    "tapWord": "Tap a word to hear it.",
+    "playWord": "Play the word {{word}}",
+    "wordsSource": "Word-by-word: quran.com",
+    "tafsirError": "Couldn't load this tafsir. Check your connection and try again.",
+    "tafsirArabic": "This tafsir is in Arabic.",
+    "chooseTafsir": "Tafsir",
+    "noteLabel": "Your note",
+    "notePlaceholder": "Write what this ayah means to you…",
+    "noteSaved": "Saved",
+    "collection": "Collection",
+    "noCollection": "None",
+    "newCollection": "New collection",
+    "newCollectionPlaceholder": "Name, e.g. Daily",
+    "addCollection": "Add",
+    "removeCollection": "Delete “{{name}}”",
+    "copy": "Copy text",
+    "copied": "Copied"
+  },
+  "footnote": {
+    "title": "Footnote",
+    "error": "Couldn't load the footnote."
+  },
+  "search": {
+    "surah": "Surah",
+    "ayah": "Ayahs",
+    "ayahHint": "Search all ayahs by meaning, e.g. “patience”.",
+    "ayahMin": "Type at least 3 letters.",
+    "ayahError": "Search needs a connection. Try again when you are online.",
+    "ayahNone": "No ayah matches “{{query}}”.",
+    "ayahResult": "{{surah}} {{ayah}}"
+  },
+  "settingsReading": {
+    "tajweed": "Tajweed colours",
+    "tajweedNote": "Colours each tajweed rule in the Arabic text.",
+    "legend": "Colour guide and rules",
+    "transliteration": "Transliteration",
+    "translationEdition": "English translation",
+    "tafsir": "Default tafsir",
+    "tafsirFollow": "Follows the app language"
+  },
+  "khatam": {
+    "title": "Khatam",
+    "tile": "Khatam",
+    "intro": "Finish the whole Quran in a set number of days. Wird counts the ayahs you actually read.",
+    "chooseDays": "Finish in",
+    "days": "{{count}} days",
+    "perDay": "About {{count}} ayahs a day",
+    "start": "Start the plan",
+    "progress": "{{read}} of {{total}} ayahs",
+    "percent": "{{value}}%",
+    "today": "Today",
+    "todayRead": "{{read}} of {{goal}} ayahs",
+    "todayDone": "Today's goal is done. Barakallahu fik.",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "paceNeeded": "Read about {{count}} ayahs a day to finish on time.",
+    "streak": "Streak",
+    "streakDays_one": "{{count}} day",
+    "streakDays_other": "{{count}} days",
+    "longest": "Longest: {{count}}",
+    "juzProgress": "Progress by Juz",
+    "stop": "Stop the plan",
+    "stopHint": "Your progress is kept.",
+    "finished": "You finished the Quran. Alhamdulillah!",
+    "newRound": "Start a new round",
+    "rounds_one": "{{count}} round completed",
+    "rounds_other": "{{count}} rounds completed",
+    "continue": "Continue reading",
+    "noReading": "Nothing read yet. Open any Surah and start reading.",
+    "juzCell": "Juz {{number}}, {{percent}}% read"
+  },
+  "hifz": {
+    "title": "Hifz",
+    "tile": "Hifz",
+    "count": "{{count}} ayahs memorized",
+    "intro": "Practice a Surah ayah by ayah: repeat it, hide it and test yourself, and mark it memorized.",
+    "inProgress": "In progress",
+    "none": "No Surah started yet. Open a Surah and tap the hifz button to begin.",
+    "progressOf": "{{done}} of {{total}} memorized",
+    "range": "Practice",
+    "from": "From ayah",
+    "to": "To ayah",
+    "repeat": "Repeat each ayah",
+    "pause": "Pause between repeats",
+    "play": "Practice this range",
+    "stop": "Stop",
+    "hide": "Hide the text",
+    "revealHint": "Tap a hidden ayah to check yourself.",
+    "hidden": "Hidden. Tap to reveal.",
+    "markMemorized": "Mark ayah {{ayah}} as memorized",
+    "unmark": "Mark ayah {{ayah}} as not memorized",
+    "reciter": "Practice with",
+    "open": "Hifz mode",
+    "playFrom": "Play ayah {{ayah}}",
+    "secondsShort": "{{count}} s",
+    "reciterNote": "Husary Muallim recites slowly with pauses, made for learning."
+  },
+  "prayer": {
+    "title": "Prayer",
+    "names": {
+      "fajr": "Fajr",
+      "dhuhr": "Dhuhr",
+      "asr": "Asr",
+      "maghrib": "Maghrib",
+      "isha": "Isha",
+      "imsak": "Imsak",
+      "sunrise": "Sunrise"
+    },
+    "next": "Next prayer",
+    "in": "in {{time}}",
+    "inHours": "{{hours}} h {{minutes}} min",
+    "inMinutes": "{{minutes}} min",
+    "now": "Now",
+    "today": "Today",
+    "tomorrowFajr": "Tomorrow",
+    "locating": "Finding your location…",
+    "needLocation": "Wird needs your location to work out prayer times.",
+    "allow": "Allow location",
+    "openSettings": "Open Settings",
+    "offline": "Prayer times need a connection the first time. Try again when you are online.",
+    "retry": "Try again",
+    "method": "Calculation method",
+    "methodHint": "Different authorities use slightly different angles. Choose the one your community follows.",
+    "location": "Location",
+    "updated": "Using your last known location",
+    "refresh": "Update location",
+    "notify": "Prayer time reminders",
+    "notifyBody": "It is time for {{prayer}}.",
+    "notifyOff": "Turn on notifications in Settings to get reminders.",
+    "notifyAllow": "Allow notifications",
+    "imsakNote": "Imsak is shown for the fasting month.",
+    "timesFor": "Prayer times for today"
+  },
+  "reminders": {
+    "title": "Reminders",
+    "dailyAyah": "Daily ayah",
+    "dailyAyahTitle": "Ayah of the day",
+    "dailyAyahBody": "Open Wird to read {{reference}}.",
+    "khatam": "Khatam reminder",
+    "khatamTitle": "Your reading for today",
+    "khatamBody": "A few ayahs a day add up. Open Wird to continue.",
+    "time": "Time",
+    "permissionDenied": "Notifications are turned off for Wird. Turn them on in your phone's Settings.",
+    "scheduled": "{{count}} reminders scheduled",
+    "dailyAyahCardTitle": "Ayah of the day",
+    "readAyah": "Read in context"
+  },
+  "more": {
+    "title": "More",
+    "doa": "Dua",
+    "doaIntro": "Dua for everyday life, with the hadith source for each. Arabic, transliteration and English meaning.",
+    "doaSearch": "Search dua",
+    "doaNone": "No dua matches “{{query}}”.",
+    "doaLoadError": "Dua couldn't load. They need a connection the first time.",
+    "asma": "Asmaul Husna",
+    "asmaIntro": "The 99 beautiful names of Allah, with their meanings.",
+    "asmaMeaningNote": "Meanings are in English.",
+    "tasbih": "Tasbih",
+    "tasbihIntro": "Tap to count. Your phone vibrates at 33, 66 and 99.",
+    "tap": "Tap to count",
+    "reset": "Reset",
+    "target": "Target",
+    "today": "Today: {{count}}",
+    "copyDoa": "Copy",
+    "sourceLabel": "Source",
+    "duaDaily": "Daily dua",
+    "duaSelected": "Selected dua"
+  },
+  "today": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "night": "Good night",
+    "goal": "Today's reading",
+    "noPlan": "Set a Khatam plan to get a daily reading goal.",
+    "continueAt": "Continue: {{surah}} {{ayah}}",
+    "ayah": "Ayah of the day",
+    "ayahOffline": "Connect to the internet to read {{reference}}.",
+    "setupPrayer": "Open Prayer to set your location."
+  },
+  "adhkar": {
+    "title": "Adhkar",
+    "subtitle": "Morning, evening and after prayer",
+    "intro": "Remembrance for the start and end of the day and after each prayer. Tap to count; counts start again every day.",
+    "sets": {
+      "morning": "Morning",
+      "evening": "Evening",
+      "afterSalah": "After prayer"
+    },
+    "progress": "{{done}} of {{total}} done",
+    "reset": "Start over",
+    "benefit": "Why read this",
+    "done": "Done",
+    "markRead": "Mark as read",
+    "todayTitle_morning": "Morning adhkar",
+    "todayTitle_evening": "Evening adhkar",
+    "todayProgress": "{{done}} of {{total}} done"
+  }
 }

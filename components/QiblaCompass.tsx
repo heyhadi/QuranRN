@@ -4,13 +4,12 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { useQiblaDirection } from "@/components/useQiblaDirection";
 import { useTheme } from "@/components/useTheme";
 import { arrowRotation, compassPoint } from "@/services/qibla";
 
-export default function Qibla() {
+export function QiblaCompass() {
     const { t } = useTranslation();
     const { colors, spacing } = useTheme();
     const qibla = useQiblaDirection();
@@ -57,19 +56,11 @@ export default function Qibla() {
         );
     }
 
-    return (
-        <SafeAreaView edges={["top"]} style={[styles.screen, { backgroundColor: colors.paper }]}>
-            <AppText variant="display" style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.sm }} accessibilityRole="header">
-                {t("qibla.title")}
-            </AppText>
-            <View style={[styles.body, { padding: spacing.xl, gap: spacing.lg }]}>{body}</View>
-        </SafeAreaView>
-    );
+    return <View style={[styles.body, { gap: spacing.lg }]}>{body}</View>;
 }
 
 const styles = StyleSheet.create({
-    screen: { flex: 1 },
-    body: { flex: 1, alignItems: "center", justifyContent: "center" },
+    body: { alignItems: "center", justifyContent: "center", paddingVertical: 8 },
     center: { textAlign: "center" },
     dial: { width: 240, height: 240, borderRadius: 120, borderWidth: 3, alignItems: "center", justifyContent: "center" },
     north: { position: "absolute", top: 12 },

@@ -1,14 +1,26 @@
 {
   "common": {
     "tryAgain": "Coba lagi",
+    "loading": "Memuat…",
     "close": "Tutup",
     "ayah": "Ayat",
     "ayahCount_one": "{{count}} ayat",
     "ayahCount_other": "{{count}} ayat",
     "juz": "Juz {{number}}",
-    "place": { "Mekah": "Makkiyah", "Madinah": "Madaniyah" }
+    "place": {
+      "Mekah": "Makkiyah",
+      "Madinah": "Madaniyah"
+    }
   },
-  "tabs": { "quran": "Quran", "saved": "Tersimpan", "qibla": "Kiblat", "settings": "Pengaturan" },
+  "tabs": {
+    "quran": "Quran",
+    "saved": "Tersimpan",
+    "qibla": "Kiblat",
+    "settings": "Pengaturan",
+    "more": "Lainnya",
+    "prayer": "Salat",
+    "today": "Hari Ini"
+  },
   "home": {
     "greeting": "Assalamu'alaikum",
     "continueReading": "Lanjutkan membaca",
@@ -18,7 +30,8 @@
     "loadError": "Daftar surah tidak dapat dimuat. Periksa koneksi internet, lalu coba lagi.",
     "tabSurah": "Surah",
     "tabJuz": "Juz",
-    "juzStartsAt": "Dimulai di {{surah}} {{ayah}}"
+    "juzStartsAt": "Dimulai di {{surah}} {{ayah}}",
+    "tabAll": "Semua"
   },
   "reader": {
     "loadError": "Surah ini tidak dapat dimuat. Periksa koneksi internet, lalu coba lagi.",
@@ -42,10 +55,19 @@
     "bookmarkDetail": "{{surah}}, ayat {{ayah}}",
     "next": "Berikutnya: {{name}}",
     "previous": "Sebelumnya: {{name}}",
-    "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}"
+    "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}",
+    "download": "Unduh surah ini untuk didengarkan tanpa internet",
+    "downloadWith": "Qari: {{name}}",
+    "downloading": "Mengunduh {{done}} dari {{total}}",
+    "downloaded": "Terunduh · diputar tanpa internet",
+    "downloadFailed": "Unduhan berhenti. Periksa koneksi internet, lalu coba lagi.",
+    "removeDownload": "Hapus unduhan",
+    "cancelDownload": "Batal",
+    "audio": "Audio",
+    "translationFallback": "Terjemahan bahasa Inggris tidak dapat dimuat, jadi terjemahan Indonesia ditampilkan.",
+    "tajweedLegend": "Warna tajwid"
   },
   "saved": {
-    "title": "Tersimpan",
     "empty": "Belum ada ayat yang ditandai. Ketuk ikon penanda pada ayat mana pun untuk menyimpannya di sini.",
     "hint": "Geser penanda ke kiri, lalu ketuk Hapus.",
     "remove": "Hapus"
@@ -63,18 +85,385 @@
   "settings": {
     "title": "Pengaturan",
     "appearance": "Tampilan",
-    "theme": { "system": "Sistem", "light": "Terang", "dark": "Gelap" },
+    "theme": {
+      "system": "Sistem",
+      "light": "Terang",
+      "dark": "Gelap"
+    },
     "language": "Bahasa",
-    "languageOption": { "system": "Sistem", "id": "Indonesia", "en": "English" },
+    "languageOption": {
+      "system": "Sistem",
+      "id": "Indonesia",
+      "en": "English"
+    },
     "reading": "Membaca",
     "arabicSize": "Ukuran teks Arab",
     "showTranslation": "Tampilkan terjemahan",
-    "translationNote": "Terjemahan: Kemenag RI. Terjemahan bahasa Inggris hadir di pembaruan berikutnya.",
+    "translationNote": "Indonesia: Kemenag RI. Inggris: edisi yang Anda pilih di bawah.",
     "audio": "Audio",
     "reciter": "Qari",
     "about": "Tentang",
     "version": "Versi {{version}}",
-    "credits": "Teks Al-Quran, terjemahan, tafsir, dan audio dari equran.id. Huruf Amiri oleh Khaled Hosny."
+    "credits": "Teks Quran, terjemahan, tafsir, dan audio dari equran.id; tajwid, terjemahan Inggris, dan kata per kata dari quran.com; zikir dan doa Inggris dari fitrahive/dua-dhikr. Huruf Amiri oleh Khaled Hosny.",
+    "reciterRow": "Qari",
+    "feedback": "Masukan",
+    "reportProblem": "Laporkan masalah",
+    "reportProblemHint": "Ada yang rusak atau keliru? Beri tahu kami.",
+    "suggestIdea": "Usul ide",
+    "suggestIdeaHint": "Fitur atau perbaikan yang Anda inginkan.",
+    "github": "Lihat di GitHub",
+    "feedbackNote": "Email butuh aplikasi email di ponsel. GitHub butuh akun GitHub. Yang ditambahkan ke laporan hanya versi aplikasi, sistem ponsel, dan bahasa aplikasi; bukan apa yang Anda baca atau simpan.",
+    "sendEmail": "Kirim masukan lewat email",
+    "sendEmailHint": "Tanpa akun. Membuka aplikasi email Anda.",
+    "openFailed": "Tidak bisa dibuka. Gunakan ini:"
   },
-  "notFound": { "title": "Halaman tidak ditemukan", "message": "Layar ini tidak ada.", "goHome": "Ke daftar surah" }
+  "notFound": {
+    "title": "Halaman tidak ditemukan",
+    "message": "Layar ini tidak ada.",
+    "goHome": "Ke daftar surah"
+  },
+  "player": {
+    "play": "Putar",
+    "pause": "Jeda",
+    "next": "Ayat berikutnya",
+    "previous": "Ayat sebelumnya",
+    "close": "Hentikan dan tutup pemutar",
+    "options": "Opsi pemutar",
+    "openSurah": "Buka {{surah}}, ayat {{ayah}}",
+    "speed": "Kecepatan",
+    "repeat": "Ulangi setiap ayat",
+    "repeatTimes": "{{count}}×",
+    "loop": "Ulangi seluruh surah",
+    "sleep": "Pengatur waktu tidur",
+    "sleepOff": "Mati",
+    "sleepMinutes": "{{count}} mnt",
+    "sleepEnds": "Berhenti pukul {{time}}",
+    "reciter": "Qari",
+    "changeReciter": "Ganti qari"
+  },
+  "reciters": {
+    "title": "Qari",
+    "count": "{{count}} qari",
+    "search": "Cari qari",
+    "favourites": "Favorit",
+    "popular": "Populer",
+    "all": "Semua qari",
+    "none": "Tidak ada qari yang cocok dengan “{{query}}”.",
+    "filterAll": "Semua",
+    "filterEnglish": "+ Inggris",
+    "preview": "Putar contoh",
+    "stopPreview": "Hentikan contoh",
+    "favourite": "Tambahkan {{name}} ke favorit",
+    "unfavourite": "Hapus {{name}} dari favorit",
+    "selected": "Dipilih",
+    "englishAudio": "Audio Inggris",
+    "hint": "Mengganti qari saat mendengarkan tidak menghilangkan posisi Anda."
+  },
+  "tajweed": {
+    "title": "Tajwid",
+    "legend": "Warna tajwid",
+    "legendHint": "Ketuk huruf berwarna pada teks untuk melihat hukumnya.",
+    "learn": "Pelajari hukum tajwid",
+    "learnTitle": "Hukum tajwid",
+    "learnIntro": "Setiap hukum punya warna pada teks, penjelasan singkat, dan contoh nyata yang bisa didengar.",
+    "what": "Pengertian",
+    "how": "Cara membacanya",
+    "example": "Contoh",
+    "playExample": "Dengar {{reference}}",
+    "stopExample": "Hentikan",
+    "show": "Warnai teks menurut hukum tajwid",
+    "colorError": "Warna tajwid tidak dapat dimuat, jadi teks polos ditampilkan.",
+    "rules": {
+      "ham_wasl": {
+        "name": "Hamzah washal",
+        "what": "Hamzah penyambung di awal kata.",
+        "how": "Dibaca hanya saat Anda memulai bacaan dari kata ini. Jika disambung dari kata sebelumnya, tidak dibaca; sambungkan bunyinya."
+      },
+      "laam_shamsiyah": {
+        "name": "Lam syamsiyah",
+        "what": "Lam pada “al-” yang bertemu huruf syamsiyah.",
+        "how": "Lam tidak dibaca. Bacalah huruf sesudahnya dengan tasydid, seolah-olah dobel."
+      },
+      "silent": {
+        "name": "Huruf tidak dibaca",
+        "what": "Huruf yang ditulis tetapi tidak dibaca.",
+        "how": "Lewati saat membaca. Tetap tidak dibaca, baik berhenti maupun disambung."
+      },
+      "madda_normal": {
+        "name": "Mad thabi'i (asli)",
+        "what": "Bunyi panjang asli: alif setelah fathah, wau setelah dammah, ya setelah kasrah.",
+        "how": "Panjangkan 2 harakat, tidak lebih dan tidak kurang."
+      },
+      "madda_permissible": {
+        "name": "Mad jaiz",
+        "what": "Panjang yang boleh 2, 4, atau 6 harakat. Umum terjadi saat berhenti di akhir ayat.",
+        "how": "Pilih satu panjang dan pertahankan sama sepanjang bacaan."
+      },
+      "madda_obligatory": {
+        "name": "Mad wajib muttasil",
+        "what": "Huruf mad yang bertemu hamzah dalam satu kata.",
+        "how": "Panjangkan 4 sampai 5 harakat."
+      },
+      "madda_necessary": {
+        "name": "Mad lazim",
+        "what": "Huruf mad yang bertemu huruf bersukun atau bertasydid dalam satu kata.",
+        "how": "Panjangkan 6 harakat."
+      },
+      "qalaqah": {
+        "name": "Qalqalah (memantul)",
+        "what": "Huruf ق ط ب ج د yang bersukun atau saat berhenti padanya.",
+        "how": "Pantulkan huruf dengan ringan, tanpa menambah harakat."
+      },
+      "ikhafa": {
+        "name": "Ikhfa (samar)",
+        "what": "Nun mati atau tanwin sebelum salah satu dari 15 huruf.",
+        "how": "Samarkan nun: bunyikan dengan dengung sekitar 2 harakat sambil lidah bergerak ke huruf berikutnya."
+      },
+      "ikhafa_shafawi": {
+        "name": "Ikhfa syafawi",
+        "what": "Mim mati sebelum huruf ب.",
+        "how": "Samarkan mim dengan dengung ringan, bibir hanya menempel tipis."
+      },
+      "ghunnah": {
+        "name": "Ghunnah (dengung)",
+        "what": "Nun atau mim bertasydid (نّ, مّ).",
+        "how": "Dengungkan 2 harakat lewat hidung."
+      },
+      "iqlab": {
+        "name": "Iqlab (mengubah)",
+        "what": "Nun mati atau tanwin sebelum huruf ب.",
+        "how": "Ubah nun menjadi bunyi mim yang disamarkan, dengan dengung sekitar 2 harakat."
+      },
+      "idgham_ghunnah": {
+        "name": "Idgham bighunnah",
+        "what": "Nun mati atau tanwin sebelum ي ن م atau و.",
+        "how": "Lebur nun ke huruf berikutnya dengan dengung, seolah-olah dobel."
+      },
+      "idgham_wo_ghunnah": {
+        "name": "Idgham bilaghunnah",
+        "what": "Nun mati atau tanwin sebelum ل atau ر.",
+        "how": "Lebur nun sepenuhnya ke huruf berikutnya, tanpa dengung."
+      },
+      "idgham_shafawi": {
+        "name": "Idgham syafawi",
+        "what": "Mim mati bertemu mim.",
+        "how": "Lebur mim pertama ke mim kedua dengan dengung 2 harakat."
+      },
+      "idgham_mutajanisayn": {
+        "name": "Idgham mutajanisain",
+        "what": "Dua huruf dengan tempat keluar yang sama, huruf pertama bersukun.",
+        "how": "Lebur huruf pertama ke huruf kedua, dibaca sekali dengan tasydid."
+      },
+      "idgham_mutaqaribayn": {
+        "name": "Idgham mutaqaribain",
+        "what": "Dua huruf dengan tempat keluar yang berdekatan, huruf pertama bersukun.",
+        "how": "Lebur huruf pertama ke huruf kedua, dibaca sekali dengan tasydid."
+      }
+    }
+  },
+  "ayahSheet": {
+    "title": "{{surah}} {{ayah}}",
+    "words": "Per kata",
+    "tafsir": "Tafsir",
+    "notes": "Catatan",
+    "wordsLoading": "Memuat kata-kata…",
+    "wordsError": "Kata-kata untuk ayat ini tidak dapat dimuat.",
+    "tapWord": "Ketuk kata untuk mendengarnya.",
+    "playWord": "Putar kata {{word}}",
+    "wordsSource": "Per kata: quran.com",
+    "tafsirError": "Tafsir ini tidak dapat dimuat. Periksa koneksi internet, lalu coba lagi.",
+    "tafsirArabic": "Tafsir ini berbahasa Arab.",
+    "chooseTafsir": "Tafsir",
+    "noteLabel": "Catatan Anda",
+    "notePlaceholder": "Tulis arti ayat ini bagi Anda…",
+    "noteSaved": "Tersimpan",
+    "collection": "Koleksi",
+    "noCollection": "Tidak ada",
+    "newCollection": "Koleksi baru",
+    "newCollectionPlaceholder": "Nama, mis. Harian",
+    "addCollection": "Tambah",
+    "removeCollection": "Hapus “{{name}}”",
+    "copy": "Salin teks",
+    "copied": "Disalin"
+  },
+  "footnote": {
+    "title": "Catatan kaki",
+    "error": "Catatan kaki tidak dapat dimuat."
+  },
+  "search": {
+    "surah": "Surah",
+    "ayah": "Ayat",
+    "ayahHint": "Cari semua ayat menurut artinya, mis. “sabar”.",
+    "ayahMin": "Ketik minimal 3 huruf.",
+    "ayahError": "Pencarian memerlukan koneksi internet. Coba lagi saat Anda daring.",
+    "ayahNone": "Tidak ada ayat yang cocok dengan “{{query}}”.",
+    "ayahResult": "{{surah}} {{ayah}}"
+  },
+  "settingsReading": {
+    "tajweed": "Warna tajwid",
+    "tajweedNote": "Mewarnai setiap hukum tajwid pada teks Arab.",
+    "legend": "Panduan warna dan hukum",
+    "transliteration": "Transliterasi",
+    "translationEdition": "Terjemahan bahasa Inggris",
+    "tafsir": "Tafsir utama",
+    "tafsirFollow": "Mengikuti bahasa aplikasi"
+  },
+  "khatam": {
+    "title": "Khatam",
+    "tile": "Khatam",
+    "intro": "Selesaikan seluruh Al-Quran dalam jumlah hari tertentu. Wird menghitung ayat yang benar-benar Anda baca.",
+    "chooseDays": "Selesai dalam",
+    "days": "{{count}} hari",
+    "perDay": "Sekitar {{count}} ayat per hari",
+    "start": "Mulai rencana",
+    "progress": "{{read}} dari {{total}} ayat",
+    "percent": "{{value}}%",
+    "today": "Hari ini",
+    "todayRead": "{{read}} dari {{goal}} ayat",
+    "todayDone": "Target hari ini tercapai. Barakallahu fik.",
+    "daysLeft_one": "Tersisa {{count}} hari",
+    "daysLeft_other": "Tersisa {{count}} hari",
+    "paceNeeded": "Bacalah sekitar {{count}} ayat per hari agar selesai tepat waktu.",
+    "streak": "Beruntun",
+    "streakDays_one": "{{count}} hari",
+    "streakDays_other": "{{count}} hari",
+    "longest": "Terpanjang: {{count}}",
+    "juzProgress": "Kemajuan per juz",
+    "stop": "Hentikan rencana",
+    "stopHint": "Kemajuan Anda tetap tersimpan.",
+    "finished": "Anda telah mengkhatamkan Al-Quran. Alhamdulillah!",
+    "newRound": "Mulai putaran baru",
+    "rounds_one": "{{count}} putaran selesai",
+    "rounds_other": "{{count}} putaran selesai",
+    "continue": "Lanjutkan membaca",
+    "noReading": "Belum ada yang dibaca. Buka surah mana pun dan mulai membaca.",
+    "juzCell": "Juz {{number}}, {{percent}}% terbaca"
+  },
+  "hifz": {
+    "title": "Hafalan",
+    "tile": "Hafalan",
+    "count": "{{count}} ayat dihafal",
+    "intro": "Latih satu surah ayat demi ayat: ulangi, sembunyikan dan uji diri, lalu tandai sebagai hafal.",
+    "inProgress": "Sedang dihafal",
+    "none": "Belum ada surah yang dimulai. Buka sebuah surah dan ketuk tombol hafalan untuk memulai.",
+    "progressOf": "{{done}} dari {{total}} hafal",
+    "range": "Latihan",
+    "from": "Dari ayat",
+    "to": "Sampai ayat",
+    "repeat": "Ulangi setiap ayat",
+    "pause": "Jeda antar ulangan",
+    "play": "Latih rentang ini",
+    "stop": "Hentikan",
+    "hide": "Sembunyikan teks",
+    "revealHint": "Ketuk ayat yang tersembunyi untuk menguji diri.",
+    "hidden": "Tersembunyi. Ketuk untuk menampilkan.",
+    "markMemorized": "Tandai ayat {{ayah}} sebagai hafal",
+    "unmark": "Tandai ayat {{ayah}} belum hafal",
+    "reciter": "Berlatih dengan",
+    "open": "Mode hafalan",
+    "playFrom": "Putar ayat {{ayah}}",
+    "secondsShort": "{{count}} dtk",
+    "reciterNote": "Husary Muallim membaca perlahan dengan jeda, dibuat untuk belajar."
+  },
+  "prayer": {
+    "title": "Salat",
+    "names": {
+      "fajr": "Subuh",
+      "dhuhr": "Zuhur",
+      "asr": "Asar",
+      "maghrib": "Magrib",
+      "isha": "Isya",
+      "imsak": "Imsak",
+      "sunrise": "Terbit"
+    },
+    "next": "Salat berikutnya",
+    "in": "dalam {{time}}",
+    "inHours": "{{hours}} jam {{minutes}} mnt",
+    "inMinutes": "{{minutes}} mnt",
+    "now": "Sekarang",
+    "today": "Hari ini",
+    "tomorrowFajr": "Besok",
+    "locating": "Mencari lokasi Anda…",
+    "needLocation": "Wird memerlukan lokasi Anda untuk menghitung waktu salat.",
+    "allow": "Izinkan lokasi",
+    "openSettings": "Buka Pengaturan",
+    "offline": "Waktu salat memerlukan koneksi internet untuk pertama kali. Coba lagi saat Anda daring.",
+    "retry": "Coba lagi",
+    "method": "Metode perhitungan",
+    "methodHint": "Setiap lembaga memakai sudut yang sedikit berbeda. Pilih yang diikuti komunitas Anda.",
+    "location": "Lokasi",
+    "updated": "Memakai lokasi terakhir Anda",
+    "refresh": "Perbarui lokasi",
+    "notify": "Pengingat waktu salat",
+    "notifyBody": "Waktu {{prayer}} telah tiba.",
+    "notifyOff": "Aktifkan notifikasi di Pengaturan untuk mendapat pengingat.",
+    "notifyAllow": "Izinkan notifikasi",
+    "imsakNote": "Imsak ditampilkan untuk bulan puasa.",
+    "timesFor": "Waktu salat hari ini"
+  },
+  "reminders": {
+    "title": "Pengingat",
+    "dailyAyah": "Ayat harian",
+    "dailyAyahTitle": "Ayat hari ini",
+    "dailyAyahBody": "Buka Wird untuk membaca {{reference}}.",
+    "khatam": "Pengingat khatam",
+    "khatamTitle": "Bacaan Anda hari ini",
+    "khatamBody": "Beberapa ayat setiap hari akan menjadi banyak. Buka Wird untuk melanjutkan.",
+    "time": "Waktu",
+    "permissionDenied": "Notifikasi untuk Wird dimatikan. Aktifkan di Pengaturan ponsel Anda.",
+    "scheduled": "{{count}} pengingat terjadwal",
+    "dailyAyahCardTitle": "Ayat hari ini",
+    "readAyah": "Baca dalam konteks"
+  },
+  "more": {
+    "title": "Lainnya",
+    "doa": "Doa",
+    "doaIntro": "Doa untuk kehidupan sehari-hari, dari equran.id. Teks Arab, transliterasi, dan arti dalam bahasa Indonesia.",
+    "doaSearch": "Cari doa",
+    "doaNone": "Tidak ada doa yang cocok dengan “{{query}}”.",
+    "doaLoadError": "Doa tidak dapat dimuat. Memerlukan koneksi internet untuk pertama kali.",
+    "asma": "Asmaul Husna",
+    "asmaIntro": "99 nama Allah yang indah, beserta artinya.",
+    "asmaMeaningNote": "Arti dalam bahasa Inggris.",
+    "tasbih": "Tasbih",
+    "tasbihIntro": "Ketuk untuk menghitung. Ponsel bergetar di 33, 66, dan 99.",
+    "tap": "Ketuk untuk menghitung",
+    "reset": "Atur ulang",
+    "target": "Target",
+    "today": "Hari ini: {{count}}",
+    "copyDoa": "Salin",
+    "sourceLabel": "Sumber",
+    "duaDaily": "Doa harian",
+    "duaSelected": "Doa pilihan"
+  },
+  "today": {
+    "morning": "Selamat pagi",
+    "afternoon": "Selamat siang",
+    "evening": "Selamat sore",
+    "night": "Selamat malam",
+    "goal": "Bacaan hari ini",
+    "noPlan": "Buat rencana Khatam untuk mendapat target baca harian.",
+    "continueAt": "Lanjut: {{surah}} {{ayah}}",
+    "ayah": "Ayat hari ini",
+    "ayahOffline": "Sambungkan ke internet untuk membaca {{reference}}.",
+    "setupPrayer": "Buka Salat untuk mengatur lokasi."
+  },
+  "adhkar": {
+    "title": "Zikir",
+    "subtitle": "Pagi, petang, dan setelah salat",
+    "intro": "Zikir untuk awal dan akhir hari serta setelah salat. Ketuk untuk menghitung; hitungan mulai lagi setiap hari.",
+    "sets": {
+      "morning": "Pagi",
+      "evening": "Petang",
+      "afterSalah": "Setelah salat"
+    },
+    "progress": "{{done}} dari {{total}} selesai",
+    "reset": "Ulangi",
+    "benefit": "Keutamaannya",
+    "done": "Selesai",
+    "markRead": "Tandai sudah dibaca",
+    "todayTitle_morning": "Zikir pagi",
+    "todayTitle_evening": "Zikir petang",
+    "todayProgress": "{{done}} dari {{total}} selesai"
+  }
 }

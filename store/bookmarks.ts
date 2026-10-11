@@ -8,6 +8,8 @@ export interface Bookmark {
     surahNameLatin: string;
     textArabic: string;
     createdAt: number;
+    /** The collection this bookmark was filed in, if any. */
+    collectionId?: string;
 }
 
 export type NewBookmark = Omit<Bookmark, "createdAt">;
@@ -21,6 +23,10 @@ interface BookmarksState {
     removeBookmark: (surahNumber: number, ayahNumber: number) => void;
     /** Adds the bookmark if missing, removes it if present. Returns whether it is now bookmarked. */
     toggleBookmark: (bookmark: NewBookmark) => boolean;
+    /** File a bookmark in a collection (or null for none). Bookmarks the ayah first if it isn't yet. */
+    setCollection: (bookmark: NewBookmark, collectionId: string | null) => void;
+    /** Take every bookmark out of a collection, e.g. because it was deleted. */
+    clearCollection: (collectionId: string) => void;
 }
 
 export const useBookmarksStore = create<BookmarksState>()(
@@ -45,6 +51,23 @@ export const useBookmarksStore = create<BookmarksState>()(
                 else get().addBookmark(bookmark);
                 return !isBookmarked;
             },
+            setCollection: (bookmark, collectionId) =>
+                set((state) => {
+                    const key = bookmarkKey(bookmark.surahNumber, bookmark.ayahNumber);
+                    const existing = state.bookmarks[key] ?? { ...bookmark, createdAt: Date.now() };
+                    const { collectionId: _old, ...rest } = existing;
+                    return { bookmarks: { ...state.bookmarks, [key]: collectionId ? { ...rest, collectionId } : rest } };
+                }),
+            clearCollection: (collectionId) =>
+                set((state) => ({
+                    bookmarks: Object.fromEntries(
+                        Object.entries(state.bookmarks).map(([key, bookmark]) => {
+                            if (bookmark.collectionId !== collectionId) return [key, bookmark];
+                            const { collectionId: _removed, ...rest } = bookmark;
+                            return [key, rest];
+                        }),
+                    ),
+                })),
         }),
         { name: "bookmarks", storage: zustandStorage, version: 1 },
     ),

@@ -8,13 +8,17 @@ interface StarNumberProps {
     size?: number;
     /** Filled in brass, for the ayah that is playing. */
     active?: boolean;
+    /** Override the outline colour, e.g. on a dark card. */
+    accent?: string;
+    /** Override the number colour. */
+    ink?: string;
 }
 
 /**
  * A number inside an eight-point star (two overlapping squares), used for Surah numbers and ayah
  * markers. Drawn with views, so it stays crisp at any size and follows the theme.
  */
-export function StarNumber({ value, size = 32, active }: StarNumberProps) {
+export function StarNumber({ value, size = 32, active, accent, ink }: StarNumberProps) {
     const { colors, fonts } = useTheme();
     const inset = size * 0.15;
     const square = {
@@ -24,9 +28,9 @@ export function StarNumber({ value, size = 32, active }: StarNumberProps) {
         right: inset,
         bottom: inset,
         borderWidth: 1.5,
-        borderColor: colors.brass,
+        borderColor: accent ?? colors.brass,
         borderRadius: size * 0.12,
-        backgroundColor: active ? colors.brass : "transparent",
+        backgroundColor: active ? (accent ?? colors.brass) : "transparent",
     };
     const digits = String(value).length;
     return (
@@ -37,7 +41,7 @@ export function StarNumber({ value, size = 32, active }: StarNumberProps) {
                 style={{
                     fontFamily: fonts.bodyBold,
                     fontSize: size * (digits > 2 ? 0.28 : 0.34),
-                    color: active ? colors.surface : colors.mushaf,
+                    color: active ? colors.surface : (ink ?? colors.mushaf),
                     fontVariant: ["tabular-nums"],
                 }}
             >

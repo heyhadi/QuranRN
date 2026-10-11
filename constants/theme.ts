@@ -1,6 +1,8 @@
 // Wird design tokens: mushaf green carries the brand and reading state, brass marks place and
 // progress (ayah markers, Surah numbers, streaks). Values match docs/quranrn-plan.html.
 
+import type { TajweedColorKey } from "./tajweed";
+
 export type ColorScheme = "light" | "dark";
 
 export interface Palette {
@@ -19,6 +21,12 @@ export interface Palette {
     brass: string;
     brassSoft: string;
     danger: string;
+    /** Feature cards (Surah title plate, Continue reading): deep green with cream text, in both themes. */
+    heroBackground: string;
+    heroInk: string;
+    heroAccent: string;
+    /** Letter colours for each tajweed rule family. */
+    tajweed: Record<TajweedColorKey, string>;
 }
 
 export const palettes: Record<ColorScheme, Palette> = {
@@ -35,6 +43,24 @@ export const palettes: Record<ColorScheme, Palette> = {
         brass: "#A67A2C",
         brassSoft: "#F3E8D3",
         danger: "#B42318",
+        heroBackground: "#0F5A46",
+        heroInk: "#F6F1E4",
+        heroAccent: "#D9B86C",
+        tajweed: {
+            silent: "#8E9894",
+            maddNormal: "#3D6BF0",
+            maddPermissible: "#3442E0",
+            maddObligatory: "#1F3BB0",
+            maddNecessary: "#0A1690",
+            qalqalah: "#CC1016",
+            ikhfa: "#8E1AA3",
+            ikhfaShafawi: "#C0169F",
+            ghunnah: "#D9650A",
+            iqlab: "#0E8CC4",
+            idghamGhunnah: "#127C62",
+            idghamWithout: "#2C8A12",
+            idghamShafawi: "#4F9A00",
+        },
     },
     dark: {
         paper: "#0B1310",
@@ -49,6 +75,24 @@ export const palettes: Record<ColorScheme, Palette> = {
         brass: "#D6AE62",
         brassSoft: "#3A2F1A",
         danger: "#F07067",
+        heroBackground: "#12382E",
+        heroInk: "#EFE8D6",
+        heroAccent: "#D6AE62",
+        tajweed: {
+            silent: "#7D8A85",
+            maddNormal: "#86A6FF",
+            maddPermissible: "#9AA2FF",
+            maddObligatory: "#7C95FF",
+            maddNecessary: "#6F7CFF",
+            qalqalah: "#FF6268",
+            ikhfa: "#D57AE8",
+            ikhfaShafawi: "#F075D2",
+            ghunnah: "#FFA25A",
+            iqlab: "#4CC3F5",
+            idghamGhunnah: "#45C9A6",
+            idghamWithout: "#6AD255",
+            idghamShafawi: "#A3E04A",
+        },
     },
 };
 

@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { BottomTabBar, Tabs } from "expo-router/js-tabs";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import type { ColorValue } from "react-native";
+import { View, type ColorValue } from "react-native";
+import { MiniPlayer } from "@/components/MiniPlayer";
 import { useTheme } from "@/components/useTheme";
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -19,6 +20,12 @@ export default function TabLayout() {
 
     return (
         <Tabs
+            tabBar={(props) => (
+                <View style={{ backgroundColor: colors.surface }}>
+                    <MiniPlayer />
+                    <BottomTabBar {...props} />
+                </View>
+            )}
             screenOptions={{
                 headerShown: false,
                 tabBarActiveTintColor: colors.mushaf,
@@ -28,8 +35,9 @@ export default function TabLayout() {
             }}
         >
             <Tabs.Screen name="index" options={{ title: t("tabs.quran"), tabBarIcon: tabIcon("book", "book-outline") }} />
-            <Tabs.Screen name="bookmark" options={{ title: t("tabs.saved"), tabBarIcon: tabIcon("bookmark", "bookmark-outline") }} />
-            <Tabs.Screen name="qibla" options={{ title: t("tabs.qibla"), tabBarIcon: tabIcon("compass", "compass-outline") }} />
+            <Tabs.Screen name="today" options={{ title: t("tabs.today"), tabBarIcon: tabIcon("sunny", "sunny-outline") }} />
+            <Tabs.Screen name="prayer" options={{ title: t("tabs.prayer"), tabBarIcon: tabIcon("moon", "moon-outline") }} />
+            <Tabs.Screen name="more" options={{ title: t("tabs.more"), tabBarIcon: tabIcon("apps", "apps-outline") }} />
             <Tabs.Screen name="settings" options={{ title: t("tabs.settings"), tabBarIcon: tabIcon("settings", "settings-outline") }} />
         </Tabs>
     );

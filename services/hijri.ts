@@ -14,3 +14,15 @@ export function formatHijri(date: Date, language: AppLanguage): string | null {
         return null;
     }
 }
+
+/** Today's solar (Gregorian) date with the weekday, e.g. "Sunday, 11 October 2026" / "Minggu, 11 Oktober 2026". */
+export function formatGregorian(date: Date, language: AppLanguage): string {
+    return new Intl.DateTimeFormat(language === "id" ? "id-ID" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", calendar: "gregory" }).format(date);
+}
+
+/** Both dates on two lines: solar first, then Hijri when the device has the calendar. */
+export function formatDates(date: Date, language: AppLanguage): string {
+    const hijri = formatHijri(date, language);
+    const solar = formatGregorian(date, language);
+    return hijri ? `${solar}\n${hijri}` : solar;
+}

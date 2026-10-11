@@ -9,12 +9,14 @@ interface IconButtonProps {
     accessibilityLabel: string;
     /** Solid green, for the main action. */
     primary?: boolean;
+    /** No circle behind the icon, for use on a coloured bar. */
+    plain?: boolean;
     color?: string;
     size?: number;
     disabled?: boolean;
 }
 
-export function IconButton({ icon, onPress, accessibilityLabel, primary, color, size = 36, disabled }: IconButtonProps) {
+export function IconButton({ icon, onPress, accessibilityLabel, primary, plain, color, size = 36, disabled }: IconButtonProps) {
     const { colors } = useTheme();
     return (
         <Pressable
@@ -30,7 +32,7 @@ export function IconButton({ icon, onPress, accessibilityLabel, primary, color, 
                     width: size,
                     height: size,
                     borderRadius: size / 2,
-                    backgroundColor: primary ? colors.mushaf : colors.surface2,
+                    backgroundColor: primary ? colors.mushaf : plain ? "transparent" : colors.surface2,
                     opacity: disabled ? 0.4 : pressed ? 0.7 : 1,
                 },
             ]}

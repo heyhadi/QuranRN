@@ -1,0 +1,31 @@
+{
+ "search": {
+  "total_results": 195,
+  "results": [
+   {
+    "verse_key": "70:5",
+    "text": "فَٱصْبِرْ صَبْرًا جَمِيلًا",
+    "translations": [
+     {
+      "text": "So, observe <em>patience</em>, a good <em>patience</em>.",
+      "resource_id": 84,
+      "name": "T. Usmani",
+      "language_name": "english"
+     }
+    ]
+   },
+   {
+    "verse_key": "16:127",
+    "text": "وَٱصْبِرْ وَمَا صَبْرُكَ إِلَّا بِٱللَّهِ ۚ وَلَا تَحْزَنْ عَلَيْهِمْ وَلَا تَكُ فِى ضَيْقٍ مِّمَّا يَمْكُرُونَ",
+    "translations": [
+     {
+      "text": "And bear with <em>patience</em>, (O Muhammad) - and your <em>patience</em> is only because of the help of Allah - and do not grieve over them, nor feel distressed by their evil plans.",
+      "resource_id": 95,
+      "name": "A. Maududi (Tafhim commentary)",
+      "language_name": "english"
+     }
+    ]
+   }
+  ]
+ }
+}

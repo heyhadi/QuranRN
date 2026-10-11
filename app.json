@@ -55,6 +55,12 @@
         {
           "locationWhenInUsePermission": "Wird uses your location to find the Qibla direction."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0F5A46"
+        }
       ]
     ],
     "experiments": {

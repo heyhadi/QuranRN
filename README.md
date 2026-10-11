@@ -28,10 +28,12 @@
 
 |  |  |
 |---|---|
-| **Read all 114 Surahs.** Arabic in the Amiri typeface, with the Indonesian translation from Kemenag under every ayah. | **Listen ayah by ayah.** Tap play on any ayah; recitation continues to the next one and the list follows along. Tap again to stop. |
-| **Tafsir for every ayah.** The Kemenag tafsir opens in a scrollable sheet. If it fails to load, the Surah still opens and the sheet offers a retry. | **Bookmarks that stay.** Bookmark any ayah; bookmarks are saved on the device and jump straight back to the ayah. Long-press to remove. |
-| **Continue reading.** The home screen remembers the last ayah you were reading and takes you back to it. | **Search.** Find a Surah by Latin name (`al baqarah`, `alkahf`), meaning (`gua`) or number (`18`). |
-| **Works offline.** Every Surah you open is cached on the device for four weeks, so it opens again without a connection. | **Qibla compass.** The direction to the Kaaba from where you are, with the phone's own compass heading. |
+| **Read all 114 Surahs.** Arabic in the Amiri typeface with the translation under every ayah: Kemenag in Indonesian, or one of six English editions with tappable footnotes. | **Tajweed you can tap.** Every rule in its own colour. Tap a letter to see the rule and how to say it, or open the learning screen for a real example of each rule that you can hear. |
+| **Word by word.** Tap any ayah for each word's transliteration and meaning, and hear the word. | **Tafsir.** Eight editions: Kemenag, Ibn Kathir, Ma'arif al-Qur'an, Tazkirul Quran, Muyassar, As-Sa'di, At-Tabari and Al-Qurtubi. |
+| **27 reciters.** Per-ayah audio with a mini-player that keeps going while you browse. Repeat, loop, speed, sleep timer, lock-screen controls, and download a Surah to listen offline. | **Hifz mode.** Repeat an ayah or range, hide the text and tap to check yourself, practise with Husary's slow teaching recitation, and mark ayahs memorized. |
+| **Khatam planner.** Finish the Quran in 30 to 180 days, with a daily goal, a streak and a map of the 30 Juz. | **Prayer times.** By location with MUIS, Kemenag, JAKIM and five other methods, a countdown to the next prayer, reminders, and a Qibla compass. Saved for offline use. |
+| **Notes and collections.** Write a note on any ayah and file bookmarks into coloured collections. | **Search.** By Surah name, meaning or number, by Juz, or every ayah by meaning. |
+| **Adhkar, dua, Asmaul Husna and tasbih.** Morning, evening and after-prayer adhkar with counters, everyday dua with hadith sources, the 99 names, and a counter that vibrates at 33, 66 and 99. | **Indonesian and English**, light and dark. Surahs you have read open again without a connection. |
 
 ## How it works
 
@@ -80,7 +82,7 @@ npm run build:android:preview     # Android APK built in the cloud with EAS
 - Stack: Expo SDK 57, React Native 0.86, React 19, Expo Router, TanStack Query, zustand, MMKV,
   react-native-paper.
 - `ios/` and `android/` are generated from `app.json` by `expo prebuild` and are not committed.
-- Tests cover the API mappers, search, the HTTP client, Qibla maths, bookmarks and the audio player.
+- Tests cover the API mappers, the tajweed and rich-text parsers, search, Qibla maths, prayer times and time zones, reminder planning, khatam maths, and every store. Fixtures are trimmed copies of real API responses.
   Mapper tests run against trimmed copies of real equran.id responses
   (`services/__tests__/fixtures/`).
 - `node scripts/readme-images.mjs` regenerates the README images from the design mockups in
@@ -88,15 +90,11 @@ npm run build:android:preview     # Android APK built in the cloud with EAS
 
 ## Coming next
 
-Phase 1 (upgrade, data layer, bug fixes) is done. Next, in order (details in [ROADMAP.md](ROADMAP.md)):
+Phases 1 to 6 of [ROADMAP.md](ROADMAP.md) are built. Still to do:
 
-1. ~~Foundation and bug fixes~~
-2. Redesign: mushaf green and brass theme, dark mode, Indonesian and English throughout
-3. Audio: about 25 reciters, a mini-player that keeps playing across screens, lock-screen controls
-4. Reading depth: tajweed colouring with rule explanations, word-by-word meaning, more tafsirs
-5. Habits: hifz (memorisation) mode, khatam planner and streaks, daily ayah, widgets
-6. Worship tools: prayer times, adhkar, doa, tasbih
-7. Sharing and polish: share an ayah as an image, accessibility
+1. Home-screen widgets
+2. Mushaf page mode
+3. Share an ayah as an image, accessibility pass, store listing
 
 ![Tajweed colours you can tap, and word-by-word meaning](docs/images/2-tajweed-you-can-tap.png)
 
@@ -104,20 +102,23 @@ Phase 1 (upgrade, data layer, bug fixes) is done. Next, in order (details in [RO
 
 ![Prayer times, Qibla and tasbih](docs/images/4-prayer-qibla-tasbih.png)
 
-These are design mockups from the plan; the Quran text and tajweed markup in them are real (quran.com),
-and the prayer times are sample data.
+These images are design mockups; the Quran text and tajweed markup in them are real (quran.com), and the
+prayer times are sample data. The app itself now follows them closely.
 
 ## Known limits
 
-- Indonesian only for now; English arrives with the redesign.
-- One reciter (Abdullah Al-Juhany); the reciter picker comes in the audio phase.
-- Audio stops when the app goes to the background or the phone locks.
-- A Surah needs a connection the first time it is opened.
+- Indonesian doa come from equran.id (227); the English dua list is the smaller bundled set (46). The Asmaul Husna meanings are in English.
+- A Surah needs a connection the first time it is opened, and tajweed colours, English translations,
+  word-by-word and the other tafsirs need one the first time each is used.
+- Background audio and lock-screen controls are set up but still need to be checked on a real phone.
+- Ayah search by meaning always needs a connection.
 - The Qibla compass needs a real device; simulators have no compass.
 
 ## Credits
 
-- Quran text, Indonesian translation and tafsir (Kemenag RI) and recitation audio via [equran.id](https://equran.id).
+- Quran text, Indonesian translation, Kemenag tafsir and doa via [equran.id](https://equran.id).
+- Adhkar and English dua from [fitrahive/dua-dhikr](https://github.com/fitrahive/dua-dhikr) (MIT), bundled in `constants/adhkar/`.
+- English translations, tajweed text, word-by-word, other tafsirs and ayah search via [quran.com](https://quran.com); more recitations from [everyayah.com](https://everyayah.com); prayer times and Asmaul Husna from [aladhan.com](https://aladhan.com).
 - [Amiri](https://github.com/aliftype/amiri) typeface by Khaled Hosny, [Reem Kufi](https://github.com/aliftype/reem-kufi) and [Source Sans 3](https://github.com/adobe-fonts/source-sans), all under the SIL Open Font License.
 
 ---

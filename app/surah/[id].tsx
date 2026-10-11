@@ -1,20 +1,31 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, FlatList, Pressable, ScrollView, Share, StyleSheet, Switch, View, type ViewToken } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, Share, StyleSheet, Switch, View, type ViewToken } from "react-native";
 import { Button } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import AyahCard from "@/components/AyahCard";
+import { AyahSheet } from "@/components/AyahSheet";
+import { DownloadAudioRow } from "@/components/DownloadAudioRow";
+import { FootnoteSheet } from "@/components/FootnoteSheet";
+import { MiniPlayer } from "@/components/MiniPlayer";
+import { SurahHeaderCard } from "@/components/SurahHeaderCard";
+import { LegendSheet, RuleSheet } from "@/components/TajweedSheets";
 import { AppText } from "@/components/ui/AppText";
 import { IconButton } from "@/components/ui/IconButton";
 import { Sheet } from "@/components/ui/Sheet";
 import { useTheme } from "@/components/useTheme";
+import { englishTranslations } from "@/constants/editions";
+import type { TajweedRuleId } from "@/constants/tajweed";
 import { arabicFontSize } from "@/constants/theme";
 import { juzOf } from "@/services/juz";
-import { useEnglishSurahMeanings, useSurahDetail, useTafsir } from "@/services/queries";
+import { useEnglishSurahMeanings, useEnglishTranslation, useSurahDetail, useTajweed } from "@/services/queries";
+import { translationText } from "@/services/richText";
 import type { Ayah } from "@/services/types";
 import { usePlayingAyah, useAudioPlayerStore, type Track } from "@/store/audioPlayer";
 import { bookmarkKey, useBookmarksStore } from "@/store/bookmarks";
+import { useKhatamStore } from "@/store/khatam";
+import { useNotesStore } from "@/store/notes";
 import { useReadingProgressStore } from "@/store/readingProgress";
 import { useSettingsStore } from "@/store/settings";
 
@@ -30,6 +41,8 @@ function parsePositiveInt(value: string | string[] | undefined): number | null {
     return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
 }
 
+type SheetTab = "words" | "tafsir" | "notes";
+
 export default function Surah() {
     const { t, i18n } = useTranslation();
     const router = useRouter();
@@ -37,36 +50,49 @@ export default function Surah() {
     const params = useLocalSearchParams<{ id: string; ayah?: string }>();
     const surahNumber = parsePositiveInt(params.id) ?? 0;
     const targetAyah = parsePositiveInt(params.ayah);
+    const isEnglish = i18n.language === "en";
 
-    // Surah and tafsir load in parallel; a tafsir failure only affects the tafsir sheet.
     const surahQuery = useSurahDetail(surahNumber);
-    const tafsirQuery = useTafsir(surahNumber);
-    const englishMeanings = useEnglishSurahMeanings(i18n.language === "en");
+    const englishMeanings = useEnglishSurahMeanings(isEnglish);
     const surah = surahQuery.data;
     const ayahs = useMemo(() => surah?.ayahs ?? [], [surah]);
 
+    const arabicSize = useSettingsStore((state) => state.arabicFontSize);
+    const showTranslation = useSettingsStore((state) => state.showTranslation);
+    const showTransliteration = useSettingsStore((state) => state.showTransliteration);
+    const tajweedEnabled = useSettingsStore((state) => state.tajweedEnabled);
+    const englishTranslationId = useSettingsStore((state) => state.englishTranslationId);
+    // Tajweed colours and English translations come from quran.com; the reader shows plain text / the
+    // Indonesian translation until they arrive (or if they can't load).
+    const tajweed = useTajweed(surahNumber, tajweedEnabled);
+    const englishTranslation = useEnglishTranslation(surahNumber, englishTranslationId, isEnglish && showTranslation);
+
     const bookmarks = useBookmarksStore((state) => state.bookmarks);
     const toggleBookmark = useBookmarksStore((state) => state.toggleBookmark);
-    const { reciterId, arabicFontSize: arabicSize, showTranslation, stepArabicFontSize, setShowTranslation } = useSettingsStore();
+    const notes = useNotesStore((state) => state.notes);
     const playingAyah = usePlayingAyah(surahNumber);
     const toggleAudio = useAudioPlayerStore((state) => state.toggle);
-    const stopAudio = useAudioPlayerStore((state) => state.stop);
     const setLastRead = useReadingProgressStore((state) => state.setLastRead);
+    const recordRead = useKhatamStore((state) => state.recordRead);
 
-    const [tafsirAyah, setTafsirAyah] = useState<number | null>(null);
+    const [sheetAyah, setSheetAyah] = useState<Ayah | null>(null);
+    const [sheetTab, setSheetTab] = useState<SheetTab>("words");
     const [displayOpen, setDisplayOpen] = useState(false);
+    const [legendOpen, setLegendOpen] = useState(false);
+    const [ruleId, setRuleId] = useState<TajweedRuleId | null>(null);
+    const [footnoteId, setFootnoteId] = useState<number | null>(null);
     const listRef = useRef<FlatList<Ayah>>(null);
     const scrollRetries = useRef(0);
 
     const queue: Track[] = useMemo(
-        () =>
-            ayahs.map((ayah) => ({
-                surahNumber: ayah.surahNumber,
-                ayahNumber: ayah.ayahNumber,
-                url: ayah.audio[reciterId] ?? Object.values(ayah.audio)[0],
-            })),
-        [ayahs, reciterId],
+        () => ayahs.map((ayah) => ({ surahNumber: ayah.surahNumber, ayahNumber: ayah.ayahNumber, surahName: surah?.nameLatin ?? "" })),
+        [ayahs, surah?.nameLatin],
     );
+
+    const openSheet = useCallback((ayah: Ayah, tab: SheetTab) => {
+        setSheetTab(tab);
+        setSheetAyah(ayah);
+    }, []);
 
     // ---- Scrolling: one helper for both "jump to ayah" and "follow the playing ayah". ----
     const scrollToAyah = useCallback(
@@ -97,24 +123,28 @@ export default function Surah() {
         if (playingAyah !== null) scrollToAyah(playingAyah);
     }, [playingAyah, scrollToAyah]);
 
-    // ---- Leaving the screen: stop audio and remember where the reader was. ----
+    // ---- Leaving the screen: remember where the reader was (recitation keeps playing in the mini-player). ----
     const lastVisibleAyah = useRef<number | null>(null);
     const surahNameRef = useRef<string | null>(null);
     surahNameRef.current = surah?.nameLatin ?? null;
 
+    // Every ayah that was on screen at some point counts as read, for the khatam planner and streak.
+    const seenAyahs = useRef(new Set<number>());
     const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken<Ayah>[] }) => {
-        const first = viewableItems.find((token) => token.isViewable)?.item;
-        if (first) lastVisibleAyah.current = first.ayahNumber;
+        const visible = viewableItems.filter((token) => token.isViewable && token.item);
+        if (visible[0]) lastVisibleAyah.current = visible[0].item.ayahNumber;
+        for (const token of visible) seenAyahs.current.add(token.item.ayahNumber);
     }).current;
 
     useEffect(() => {
+        const seen = seenAyahs.current;
         return () => {
-            stopAudio();
             if (lastVisibleAyah.current !== null && surahNameRef.current) {
                 setLastRead({ surahNumber, ayahNumber: lastVisibleAyah.current, surahNameLatin: surahNameRef.current });
             }
+            recordRead(surahNumber, [...seen]);
         };
-    }, [surahNumber, stopAudio, setLastRead]);
+    }, [surahNumber, setLastRead, recordRead]);
 
     const handleBookmarkPress = useCallback(
         (ayah: Ayah) => {
@@ -139,12 +169,12 @@ export default function Surah() {
         (ayah: Ayah) => {
             if (!surah) return;
             const reference = t("reader.shareSuffix", { surah: surah.nameLatin, surahNumber: surah.number, ayah: ayah.ayahNumber });
-            void Share.share({ message: `${ayah.textArabic}\n\n${ayah.translation}\n\n— ${reference}` });
+            const english = isEnglish ? englishTranslation.data?.[ayah.ayahNumber] : undefined;
+            const meaning = english ? translationText(english) : ayah.translation;
+            void Share.share({ message: `${ayah.textArabic}\n\n${meaning}\n\n— ${reference}` });
         },
-        [surah, t],
+        [surah, t, isEnglish, englishTranslation.data],
     );
-
-    const tafsirText = tafsirAyah === null ? undefined : tafsirQuery.data?.find((entry) => entry.ayahNumber === tafsirAyah)?.text;
 
     if (surahQuery.isPending) {
         return (
@@ -167,25 +197,25 @@ export default function Surah() {
         );
     }
 
-    const meaning = (i18n.language === "en" && englishMeanings.data?.[surah.number]) || surah.meaning;
+    const meaning = (isEnglish && englishMeanings.data?.[surah.number]) || surah.meaning;
+    const translationFailed = isEnglish && showTranslation && englishTranslation.isError;
 
     const header = (
         <View style={{ padding: spacing.lg, gap: spacing.lg }}>
-            <View style={[styles.infoCard, { backgroundColor: colors.mushaf, borderRadius: radius.lg, padding: spacing.xl }]}>
-                <AppText style={{ fontFamily: fonts.quran, fontSize: 34, lineHeight: 64, color: colors.onMushaf }}>{surah.nameArabic}</AppText>
-                <AppText variant="title" color={colors.onMushaf}>
-                    {surah.nameLatin}
-                </AppText>
-                <AppText color={colors.onMushaf} style={styles.dim}>
-                    {meaning}
-                </AppText>
-                <View style={[styles.divider, { backgroundColor: colors.onMushaf }]} />
-                <AppText variant="caption" color={colors.onMushaf} style={styles.dim}>
-                    {`${t(`common.place.${surah.revelationPlace}`)} · ${t("common.ayahCount", { count: surah.ayahCount })} · ${t("common.juz", { number: juzOf(surah.number, 1) })}`}
-                </AppText>
-            </View>
+            <SurahHeaderCard
+                number={surah.number}
+                nameArabic={surah.nameArabic}
+                nameLatin={surah.nameLatin}
+                meaning={meaning}
+                details={[t(`common.place.${surah.revelationPlace}`), t("common.ayahCount", { count: surah.ayahCount }), t("common.juz", { number: juzOf(surah.number, 1) })]}
+            />
             {!NO_SEPARATE_BASMALAH.has(surah.number) ? (
                 <AppText style={[styles.basmalah, { fontFamily: fonts.quran, color: colors.ink }]}>{BASMALAH}</AppText>
+            ) : null}
+            {translationFailed ? (
+                <AppText variant="caption" muted style={styles.centerText}>
+                    {t("reader.translationFallback")}
+                </AppText>
             ) : null}
         </View>
     );
@@ -196,6 +226,7 @@ export default function Surah() {
                 <Pressable
                     onPress={() => router.replace({ pathname: "/surah/[id]", params: { id: surah.previous!.number } })}
                     accessibilityRole="button"
+                    accessibilityLabel={t("reader.previous", { name: surah.previous.nameLatin })}
                     style={[styles.navButton, { backgroundColor: colors.surface2, borderRadius: radius.md }]}
                 >
                     <AppText variant="bodyStrong" numberOfLines={1}>
@@ -226,14 +257,17 @@ export default function Surah() {
                 options={{
                     title: surah.nameLatin,
                     headerRight: () => (
-                        <IconButton icon="text-outline" size={34} onPress={() => setDisplayOpen(true)} accessibilityLabel={t("reader.displaySettings")} />
+                        <View style={styles.headerButtons}>
+                            <IconButton icon="school-outline" size={34} onPress={() => router.push({ pathname: "/hifz/[id]", params: { id: surah.number } })} accessibilityLabel={t("hifz.open")} />
+                            <IconButton icon="text-outline" size={34} onPress={() => setDisplayOpen(true)} accessibilityLabel={t("reader.displaySettings")} />
+                        </View>
                     ),
                 }}
             />
             <FlatList
                 ref={listRef}
                 data={ayahs}
-                extraData={{ bookmarks, playingAyah, arabicSize, showTranslation }}
+                extraData={{ bookmarks, notes, playingAyah, arabicSize, showTranslation, showTransliteration, tajweedEnabled, tajweed: tajweed.data, english: englishTranslation.data }}
                 keyExtractor={(item) => bookmarkKey(item.surahNumber, item.ayahNumber)}
                 onScrollToIndexFailed={handleScrollToIndexFailed}
                 onViewableItemsChanged={onViewableItemsChanged}
@@ -241,81 +275,144 @@ export default function Surah() {
                 ListHeaderComponent={header}
                 ListFooterComponent={footer}
                 contentContainerStyle={{ paddingHorizontal: spacing.sm }}
-                renderItem={({ item, index }) => (
-                    <AyahCard
-                        ayah={item}
-                        arabicSize={arabicSize}
-                        showTranslation={showTranslation}
-                        isBookmarked={bookmarkKey(item.surahNumber, item.ayahNumber) in bookmarks}
-                        isPlaying={playingAyah === item.ayahNumber}
-                        onPlay={() => toggleAudio(queue, index)}
-                        onBookmarkPress={() => handleBookmarkPress(item)}
-                        onTafsirPress={() => setTafsirAyah(item.ayahNumber)}
-                        onSharePress={() => handleShare(item)}
-                    />
-                )}
+                renderItem={({ item, index }) => {
+                    const key = bookmarkKey(item.surahNumber, item.ayahNumber);
+                    return (
+                        <AyahCard
+                            ayah={item}
+                            arabicSize={arabicSize}
+                            tajweed={tajweedEnabled ? tajweed.data?.[item.ayahNumber] : undefined}
+                            showTranslation={showTranslation}
+                            translationHtml={isEnglish ? englishTranslation.data?.[item.ayahNumber] : undefined}
+                            showTransliteration={showTransliteration}
+                            isBookmarked={key in bookmarks}
+                            hasNote={key in notes}
+                            isPlaying={playingAyah === item.ayahNumber}
+                            onPlay={() => toggleAudio(queue, index)}
+                            onBookmarkPress={() => handleBookmarkPress(item)}
+                            onWordsPress={() => openSheet(item, "words")}
+                            onTafsirPress={() => openSheet(item, "tafsir")}
+                            onNotePress={() => openSheet(item, "notes")}
+                            onSharePress={() => handleShare(item)}
+                            onRulePress={setRuleId}
+                            onFootnotePress={setFootnoteId}
+                        />
+                    );
+                }}
             />
 
-            <Sheet
-                visible={tafsirAyah !== null}
-                onDismiss={() => setTafsirAyah(null)}
-                title={t("reader.tafsirTitle", { surah: surah.nameLatin, ayah: tafsirAyah ?? "" })}
-            >
-                {tafsirQuery.isPending ? (
-                    <ActivityIndicator color={colors.mushaf} style={{ margin: spacing.xl }} />
-                ) : tafsirText ? (
-                    <ScrollView contentContainerStyle={{ paddingHorizontal: spacing.lg, paddingBottom: spacing.lg, gap: spacing.md }}>
-                        <AppText style={styles.tafsir}>{tafsirText}</AppText>
-                        <AppText variant="caption" muted>
-                            {t("reader.tafsirSource")}
-                        </AppText>
-                    </ScrollView>
-                ) : (
-                    <View style={{ paddingHorizontal: spacing.lg, gap: spacing.sm, alignItems: "flex-start" }}>
-                        <AppText>{t("reader.tafsirError")}</AppText>
-                        <Button onPress={() => tafsirQuery.refetch()}>{t("common.tryAgain")}</Button>
-                    </View>
-                )}
-            </Sheet>
+            <AyahSheet ayah={sheetAyah} surahName={surah.nameLatin} initialTab={sheetTab} onDismiss={() => setSheetAyah(null)} />
+            <RuleSheet ruleId={ruleId} onDismiss={() => setRuleId(null)} />
+            <LegendSheet visible={legendOpen} onDismiss={() => setLegendOpen(false)} />
+            <FootnoteSheet footnoteId={footnoteId} onDismiss={() => setFootnoteId(null)} />
 
-            <Sheet visible={displayOpen} onDismiss={() => setDisplayOpen(false)} title={t("reader.display")}>
-                <View style={{ paddingHorizontal: spacing.lg, gap: spacing.lg }}>
-                    <View style={styles.settingRow}>
-                        <AppText variant="bodyStrong">{t("reader.textSize")}</AppText>
-                        <View style={styles.stepper}>
-                            <IconButton icon="remove" onPress={() => stepArabicFontSize(-1)} disabled={arabicSize <= arabicFontSize.min} accessibilityLabel={t("reader.smaller")} />
-                            <AppText variant="bodyStrong" style={styles.sizeValue}>
-                                {arabicSize}
-                            </AppText>
-                            <IconButton icon="add" onPress={() => stepArabicFontSize(1)} disabled={arabicSize >= arabicFontSize.max} accessibilityLabel={t("reader.larger")} />
-                        </View>
-                    </View>
-                    <AppText variant="arabic" size={arabicSize}>
-                        {ayahs[0]?.textArabic ?? BASMALAH}
+            <Sheet visible={displayOpen} onDismiss={() => setDisplayOpen(false)} title={t("reader.display")} maxHeightRatio={0.88}>
+                <DisplaySettings
+                    arabicSize={arabicSize}
+                    sampleText={ayahs[0]?.textArabic ?? BASMALAH}
+                    surahNumber={surah.number}
+                    ayahCount={surah.ayahCount}
+                    isEnglish={isEnglish}
+                    onOpenLegend={() => {
+                        setDisplayOpen(false);
+                        setLegendOpen(true);
+                    }}
+                />
+            </Sheet>
+            <MiniPlayer safeBottom />
+        </View>
+    );
+}
+
+interface DisplaySettingsProps {
+    arabicSize: number;
+    sampleText: string;
+    surahNumber: number;
+    ayahCount: number;
+    isEnglish: boolean;
+    onOpenLegend: () => void;
+}
+
+function DisplaySettings({ arabicSize, sampleText, surahNumber, ayahCount, isEnglish, onOpenLegend }: DisplaySettingsProps) {
+    const { t } = useTranslation();
+    const { colors, spacing, radius } = useTheme();
+    const settings = useSettingsStore();
+    const row = (label: string, value: boolean, onChange: (value: boolean) => void) => (
+        <View style={styles.settingRow}>
+            <AppText variant="bodyStrong" style={styles.flex}>
+                {label}
+            </AppText>
+            <Switch value={value} onValueChange={onChange} trackColor={{ true: colors.mushaf }} accessibilityLabel={label} />
+        </View>
+    );
+
+    return (
+        <View style={{ paddingHorizontal: spacing.lg, gap: spacing.lg }}>
+            <View style={styles.settingRow}>
+                <AppText variant="bodyStrong">{t("reader.textSize")}</AppText>
+                <View style={styles.stepper}>
+                    <IconButton icon="remove" onPress={() => settings.stepArabicFontSize(-1)} disabled={arabicSize <= arabicFontSize.min} accessibilityLabel={t("reader.smaller")} />
+                    <AppText variant="bodyStrong" style={styles.sizeValue}>
+                        {arabicSize}
                     </AppText>
-                    <View style={styles.settingRow}>
-                        <AppText variant="bodyStrong">{t("reader.showTranslation")}</AppText>
-                        <Switch value={showTranslation} onValueChange={setShowTranslation} trackColor={{ true: colors.mushaf }} />
+                    <IconButton icon="add" onPress={() => settings.stepArabicFontSize(1)} disabled={arabicSize >= arabicFontSize.max} accessibilityLabel={t("reader.larger")} />
+                </View>
+            </View>
+            <AppText variant="arabic" size={arabicSize}>
+                {sampleText}
+            </AppText>
+            {row(t("reader.showTranslation"), settings.showTranslation, settings.setShowTranslation)}
+            {row(t("settingsReading.transliteration"), settings.showTransliteration, settings.setShowTransliteration)}
+            {row(t("settingsReading.tajweed"), settings.tajweedEnabled, settings.setTajweedEnabled)}
+            <Pressable onPress={onOpenLegend} accessibilityRole="button">
+                <AppText variant="bodyStrong" color={colors.mushaf}>
+                    {`${t("settingsReading.legend")} ›`}
+                </AppText>
+            </Pressable>
+            {isEnglish && settings.showTranslation ? (
+                <View style={{ gap: spacing.sm }}>
+                    <AppText variant="label" muted>
+                        {t("settingsReading.translationEdition")}
+                    </AppText>
+                    <View style={styles.chips}>
+                        {englishTranslations.map((edition) => {
+                            const selected = edition.id === settings.englishTranslationId;
+                            return (
+                                <Pressable
+                                    key={edition.id}
+                                    onPress={() => settings.setEnglishTranslationId(edition.id)}
+                                    accessibilityRole="button"
+                                    accessibilityState={{ selected }}
+                                    style={[styles.chip, { backgroundColor: selected ? colors.mushaf : colors.surface2, borderRadius: radius.pill }]}
+                                >
+                                    <AppText variant="caption" color={selected ? colors.onMushaf : colors.ink2} style={styles.chipText}>
+                                        {edition.name}
+                                    </AppText>
+                                </Pressable>
+                            );
+                        })}
                     </View>
                 </View>
-            </Sheet>
+            ) : null}
+            <DownloadAudioRow surahNumber={surahNumber} ayahCount={ayahCount} />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
+    headerButtons: { flexDirection: "row", gap: 8 },
+    flex: { flex: 1 },
     centered: { flex: 1, justifyContent: "center", alignItems: "center", padding: 24, gap: 16 },
     centerText: { textAlign: "center" },
-    infoCard: { alignItems: "center", gap: 2 },
-    divider: { height: StyleSheet.hairlineWidth, alignSelf: "stretch", opacity: 0.35, marginVertical: 10 },
-    dim: { opacity: 0.85, textAlign: "center" },
     basmalah: { fontSize: 26, lineHeight: 52, textAlign: "center" },
-    tafsir: { lineHeight: 25 },
     footer: { flexDirection: "row" },
     navButton: { flex: 1, paddingVertical: 14, paddingHorizontal: 16 },
     right: { textAlign: "right" },
-    settingRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+    settingRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
     stepper: { flexDirection: "row", alignItems: "center", gap: 12 },
     sizeValue: { minWidth: 28, textAlign: "center", fontVariant: ["tabular-nums"] },
+    chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+    chip: { paddingHorizontal: 12, paddingVertical: 7 },
+    chipText: { fontWeight: "600" },
 });
