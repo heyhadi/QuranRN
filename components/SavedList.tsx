@@ -4,7 +4,6 @@ import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { StarNumber } from "@/components/ui/StarNumber";
 import { useTheme } from "@/components/useTheme";
@@ -12,7 +11,8 @@ import { bookmarkKey, sortBookmarks, useBookmarksStore, type Bookmark } from "@/
 import { useCollectionsStore } from "@/store/collections";
 import { useNotesStore } from "@/store/notes";
 
-export default function BookmarksScreen() {
+/** The bookmarks list, shown inside the Quran tab. `header` is the Home header, so the list scrolls as one page with it. */
+export function SavedList({ header }: { header: React.ReactElement }) {
     const { t } = useTranslation();
     const router = useRouter();
     const { colors, spacing, radius, fonts } = useTheme();
@@ -29,6 +29,7 @@ export default function BookmarksScreen() {
     );
 
     const renderItem = ({ item }: { item: Bookmark }) => (
+        <View style={{ paddingHorizontal: spacing.lg }}>
         <ReanimatedSwipeable
             friction={2}
             rightThreshold={60}
@@ -80,59 +81,64 @@ export default function BookmarksScreen() {
                 ) : null}
             </Pressable>
         </ReanimatedSwipeable>
+        </View>
     );
 
+    const filters =
+        collections.length > 0 ? (
+            <View style={[styles.filters, { paddingHorizontal: spacing.lg, paddingBottom: spacing.md }]}>
+                {[{ id: "all", name: t("home.tabAll"), color: colors.mushaf }, ...collections].map((collection) => {
+                    const selected = collection.id === activeFilter;
+                    return (
+                        <Pressable
+                            key={collection.id}
+                            onPress={() => setFilter(collection.id)}
+                            accessibilityRole="button"
+                            accessibilityState={{ selected }}
+                            style={[styles.filterChip, { backgroundColor: selected ? collection.color : colors.surface2, borderRadius: radius.pill }]}
+                        >
+                            <AppText variant="caption" color={selected ? "#FFFFFF" : colors.ink2} style={styles.bold}>
+                                {collection.name}
+                            </AppText>
+                        </Pressable>
+                    );
+                })}
+            </View>
+        ) : null;
+
     return (
-        <SafeAreaView edges={["top"]} style={[styles.screen, { backgroundColor: colors.paper }]}>
-            <AppText variant="display" style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.md }} accessibilityRole="header">
-                {t("saved.title")}
-            </AppText>
-            {collections.length > 0 ? (
-                <View style={[styles.filters, { paddingHorizontal: spacing.lg, paddingBottom: spacing.md }]}>
-                    {[{ id: "all", name: t("home.tabAll"), color: colors.mushaf }, ...collections].map((collection) => {
-                        const selected = collection.id === activeFilter;
-                        return (
-                            <Pressable
-                                key={collection.id}
-                                onPress={() => setFilter(collection.id)}
-                                accessibilityRole="button"
-                                accessibilityState={{ selected }}
-                                style={[styles.filterChip, { backgroundColor: selected ? collection.color : colors.surface2, borderRadius: radius.pill }]}
-                            >
-                                <AppText variant="caption" color={selected ? "#FFFFFF" : colors.ink2} style={styles.bold}>
-                                    {collection.name}
-                                </AppText>
-                            </Pressable>
-                        );
-                    })}
-                </View>
-            ) : null}
-            {bookmarks.length > 0 ? (
-                <FlatList
-                    data={bookmarks}
-                    keyExtractor={(item) => bookmarkKey(item.surahNumber, item.ayahNumber)}
-                    renderItem={renderItem}
-                    contentContainerStyle={{ paddingHorizontal: spacing.lg, gap: spacing.md, paddingBottom: spacing.xl }}
-                    ListFooterComponent={
-                        <AppText variant="caption" muted style={styles.center}>
-                            {t("saved.hint")}
-                        </AppText>
-                    }
-                />
-            ) : (
+        <FlatList
+            data={bookmarks}
+            keyExtractor={(item) => bookmarkKey(item.surahNumber, item.ayahNumber)}
+            renderItem={renderItem}
+            ListHeaderComponent={
+                <>
+                    {header}
+                    {filters}
+                </>
+            }
+            ListEmptyComponent={
                 <View style={[styles.empty, { padding: spacing.xxl }]}>
                     <Ionicons name="bookmark-outline" size={40} color={colors.brass} />
                     <AppText muted style={styles.center}>
                         {t("saved.empty")}
                     </AppText>
                 </View>
-            )}
-        </SafeAreaView>
+            }
+            ListFooterComponent={
+                bookmarks.length > 0 ? (
+                    <AppText variant="caption" muted style={styles.center}>
+                        {t("saved.hint")}
+                    </AppText>
+                ) : null
+            }
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: spacing.xl, gap: spacing.md }}
+        />
     );
 }
 
 const styles = StyleSheet.create({
-    screen: { flex: 1 },
     flex: { flex: 1 },
     bold: { fontWeight: "600" },
     note: { flexDirection: "row", alignItems: "center", gap: 6, padding: 8 },
@@ -143,6 +149,6 @@ const styles = StyleSheet.create({
     cardHeader: { flexDirection: "row", alignItems: "center", gap: 10 },
     arabic: { fontSize: 22, lineHeight: 44, textAlign: "right", writingDirection: "rtl" },
     delete: { width: 92, marginLeft: 10, alignItems: "center", justifyContent: "center", gap: 4 },
-    empty: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
+    empty: { alignItems: "center", justifyContent: "center", gap: 12 },
     center: { textAlign: "center" },
 });

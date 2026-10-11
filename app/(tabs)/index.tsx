@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { SavedList } from "@/components/SavedList";
 import { ListRow } from "@/components/SurahRow";
 import { AppText } from "@/components/ui/AppText";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
@@ -23,7 +24,7 @@ import { useHifzStore } from "@/store/hifz";
 import { useKhatamStore, useReadCount } from "@/store/khatam";
 import { useReadingProgressStore } from "@/store/readingProgress";
 
-type ListMode = "surah" | "juz" | "ayah";
+type ListMode = "surah" | "juz" | "ayah" | "saved";
 
 export default function Home() {
     const { t, i18n } = useTranslation();
@@ -139,23 +140,25 @@ export default function Home() {
                 </View>
             ) : null}
 
-            <View style={[styles.search, { backgroundColor: colors.surface2, borderRadius: radius.md }]}>
-                <Ionicons name="search" size={18} color={colors.ink2} />
-                <TextInput
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                    placeholder={t(mode === "ayah" ? "search.ayahHint" : "home.searchPlaceholder")}
-                    placeholderTextColor={colors.ink2}
-                    // Surah names are transliterations; autocorrect turns "kahf" into "Kahn".
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    spellCheck={false}
-                    clearButtonMode="while-editing"
-                    returnKeyType="search"
-                    accessibilityLabel={t(mode === "ayah" ? "search.ayahHint" : "home.searchPlaceholder")}
-                    style={[styles.searchInput, { color: colors.ink, fontFamily: fonts.body }]}
-                />
-            </View>
+            {mode !== "saved" ? (
+                <View style={[styles.search, { backgroundColor: colors.surface2, borderRadius: radius.md }]}>
+                    <Ionicons name="search" size={18} color={colors.ink2} />
+                    <TextInput
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        placeholder={t(mode === "ayah" ? "search.ayahHint" : "home.searchPlaceholder")}
+                        placeholderTextColor={colors.ink2}
+                        // Surah names are transliterations; autocorrect turns "kahf" into "Kahn".
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        spellCheck={false}
+                        clearButtonMode="while-editing"
+                        returnKeyType="search"
+                        accessibilityLabel={t(mode === "ayah" ? "search.ayahHint" : "home.searchPlaceholder")}
+                        style={[styles.searchInput, { color: colors.ink, fontFamily: fonts.body }]}
+                    />
+                </View>
+            ) : null}
 
             <SegmentedControl<ListMode>
                 value={mode}
@@ -164,6 +167,7 @@ export default function Home() {
                     { value: "surah", label: t("home.tabSurah") },
                     { value: "juz", label: t("home.tabJuz") },
                     { value: "ayah", label: t("search.ayah") },
+                    { value: "saved", label: t("tabs.saved") },
                 ]}
             />
         </View>
@@ -171,10 +175,13 @@ export default function Home() {
 
     const showJuz = mode === "juz" && !searchQuery;
     const showAyahSearch = mode === "ayah";
+    const showSaved = mode === "saved";
 
     return (
         <SafeAreaView edges={["top"]} style={[styles.screen, { backgroundColor: colors.paper }]}>
-            {showAyahSearch ? (
+            {showSaved ? (
+                <SavedList header={header} />
+            ) : showAyahSearch ? (
                 <FlatList<AyahSearchResult>
                     data={ayahSearch.data ?? []}
                     keyExtractor={(item) => `${item.surahNumber}:${item.ayahNumber}`}
