@@ -57,7 +57,6 @@ export default function HifzScreen() {
     const playingAyah = usePlayingAyah(surahNumber);
     const playFrom = useAudioPlayerStore((state) => state.playFrom);
     const stop = useAudioPlayerStore((state) => state.stop);
-    const setPlayerRepeat = useAudioPlayerStore((state) => state.setRepeatEach);
 
     const total = ayahs.length;
     const memorized = memorizedCount(hifz.memorized, surahNumber);
@@ -77,10 +76,10 @@ export default function HifzScreen() {
             const queue: Track[] = ayahs
                 .filter((ayah) => ayah.ayahNumber >= first && ayah.ayahNumber <= last)
                 .map((ayah) => ({ surahNumber: ayah.surahNumber, ayahNumber: ayah.ayahNumber, surahName: surah.nameLatin }));
-            setPlayerRepeat(hifz.repeatEach, hifz.pauseSeconds * 1000);
-            playFrom(queue, 0, { reciterId: hifz.reciterId });
+            // Repeat, pause and reciter belong to this practice session only; normal listening is untouched.
+            playFrom(queue, 0, { reciterId: hifz.reciterId, repeatEach: hifz.repeatEach, gapMs: hifz.pauseSeconds * 1000 });
         },
-        [surah, ayahs, hifz.repeatEach, hifz.pauseSeconds, hifz.reciterId, playFrom, setPlayerRepeat],
+        [surah, ayahs, hifz.repeatEach, hifz.pauseSeconds, hifz.reciterId, playFrom],
     );
 
     const reveal = (ayahNumber: number) => setRevealed((current) => new Set(current).add(ayahNumber));

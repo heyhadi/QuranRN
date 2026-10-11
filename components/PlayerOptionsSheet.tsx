@@ -8,7 +8,7 @@ import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { Sheet } from "@/components/ui/Sheet";
 import { useTheme } from "@/components/useTheme";
 import { getReciter } from "@/constants/reciters";
-import { useAudioPlayerStore } from "@/store/audioPlayer";
+import { useAudioPlayerStore, useEffectiveRepeatEach } from "@/store/audioPlayer";
 import { PLAYBACK_RATES, useSettingsStore } from "@/store/settings";
 
 const REPEAT_OPTIONS = [1, 2, 3, 5] as const;
@@ -25,7 +25,8 @@ export function PlayerOptionsSheet({ visible, onDismiss }: PlayerOptionsSheetPro
     const router = useRouter();
     const { colors, spacing, radius } = useTheme();
     const { playbackRate, setPlaybackRate, reciterId } = useSettingsStore();
-    const { repeatEach, setRepeatEach, loopQueue, setLoopQueue, sleepAt, sleepChoice, setSleepTimer } = useAudioPlayerStore();
+    const repeatEach = useEffectiveRepeatEach();
+    const { setRepeatEach, loopQueue, setLoopQueue, sleepAt, sleepChoice, setSleepTimer } = useAudioPlayerStore();
     const reciter = getReciter(reciterId);
 
     return (

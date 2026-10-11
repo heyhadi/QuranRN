@@ -294,3 +294,54 @@ describe("session reciter (hifz practice)", () => {
         expect(mockPlayer.replace).not.toHaveBeenCalled();
     });
 });
+
+describe("hifz practice does not leak into normal listening", () => {
+    it("repeats only during the practice session", () => {
+        state().playFrom(queue, 0, { reciterId: "husary-muallim", repeatEach: 3, gapMs: 0 });
+        finishCurrentAyah();
+        finishCurrentAyah();
+        expect(currentAyah()).toBe(1);
+        finishCurrentAyah();
+        expect(currentAyah()).toBe(2);
+    });
+
+    it("plays each ayah once again when a normal session starts afterwards", () => {
+        state().playFrom(queue, 0, { repeatEach: 3, gapMs: 0 });
+        state().stop();
+
+        state().playFrom(queue, 0);
+        finishCurrentAyah();
+
+        expect(currentAyah()).toBe(2);
+        expect(state().sessionRepeat).toBeNull();
+    });
+
+    it("also resets when a normal session starts without stopping the practice first", () => {
+        state().playFrom(queue, 0, { repeatEach: 5, gapMs: 0 });
+
+        state().playFrom(queue, 0);
+        finishCurrentAyah();
+
+        expect(currentAyah()).toBe(2);
+    });
+
+    it("keeps the player's own repeat choice, untouched by practice", () => {
+        state().setRepeatEach(2, 0);
+        state().playFrom(queue, 0, { repeatEach: 5, gapMs: 0 });
+        state().stop();
+
+        state().playFrom(queue, 0);
+        finishCurrentAyah();
+        expect(currentAyah()).toBe(1);
+        finishCurrentAyah();
+        expect(currentAyah()).toBe(2);
+    });
+
+    it("lets the player's own repeat choice replace a practice session's", () => {
+        state().playFrom(queue, 0, { repeatEach: 5, gapMs: 0 });
+
+        state().setRepeatEach(1, 0);
+
+        expect(state().sessionRepeat).toBeNull();
+    });
+});

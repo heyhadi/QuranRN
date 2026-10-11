@@ -33,9 +33,11 @@ interface AudioPlayerState {
     clipUrl: string | null;
     /** A reciter used just for the current session (hifz practice), instead of the chosen one. */
     reciterOverrideId: string | null;
+    /** Repeat and pause used just for the current session (hifz practice); null means use the player's own settings. */
+    sessionRepeat: { repeatEach: number; gapMs: number } | null;
 
     /** Play `queue` from `index`, continuing to the next ayah when each one finishes. */
-    playFrom: (queue: Track[], index: number, options?: { reciterId?: string }) => void;
+    playFrom: (queue: Track[], index: number, options?: { reciterId?: string; repeatEach?: number; gapMs?: number }) => void;
     /** Tapping the ayah that is playing stops playback; tapping another ayah plays from there. */
     toggle: (queue: Track[], index: number) => void;
     pause: () => void;
@@ -106,12 +108,17 @@ function playTrack(track: Track) {
     audio.play();
 }
 
+/** Repeat and pause in force now: the practice session's if there is one, otherwise the player's own. */
+function effectiveRepeat(state: Pick<AudioPlayerState, "repeatEach" | "gapMs" | "sessionRepeat">): { repeatEach: number; gapMs: number } {
+    return state.sessionRepeat ?? { repeatEach: state.repeatEach, gapMs: state.gapMs };
+}
+
 export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
     const startAt = (index: number) => {
         const track = get().queue[index];
         if (!track) return;
         clearGap();
-        repeatsLeft = get().repeatEach - 1;
+        repeatsLeft = effectiveRepeat(get()).repeatEach - 1;
         set({ currentIndex: index, status: "playing" });
         playTrack(track);
     };
@@ -128,10 +135,12 @@ export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
         previewReciterId: null,
         clipUrl: null,
         reciterOverrideId: null,
+        sessionRepeat: null,
 
         playFrom: (queue, index, options) => {
             if (!queue[index]) return;
-            set({ queue, previewReciterId: null, clipUrl: null, reciterOverrideId: options?.reciterId ?? null });
+            const sessionRepeat = options?.repeatEach !== undefined ? { repeatEach: Math.max(1, Math.floor(options.repeatEach)), gapMs: options.gapMs ?? get().gapMs } : null;
+            set({ queue, previewReciterId: null, clipUrl: null, reciterOverrideId: options?.reciterId ?? null, sessionRepeat });
             startAt(index);
         },
 
@@ -207,11 +216,12 @@ export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
             repeatsLeft = 0;
             player?.pause();
             player?.clearLockScreenControls();
-            set({ queue: [], currentIndex: null, status: "stopped", previewReciterId: null, clipUrl: null, reciterOverrideId: null });
+            set({ queue: [], currentIndex: null, status: "stopped", previewReciterId: null, clipUrl: null, reciterOverrideId: null, sessionRepeat: null });
         },
 
         advance: () => {
-            const { queue, currentIndex, gapMs, loopQueue, status } = get();
+            const { queue, currentIndex, loopQueue, status } = get();
+            const { gapMs } = effectiveRepeat(get());
             if (currentIndex === null || status !== "playing") return;
 
             if (repeatsLeft > 0) {
@@ -233,7 +243,8 @@ export const useAudioPlayerStore = create<AudioPlayerState>()((set, get) => {
             else get().stop();
         },
 
-        setRepeatEach: (times, gapMs) => set((state) => ({ repeatEach: Math.max(1, Math.floor(times)), gapMs: gapMs ?? state.gapMs })),
+        // Choosing a repeat in the player's own options ends any practice session's repeat, so what you pick is what you get.
+        setRepeatEach: (times, gapMs) => set((state) => ({ repeatEach: Math.max(1, Math.floor(times)), gapMs: gapMs ?? state.gapMs, sessionRepeat: null })),
 
         setLoopQueue: (loopQueue) => set({ loopQueue }),
 
@@ -292,7 +303,7 @@ export function resetAudioPlayerForTests() {
     player = null;
     repeatsLeft = 0;
     replayPending = false;
-    useAudioPlayerStore.setState({ queue: [], currentIndex: null, status: "stopped", repeatEach: 1, gapMs: 1500, loopQueue: false, sleepAt: null, sleepChoice: null, previewReciterId: null, clipUrl: null, reciterOverrideId: null });
+    useAudioPlayerStore.setState({ queue: [], currentIndex: null, status: "stopped", repeatEach: 1, gapMs: 1500, loopQueue: false, sleepAt: null, sleepChoice: null, previewReciterId: null, clipUrl: null, reciterOverrideId: null, sessionRepeat: null });
 }
 
 /** The reciter heard right now (and shown in the mini-player). */
@@ -300,4 +311,9 @@ export function useActiveReciterId(): string {
     const override = useAudioPlayerStore((state) => state.reciterOverrideId);
     const chosen = useSettingsStore((state) => state.reciterId);
     return override ?? chosen;
+}
+
+/** The repeat count shown in the player options: the session's while practising, otherwise the player's own. */
+export function useEffectiveRepeatEach(): number {
+    return useAudioPlayerStore((state) => state.sessionRepeat?.repeatEach ?? state.repeatEach);
 }
