@@ -40,6 +40,10 @@ export default function Home() {
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 placeholder="Name, meaning or number"
+                // Surah names are transliterations; autocorrect turns "kahf" into "Kahn".
+                autoCorrect={false}
+                autoCapitalize="none"
+                spellCheck={false}
                 mode="outlined"
                 style={styles.textInput}
                 theme={{ colors: { primary: "#27ae60", background: "#FFFFFF" } }}
