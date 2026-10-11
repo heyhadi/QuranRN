@@ -1,81 +1,112 @@
-import React from "react";
-import useBookmarksStore from "@/store/store";
-import { FlatList, StyleSheet, Text, View, TouchableOpacity} from "react-native";
-import { useRouter, Link } from "expo-router";
-import { useSetAyahIndexStore } from "@/store/store";
+import { Link } from "expo-router";
+import React, { useMemo } from "react";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { bookmarkKey, sortBookmarks, useBookmarksStore, type Bookmark } from "@/store/bookmarks";
 
 const BookmarksScreen = () => {
-    const { bookmarks }: { bookmarks: { nomorAyat: number; teksArab: string; namaSurah: string; nomorSurah:number}[] } = useBookmarksStore();
-    const {currentIndex, setCurrentIndex} = useSetAyahIndexStore();
+    const bookmarksByKey = useBookmarksStore((state) => state.bookmarks);
+    const removeBookmark = useBookmarksStore((state) => state.removeBookmark);
+    const bookmarks = useMemo(() => sortBookmarks(bookmarksByKey), [bookmarksByKey]);
 
-    const renderItem = ({ item }: { item: { nomorAyat: number; teksArab: string; namaSurah: string; nomorSurah:number } }) => (
-        <Link href={`/surah/${item.nomorSurah}`} asChild >
-            <TouchableOpacity onPress={() => { setCurrentIndex(item.nomorAyat)}}>
-                <View style={styles.bookmarkCard} >
+    const renderItem = ({ item }: { item: Bookmark }) => (
+        <Link href={{ pathname: "/surah/[id]", params: { id: item.surahNumber, ayah: item.ayahNumber } }} asChild>
+            <Pressable
+                accessibilityRole="button"
+                accessibilityHint="Long press to remove this bookmark"
+                onLongPress={() => removeBookmark(item.surahNumber, item.ayahNumber)}
+            >
+                <View style={styles.bookmarkCard}>
                     <View style={styles.numberContainer}>
-                        <Text style={styles.number}>{item.nomorSurah}</Text>
+                        <Text style={styles.number}>{item.surahNumber}</Text>
                     </View>
                     <View style={styles.textContainer}>
-                        <Text style={styles.arabicText}>{item.namaSurah}</Text>
-                        <Text style={styles.latinText}>{"Ayat" + " " + item.nomorAyat}</Text>
-                        {/* ... display other ayah details if needed ... */}
+                        <Text style={styles.latinText}>
+                            {item.surahNameLatin} · Ayah {item.ayahNumber}
+                        </Text>
+                        <Text style={styles.arabicText} numberOfLines={1}>
+                            {item.textArabic}
+                        </Text>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </Pressable>
         </Link>
     );
 
-    return <View style={styles.container}>{bookmarks.length > 0 ? <FlatList data={bookmarks} renderItem={renderItem} /> : <Text style={styles.noBookmarksText}>No bookmarks yet.</Text>}</View>;
+    return (
+        <View style={styles.container}>
+            {bookmarks.length > 0 ? (
+                <FlatList
+                    data={bookmarks}
+                    keyExtractor={(item) => bookmarkKey(item.surahNumber, item.ayahNumber)}
+                    renderItem={renderItem}
+                    ListFooterComponent={<Text style={styles.hintText}>Long press a bookmark to remove it.</Text>}
+                />
+            ) : (
+                <Text style={styles.noBookmarksText}>No bookmarks yet. Tap the bookmark icon on any ayah to save it here.</Text>
+            )}
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        paddingVertical: 16,
     },
     bookmarkCard: {
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: "#FFFFFF", // White background
-        borderRadius: 16, // Rounded corners
-        padding: 16, // Padding inside the card
-        marginBottom: 8, // Spacing between cards
-        elevation: 3, // Android shadow
-        shadowColor: "#000", // iOS shadow
+        backgroundColor: "#FFFFFF",
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 8,
+        elevation: 3,
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 2,
-        marginHorizontal: 16, // Add horizontal margin
+        marginHorizontal: 16,
     },
     numberContainer: {
-        backgroundColor: "#E0F2F7", // Light blue background for number
-        borderRadius: 20, // Circular shape
+        backgroundColor: "#E0F2F7",
+        borderRadius: 20,
         width: 40,
         height: 40,
         justifyContent: "center",
         alignItems: "center",
-        marginRight: 16, // Spacing between number and text
+        marginRight: 16,
     },
     number: {
         fontSize: 16,
         fontWeight: "bold",
-        color: "green", // Blue color for number
+        color: "green",
     },
     textContainer: {
-        flex: 1, // Allow text to take up available space
+        flex: 1,
+        gap: 4,
     },
     arabicText: {
-        fontSize: 18,
+        fontSize: 20,
         textAlign: "right",
+        fontFamily: "AmiriQuran_400Regular",
+        writingDirection: "rtl",
     },
     latinText: {
-        fontSize: 16,
-        textAlign: "right",
+        fontSize: 15,
+        fontWeight: "600",
     },
     noBookmarksText: {
         fontSize: 16,
         textAlign: "center",
         marginTop: 32,
+        marginHorizontal: 32,
+        color: "#777777",
+    },
+    hintText: {
+        fontSize: 13,
+        textAlign: "center",
+        color: "#777777",
+        marginTop: 8,
     },
 });
 

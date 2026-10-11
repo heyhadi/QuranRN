@@ -1,0 +1,30 @@
+{
+  "code": 200,
+  "message": "Data retrieved successfully",
+  "data": [
+    {
+      "nomor": 1,
+      "nama": "الفاتحة",
+      "namaLatin": "Al-Fatihah",
+      "jumlahAyat": 7,
+      "tempatTurun": "Mekah",
+      "arti": "Pembukaan"
+    },
+    {
+      "nomor": 2,
+      "nama": "البقرة",
+      "namaLatin": "Al-Baqarah",
+      "jumlahAyat": 286,
+      "tempatTurun": "Madinah",
+      "arti": "Sapi"
+    },
+    {
+      "nomor": 112,
+      "nama": "الاخلاص",
+      "namaLatin": "Al-Ikhlas",
+      "jumlahAyat": 4,
+      "tempatTurun": "Mekah",
+      "arti": "Ikhlas"
+    }
+  ]
+}

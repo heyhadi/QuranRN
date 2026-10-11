@@ -39,13 +39,28 @@ const AyahCard: React.FC<AyahProps> = ({
             </View>
             <Text style={styles.translation}>{teksIndonesia}</Text>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={onPlay}>
-                    <Ionicons name={isPlaying ? "pause" : "play"} size={24} color="white" />
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={onPlay}
+                    accessibilityRole="button"
+                    accessibilityLabel={isPlaying ? `Stop ayah ${nomorAyat}` : `Play ayah ${nomorAyat}`}
+                >
+                    <Ionicons name={isPlaying ? "stop" : "play"} size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={onBookmarkPress}> 
-                    <Ionicons name={isBookmarked ? "bookmark" : "bookmark-outline"} size={24} color="white" /> 
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={onBookmarkPress}
+                    accessibilityRole="button"
+                    accessibilityLabel={isBookmarked ? `Remove bookmark from ayah ${nomorAyat}` : `Bookmark ayah ${nomorAyat}`}
+                >
+                    <Ionicons name={isBookmarked ? "bookmark" : "bookmark-outline"} size={24} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.tafsirButton]} onPress={onTafsirPress}>
+                <TouchableOpacity
+                    style={[styles.button, styles.tafsirButton]}
+                    onPress={onTafsirPress}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Tafsir of ayah ${nomorAyat}`}
+                >
                     <Text style={styles.tafsirText}>Tafsir</Text>
                 </TouchableOpacity>
             </View>

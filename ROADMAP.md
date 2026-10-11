@@ -31,18 +31,20 @@ Everything goes through `services/`, which turns each response into the app's ow
 ---
 
 ## Phase 1: Foundation and bug fixes
-- [ ] Upgrade Expo SDK 52 → current; move `expo-av` → `expo-audio`; set up the development build (EAS / `expo prebuild`)
-- [ ] Remove unused dependencies: `react-native-mmkv-storage`, `@types/axios`, Expo template leftovers (`EditScreenInfo`, `StyledText`, `ExternalLink`)
-- [ ] Typed API layer + mappers, TanStack Query with a cache saved to MMKV
-- [ ] Zustand stores saved to MMKV: bookmarks, settings, last-read, progress
-- [ ] Pass the target ayah through the route (`/surah/[id]?ayah=N`) instead of `useSetAyahIndexStore`
-- [ ] Fix: bookmarks are keyed by ayah number only, so they collide across Surahs → key them by `surah:ayah`
-- [ ] Fix: bookmark icon doesn't update when tapped
-- [ ] Fix: a failed tafsir request breaks the Surah screen; fetch Surah and tafsir in parallel
-- [ ] Fix: three scroll effects disagree on the index (off-by-one); add `onScrollToIndexFailed`
-- [ ] Fix: audio keeps playing after leaving the screen; auto-advance uses stale state
-- [ ] Fix: the modal is passed a string instead of a boolean; tafsir text can't scroll; `console.log` on every search keystroke
-- [ ] Jest tests for stores, mappers and the tajweed parser
+- [x] Upgrade Expo SDK 52 → 57 (React 19.2, React Native 0.86); move `expo-av` → `expo-audio`; migrate `@react-navigation/native` imports to `expo-router/react-navigation`
+- [ ] Set up the development build (EAS / `expo prebuild`) and run on a device; MMKV 4 needs it
+- [x] Remove unused dependencies (`react-native-mmkv-storage`, AsyncStorage, `@types/axios`, axios, `expo-web-browser`, `expo-sensors`, Google Fonts packages) and Expo template leftovers
+- [x] Replace `react-native-qibla-finder` (stuck on React Native 0.74) with our own hook: `services/qibla.ts` + `components/useQiblaDirection.ts`
+- [x] Typed API layer + mappers, TanStack Query with a cache saved to MMKV
+- [x] Zustand stores saved to MMKV: bookmarks, settings, last-read (hifz/khatam progress stores come in Phase 5)
+- [x] Pass the target ayah through the route (`/surah/[id]?ayah=N`) instead of `useSetAyahIndexStore`
+- [x] Fix: bookmarks are keyed by ayah number only, so they collide across Surahs → key them by `surah:ayah`
+- [x] Fix: bookmark icon doesn't update when tapped
+- [x] Fix: a failed tafsir request breaks the Surah screen; fetch Surah and tafsir in parallel
+- [x] Fix: three scroll effects disagree on the index (off-by-one); add `onScrollToIndexFailed`
+- [x] Fix: audio keeps playing after leaving the screen; auto-advance uses stale state
+- [x] Fix: the modal is passed a string instead of a boolean; tafsir text can't scroll; `console.log` on every search keystroke
+- [x] Jest tests for stores, mappers, search, HTTP and Qibla maths (tajweed parser tests come with the parser in Phase 4)
 
 ## Phase 2: Design system and redesign
 - [ ] Theme tokens (colour, spacing, type), light/dark, connected to the Paper theme

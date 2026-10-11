@@ -3,21 +3,21 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Link, Tabs } from "expo-router";
-import { Pressable } from "react-native";
+import type { ColorValue } from "react-native";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["name"]; color: string }) {
+function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["name"]; color: ColorValue }) {
     return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
-function TabBarIcon5(props: { name: React.ComponentProps<typeof FontAwesome5>["name"]; color: string }) {
+function TabBarIcon5(props: { name: React.ComponentProps<typeof FontAwesome5>["name"]; color: ColorValue }) {
     return <FontAwesome5 size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
-function TabBarIconEntypo(props: { name: React.ComponentProps<typeof Entypo>["name"]; color: string }) {
+function TabBarIconEntypo(props: { name: React.ComponentProps<typeof Entypo>["name"]; color: ColorValue }) {
     return <Entypo size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
