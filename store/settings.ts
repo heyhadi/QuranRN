@@ -57,7 +57,7 @@ export const useSettingsStore = create<SettingsState>()(
             arabicFontSize: arabicFontSize.default,
             showTranslation: true,
             tajweedEnabled: true,
-            showTransliteration: false,
+            showTransliteration: true,
             englishTranslationId: DEFAULT_ENGLISH_TRANSLATION_ID,
             tafsirChoice: null,
             setReciterId: (reciterId) => set({ reciterId }),
