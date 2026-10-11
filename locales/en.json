@@ -50,7 +50,15 @@
     "bookmarkDetail": "{{surah}}, ayah {{ayah}}",
     "next": "Next: {{name}}",
     "previous": "Previous: {{name}}",
-    "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}"
+    "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}",
+    "download": "Download this Surah for offline listening",
+    "downloadWith": "Reciter: {{name}}",
+    "downloading": "Downloading {{done}} of {{total}}",
+    "downloaded": "Downloaded · plays without internet",
+    "downloadFailed": "Download stopped. Check your connection and try again.",
+    "removeDownload": "Remove download",
+    "cancelDownload": "Cancel",
+    "audio": "Audio"
   },
   "saved": {
     "title": "Saved",

@@ -15,6 +15,9 @@ const mockPlayer = {
     },
 };
 
+const mockLocalUri = jest.fn((..._args: unknown[]): string | null => null);
+jest.mock("@/services/audioDownloads", () => ({ localAyahUri: (...args: unknown[]) => mockLocalUri(...args) }));
+
 jest.mock("expo-audio", () => ({
     createAudioPlayer: () => mockPlayer,
     setAudioModeAsync: jest.fn().mockResolvedValue(undefined),
@@ -29,6 +32,7 @@ const currentAyah = () => (state().currentIndex === null ? null : state().queue[
 beforeEach(() => {
     jest.clearAllMocks();
     jest.useRealTimers();
+    mockLocalUri.mockReturnValue(null);
     mockPlayer.listener = null;
     resetAudioPlayerForTests();
     useSettingsStore.setState({ reciterId: "alafasy", playbackRate: 1 });
@@ -224,5 +228,22 @@ describe("reciter preview", () => {
         state().togglePreview("husary");
 
         expect(state().status).toBe("stopped");
+    });
+});
+
+describe("downloaded audio", () => {
+    it("plays the local file when the ayah was downloaded", () => {
+        mockLocalUri.mockReturnValue("file:///docs/audio/alafasy/112/001.mp3");
+
+        state().playFrom(queue, 0);
+
+        expect(playingUrl()).toBe("file:///docs/audio/alafasy/112/001.mp3");
+        expect(mockLocalUri).toHaveBeenCalledWith("alafasy", 112, 1);
+    });
+
+    it("streams when there is no local file", () => {
+        state().playFrom(queue, 0);
+
+        expect(playingUrl()).toMatch(/^https:\/\/everyayah\.com/);
     });
 });

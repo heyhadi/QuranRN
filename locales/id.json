@@ -50,7 +50,15 @@
     "bookmarkDetail": "{{surah}}, ayat {{ayah}}",
     "next": "Berikutnya: {{name}}",
     "previous": "Sebelumnya: {{name}}",
-    "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}"
+    "shareSuffix": "{{surah}} {{surahNumber}}:{{ayah}}",
+    "download": "Unduh surah ini untuk didengarkan tanpa internet",
+    "downloadWith": "Qari: {{name}}",
+    "downloading": "Mengunduh {{done}} dari {{total}}",
+    "downloaded": "Terunduh · diputar tanpa internet",
+    "downloadFailed": "Unduhan berhenti. Periksa koneksi internet, lalu coba lagi.",
+    "removeDownload": "Hapus unduhan",
+    "cancelDownload": "Batal",
+    "audio": "Audio"
   },
   "saved": {
     "title": "Tersimpan",

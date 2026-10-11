@@ -1,6 +1,7 @@
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import { create } from "zustand";
 import { ayahAudioUrl, getReciter } from "@/constants/reciters";
+import { localAyahUri } from "@/services/audioDownloads";
 import { useSettingsStore } from "./settings";
 
 export interface Track {
@@ -82,7 +83,8 @@ function playTrack(track: Track) {
     const { reciterId, playbackRate } = useSettingsStore.getState();
     const audio = getPlayer();
     replayPending = false;
-    audio.replace({ uri: ayahAudioUrl(reciterId, track.surahNumber, track.ayahNumber) });
+    // A downloaded file plays without a connection; anything missing streams as usual.
+    audio.replace({ uri: localAyahUri(reciterId, track.surahNumber, track.ayahNumber) ?? ayahAudioUrl(reciterId, track.surahNumber, track.ayahNumber) });
     audio.setPlaybackRate(playbackRate);
     audio.setActiveForLockScreen(true, {
         title: `${track.surahName} · ${track.ayahNumber}`,

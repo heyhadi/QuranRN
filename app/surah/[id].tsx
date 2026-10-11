@@ -7,6 +7,7 @@ import Toast from "react-native-toast-message";
 import AyahCard from "@/components/AyahCard";
 import { AppText } from "@/components/ui/AppText";
 import { IconButton } from "@/components/ui/IconButton";
+import { DownloadAudioRow } from "@/components/DownloadAudioRow";
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { Sheet } from "@/components/ui/Sheet";
 import { useTheme } from "@/components/useTheme";
@@ -297,6 +298,7 @@ export default function Surah() {
                         <AppText variant="bodyStrong">{t("reader.showTranslation")}</AppText>
                         <Switch value={showTranslation} onValueChange={setShowTranslation} trackColor={{ true: colors.mushaf }} />
                     </View>
+                    <DownloadAudioRow surahNumber={surah.number} ayahCount={surah.ayahCount} />
                 </View>
             </Sheet>
             <MiniPlayer safeBottom />
