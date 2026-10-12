@@ -12,6 +12,8 @@
 </p>
 
 <p align="center">
+  <a href="https://heyhadi.github.io/wird/">Website</a> ·
+  <a href="https://github.com/heyhadi/wird/releases/latest">Download for Android</a> ·
   <a href="#what-it-does">Features</a> ·
   <a href="#how-it-works">How it works</a> ·
   <a href="#development">Development</a> ·
@@ -89,6 +91,10 @@ portrait at startup (`constants/device.ts`).
 (`services/qibla.ts`, tested against known values for Singapore, Jakarta, London and New York). The
 heading comes from the operating system's compass through `expo-location`, which already corrects
 for tilt and magnetic declination, so no raw magnetometer maths is needed.
+
+## Install on Android
+
+Download `wird-android.apk` from the [latest release](https://github.com/heyhadi/wird/releases/latest), open it on your phone, and allow your browser to install it when Android asks (turn that permission off again afterwards). It needs Android 7 or newer on a 64-bit phone. It is a preview build, not on the Play Store yet, and only the releases page is an official place to get it. The steps and the checksum are on the release and on the [website](https://heyhadi.github.io/wird/#get).
 
 ## Development
 

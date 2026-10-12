@@ -56,9 +56,24 @@ section { padding: 72px 0; }
 
 .features { display: grid; gap: 20px; margin-top: 36px; }
 @media (min-width: 760px) { .features { grid-template-columns: repeat(3, 1fr); } }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
-.card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+.card { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px 24px 24px; overflow: hidden; transition: transform .2s ease, border-color .2s ease; }
+.card::before { content: ""; position: absolute; inset: 5px; border: 1px solid var(--brass); border-radius: 12px; opacity: .22; pointer-events: none; }
+.card:hover { transform: translateY(-3px); border-color: var(--brass); }
+.card h3 { font-size: 1.12rem; margin-bottom: 8px; }
 .card p { margin: 0; color: var(--muted); font-size: 15.5px; }
+.icon { display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 16px; border-radius: 13px; background: var(--chip); color: var(--accent); }
+:root { --chip: #e3ede7; }
+@media (prefers-color-scheme: dark) { :root { --chip: #163229; } }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+
+/* The one featured card: a deep green plate with a brass frame and a faint star, like the app's main cards. */
+.card.plate { color: #f4f7f4; border-color: transparent; background: radial-gradient(420px 220px at 0% 0%, rgba(201,163,90,.2), transparent 60%), linear-gradient(160deg, #126b54 0%, #0f5a46 50%, #082f25 100%); }
+.card.plate::before { border-color: #c9a35a; opacity: .5; }
+.card.plate::after { content: ""; position: absolute; right: -46px; top: -46px; width: 140px; height: 140px; border: 6px solid #c9a35a; border-radius: 14px; opacity: .12; transform: rotate(45deg); box-shadow: 0 0 0 0 transparent; }
+.card.plate h3 { color: #fff; }
+.card.plate p { color: rgba(244,247,244,.85); }
+.card.plate .icon { background: rgba(255,255,255,.12); color: #e2c98f; }
+.card.plate:hover { border-color: #c9a35a; }
 
 .showcase { display: grid; gap: 36px 28px; margin-top: 36px; }
 @media (min-width: 700px) { .showcase { grid-template-columns: repeat(2, 1fr); } }
