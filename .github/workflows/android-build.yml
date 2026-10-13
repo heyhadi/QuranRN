@@ -1,0 +1,118 @@
+name: Android APK
+
+# Builds an installable APK straight from the repo — no EAS quota involved.
+# Publishes it as a GitHub Release asset (wird-android.apk), so the landing
+# page's "latest release" download button always serves the newest build.
+# Runs on every push to main that touches app code, and manually.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'services/**'
+      - 'store/**'
+      - 'constants/**'
+      - 'assets/**'
+      - 'locales/**'
+      - 'i18n/**'
+      - 'plugins/**'
+      - 'app.json'
+      - 'app.config.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/android-build.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Stamp build version
+        run: |
+          python3 -c "
+          import json
+          with open('app.json') as f: cfg = json.load(f)
+          run = int('${{ github.run_number }}')
+          cfg['expo']['version'] = f'1.0.{run}'
+          cfg['expo'].setdefault('android', {})['versionCode'] = run
+          with open('app.json', 'w') as f: json.dump(cfg, f, indent=2)
+          print('version:', cfg['expo']['version'], 'versionCode:', run)
+          "
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Decode release keystore (if configured)
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > /tmp/wird.p12
+          echo "WIRD_KEYSTORE_FILE=/tmp/wird.p12" >> $GITHUB_ENV
+          echo "HAS_KEYSTORE=true" >> $GITHUB_ENV
+
+      - name: Expo prebuild (generate android/ with config plugins)
+        run: npx expo prebuild --platform android --clean
+        env:
+          CI: 1
+          WIRD_KEYSTORE_FILE: /tmp/wird.p12
+          WIRD_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          WIRD_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          WIRD_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Build APK
+        run: |
+          chmod +x android/gradlew
+          cd android
+          if [ "${HAS_KEYSTORE:-}" = "true" ]; then
+            ./gradlew assembleRelease --no-daemon
+          else
+            ./gradlew assembleDebug --no-daemon
+          fi
+        env:
+          CI: 1
+          GRADLE_OPTS: -Dorg.gradle.daemon=false
+
+      - name: Prepare APK
+        run: |
+          if [ -f android/app/build/outputs/apk/release/app-release.apk ]; then
+            cp android/app/build/outputs/apk/release/app-release.apk wird-android.apk
+            echo "Built signed release APK"
+          else
+            cp android/app/build/outputs/apk/debug/app-debug.apk wird-android.apk
+            echo "Built debug APK (no signing secrets configured)"
+          fi
+          ls -lh wird-android.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wird-android
+          path: wird-android.apk
+          retention-days: 14
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Wird Android v1.0.${{ github.run_number }}
+          body: |
+            Automated Android build from main (${{ github.sha }}).
+            Download `wird-android.apk` and install it on your phone (Android 7 or newer, 64-bit).
+          files: wird-android.apk
