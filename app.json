@@ -61,10 +61,13 @@
         {
           "icon": "./assets/images/notification-icon.png",
           "color": "#0F5A46",
-          "sounds": ["./assets/audio/adhan.mp3"]
+          "sounds": [
+            "./assets/audio/adhan.mp3"
+          ]
         }
       ],
-      "expo-sharing"
+      "expo-sharing",
+      "./plugins/withReleaseSigning"
     ],
     "experiments": {
       "typedRoutes": true
