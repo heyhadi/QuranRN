@@ -403,6 +403,8 @@
     "updated": "Using your last known location",
     "refresh": "Update location",
     "notify": "Prayer time reminders",
+    "adhanAudio": "Play adhan audio",
+    "adhanAudioHint": "Play the adhan when a prayer time arrives.",
     "notifyBody": "It is time for {{prayer}}.",
     "notifyOff": "Turn on notifications in Settings to get reminders.",
     "notifyAllow": "Allow notifications",

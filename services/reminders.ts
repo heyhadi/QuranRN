@@ -19,6 +19,8 @@ export interface PlannedReminder {
 
 export interface ReminderSettings {
     adhanEnabled: Record<PrayerName, boolean>;
+    /** Play the adhan audio (not just the notification sound) at prayer times. */
+    adhanAudioEnabled: boolean;
     dailyAyahEnabled: boolean;
     dailyAyahTime: string;
     khatamReminderEnabled: boolean;

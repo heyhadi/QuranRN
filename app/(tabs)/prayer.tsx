@@ -13,7 +13,7 @@ import { useTheme } from "@/components/useTheme";
 import { dailyAyahFor } from "@/constants/dailyAyahs";
 import { calculationMethods, minutesUntil, nextPrayer, PRAYER_NAMES, type PrayerName } from "@/services/prayerTimes";
 import { SUHOOR_LEAD_MINUTES } from "@/services/ramadan";
-import { getNotificationPermission, requestNotificationPermission, rescheduleReminders, type PermissionState } from "@/services/notifications";
+import { getNotificationPermission, requestNotificationPermission, rescheduleReminders, setupAdhanPlayback, type PermissionState } from "@/services/notifications";
 import { useKhatamStore } from "@/store/khatam";
 import { usePrayerStore } from "@/store/prayer";
 
@@ -37,6 +37,7 @@ export default function PrayerScreen() {
 
     useEffect(() => {
         void getNotificationPermission().then(setPermission);
+        return setupAdhanPlayback();
     }, []);
 
     // Ask for the location once, the first time the tab opens with none saved.
@@ -51,6 +52,7 @@ export default function PrayerScreen() {
         void rescheduleReminders(
             {
                 adhanEnabled: prayer.adhanEnabled,
+                adhanAudioEnabled: prayer.adhanAudioEnabled,
                 dailyAyahEnabled: prayer.dailyAyahEnabled,
                 dailyAyahTime: prayer.dailyAyahTime,
                 khatamReminderEnabled: prayer.khatamReminderEnabled,
@@ -60,7 +62,7 @@ export default function PrayerScreen() {
             state.days,
             state.timezone,
         );
-    }, [state, prayer.adhanEnabled, prayer.dailyAyahEnabled, prayer.dailyAyahTime, prayer.khatamReminderEnabled, prayer.khatamReminderTime, prayer.ramadanEnabled, permission]);
+    }, [state, prayer.adhanEnabled, prayer.adhanAudioEnabled, prayer.dailyAyahEnabled, prayer.dailyAyahTime, prayer.khatamReminderEnabled, prayer.khatamReminderTime, prayer.ramadanEnabled, permission]);
 
     const next = useMemo(() => (state.status === "ready" ? nextPrayer(state.days, state.timezone, now) : null), [state, now]);
 
@@ -212,6 +214,21 @@ export default function PrayerScreen() {
                     <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg, padding: spacing.lg, gap: spacing.md }]}>
                         <AppText variant="bodyStrong">{t("prayer.notify")}</AppText>
                         {PRAYER_NAMES.map(adhanSwitch)}
+
+                        <View style={[styles.row, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line, paddingTop: spacing.md }]}>
+                            <View style={styles.flex}>
+                                <AppText variant="bodyStrong">{t("prayer.adhanAudio")}</AppText>
+                                <AppText variant="caption" muted>
+                                    {t("prayer.adhanAudioHint")}
+                                </AppText>
+                            </View>
+                            <Switch
+                                value={prayer.adhanAudioEnabled}
+                                onValueChange={prayer.setAdhanAudioEnabled}
+                                trackColor={{ true: colors.mushaf }}
+                                accessibilityLabel={t("prayer.adhanAudio")}
+                            />
+                        </View>
 
                         <View style={[styles.row, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line, paddingTop: spacing.md }]}>
                             <View style={styles.flex}>

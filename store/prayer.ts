@@ -16,6 +16,8 @@ interface PrayerState {
     methodId: number;
     /** Notify at the time of each prayer. */
     adhanEnabled: Record<PrayerName, boolean>;
+    /** Play the adhan audio when a prayer-time notification arrives. */
+    adhanAudioEnabled: boolean;
     /** Remind about the day's ayah. */
     dailyAyahEnabled: boolean;
     /** "HH:MM" local time of the daily ayah reminder. */
@@ -30,6 +32,7 @@ interface PrayerState {
     setLocation: (latitude: number, longitude: number) => void;
     setMethodId: (methodId: number) => void;
     setAdhan: (prayer: PrayerName, enabled: boolean) => void;
+    setAdhanAudioEnabled: (enabled: boolean) => void;
     setDailyAyahEnabled: (enabled: boolean) => void;
     setDailyAyahTime: (time: string) => void;
     setKhatamReminderEnabled: (enabled: boolean) => void;
@@ -49,6 +52,7 @@ export const usePrayerStore = create<PrayerState>()(
             location: null,
             methodId: DEFAULT_METHOD_ID,
             adhanEnabled: Object.fromEntries(PRAYER_NAMES.map((name) => [name, false])) as Record<PrayerName, boolean>,
+            adhanAudioEnabled: true,
             dailyAyahEnabled: false,
             dailyAyahTime: "07:00",
             khatamReminderEnabled: false,
@@ -58,6 +62,7 @@ export const usePrayerStore = create<PrayerState>()(
             setLocation: (latitude, longitude) => set({ location: { latitude, longitude, savedAt: Date.now() } }),
             setMethodId: (methodId) => set({ methodId }),
             setAdhan: (prayer, enabled) => set((state) => ({ adhanEnabled: { ...state.adhanEnabled, [prayer]: enabled } })),
+            setAdhanAudioEnabled: (adhanAudioEnabled) => set({ adhanAudioEnabled }),
             setDailyAyahEnabled: (dailyAyahEnabled) => set({ dailyAyahEnabled }),
             setDailyAyahTime: (dailyAyahTime) => set({ dailyAyahTime }),
             setKhatamReminderEnabled: (khatamReminderEnabled) => set({ khatamReminderEnabled }),

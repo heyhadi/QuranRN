@@ -165,6 +165,7 @@ prayer times are sample data. The app itself now follows them closely.
 - Adhkar and English dua from [fitrahive/dua-dhikr](https://github.com/fitrahive/dua-dhikr) (MIT), bundled in `constants/adhkar/`.
 - English translations, tajweed text, word-by-word, the mushaf page line data, other tafsirs and ayah search via [quran.com](https://quran.com); more recitations from [everyayah.com](https://everyayah.com); prayer times and Asmaul Husna from [aladhan.com](https://aladhan.com).
 - [Amiri](https://github.com/aliftype/amiri) typeface by Khaled Hosny, [Reem Kufi](https://github.com/aliftype/reem-kufi) and [Source Sans 3](https://github.com/adobe-fonts/source-sans), all under the SIL Open Font License.
+- Adhan audio (`assets/audio/adhan.mp3`) downloaded from [islamcan.com/audio/adhan](https://www.islamcan.com/audio/adhan/) (free download).
 
 ---
 

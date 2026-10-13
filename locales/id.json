@@ -403,6 +403,8 @@
     "updated": "Memakai lokasi terakhir Anda",
     "refresh": "Perbarui lokasi",
     "notify": "Pengingat waktu salat",
+    "adhanAudio": "Putar audio adzan",
+    "adhanAudioHint": "Putar adzan saat waktu salat tiba.",
     "notifyBody": "Waktu {{prayer}} telah tiba.",
     "notifyOff": "Aktifkan notifikasi di Pengaturan untuk mendapat pengingat.",
     "notifyAllow": "Izinkan notifikasi",

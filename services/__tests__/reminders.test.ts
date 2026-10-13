@@ -5,6 +5,7 @@ import calendar from "./fixtures/prayerCalendar.json";
 const month = mapCalendar(calendar);
 const none: ReminderSettings = {
     adhanEnabled: { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false },
+    adhanAudioEnabled: true,
     dailyAyahEnabled: false,
     dailyAyahTime: "07:00",
     khatamReminderEnabled: false,
