@@ -61,11 +61,15 @@ jobs:
         run: npm ci
 
       - name: Decode release keystore (if configured)
-        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > /tmp/wird.p12
-          echo "WIRD_KEYSTORE_FILE=/tmp/wird.p12" >> $GITHUB_ENV
-          echo "HAS_KEYSTORE=true" >> $GITHUB_ENV
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > /tmp/wird.p12
+            echo "WIRD_KEYSTORE_FILE=/tmp/wird.p12" >> $GITHUB_ENV
+            echo "HAS_KEYSTORE=true" >> $GITHUB_ENV
+            echo "Release keystore configured; will build a signed release APK"
+          else
+            echo "No keystore secrets configured; will build a debug APK"
+          fi
 
       - name: Expo prebuild (generate android/ with config plugins)
         run: npx expo prebuild --platform android --clean
