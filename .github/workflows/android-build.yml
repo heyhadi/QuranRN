@@ -46,16 +46,24 @@ jobs:
           java-version: 17
 
       - name: Stamp build version
+        id: stamp
         run: |
-          python3 -c "
+          VERSION=$(python3 -c "
           import json
-          with open('app.json') as f: cfg = json.load(f)
           run = int('${{ github.run_number }}')
-          cfg['expo']['version'] = f'1.0.{run}'
+          with open('app.json') as f: cfg = json.load(f)
+          major, minor = cfg['expo']['version'].split('.')[:2]
+          version = f'{major}.{minor}.{run}'
+          cfg['expo']['version'] = version
           cfg['expo'].setdefault('android', {})['versionCode'] = run
           with open('app.json', 'w') as f: json.dump(cfg, f, indent=2)
-          print('version:', cfg['expo']['version'], 'versionCode:', run)
-          "
+          with open('package.json') as f: pkg = json.load(f)
+          pkg['version'] = version
+          with open('package.json', 'w') as f: json.dump(pkg, f, indent=2)
+          print(version, end='')
+          ")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Stamped version $VERSION (versionCode ${{ github.run_number }})"
 
       - name: Install dependencies
         run: npm ci
@@ -114,8 +122,8 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: Wird Android v1.0.${{ github.run_number }}
+          tag_name: v${{ steps.stamp.outputs.version }}
+          name: Wird Android v${{ steps.stamp.outputs.version }}
           body: |
             Automated Android build from main (${{ github.sha }}).
             Download `wird-android.apk` and install it on your phone (Android 7 or newer, 64-bit).
