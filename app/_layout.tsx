@@ -18,6 +18,7 @@ import { AppColumn } from "@/components/AppColumn";
 import { lockPhoneToPortrait } from "@/constants/device";
 import { useTheme } from "@/components/useTheme";
 import i18n, { resolveLanguage } from "@/i18n";
+import { setupAdhanPlayback } from "@/services/notifications";
 import { useSettingsStore } from "@/store/settings";
 import { queryPersister } from "@/store/storage";
 
@@ -47,6 +48,9 @@ export default function RootLayout() {
     useEffect(() => {
         void lockPhoneToPortrait();
     }, []);
+
+    // Listen for adhan notifications for as long as the app is open, whichever screen is showing.
+    useEffect(() => setupAdhanPlayback(), []);
 
     const [loaded, error] = useFonts({
         // Amiri, not Amiri Quran: the Quran variant is a colour font that paints vowel marks red and blue.

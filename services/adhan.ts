@@ -8,9 +8,11 @@ import { usePrayerStore } from "@/store/prayer";
 // - Android: the "wird-adhan" notification channel carries the sound itself
 //   (see services/notifications.ts), so the system plays it even when the app
 //   is killed. This player is not used there.
-// - iOS: a bundled notification sound is capped at 30 seconds, so when the app
-//   is open the full adhan is played here instead. Tapping the notification
-//   stops it (see setupAdhanPlayback in services/notifications.ts).
+// - iOS: a notification sound is capped at 30 seconds, so when the app is in
+//   the background or killed the notification plays a 29-second clip
+//   (adhan_ios.caf). When the app is open the full adhan is played here
+//   instead, and tapping the notification stops it (see setupAdhanPlayback in
+//   services/notifications.ts, started from the root layout).
 //
 // Audio: assets/audio/adhan.mp3, downloaded from islamcan.com/audio/adhan/
 // (azan3.mp3) — free download, credited in README.md.

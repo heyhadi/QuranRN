@@ -62,7 +62,8 @@
           "icon": "./assets/images/notification-icon.png",
           "color": "#0F5A46",
           "sounds": [
-            "./assets/audio/adhan.mp3"
+            "./assets/audio/adhan.mp3",
+            "./assets/audio/adhan_ios.caf"
           ]
         }
       ],

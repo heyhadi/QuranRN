@@ -21,6 +21,13 @@ const CHANNEL_ID = "wird-reminders";
 export const ADHAN_CHANNEL_ID = "wird-adhan";
 /** Base filename of the bundled adhan sound, as the plugin copies it. */
 const ADHAN_SOUND = "adhan.mp3";
+/**
+ * iOS notification sound for the adhan: the first 29 seconds of adhan.mp3 as CAF.
+ * iOS only plays notification sounds of 30 seconds or less (longer ones fall back
+ * to the default ding) and doesn't accept MP3, so this is what plays when the app
+ * is in the background or killed. Bundled via the same plugin `sounds` option.
+ */
+const ADHAN_SOUND_IOS = "adhan_ios.caf";
 
 // Show reminders even while the app is open.
 Notifications.setNotificationHandler({
@@ -77,14 +84,14 @@ function channelIdFor(reminder: PlannedReminder, settings: ReminderSettings): st
     return reminder.kind === "adhan" && settings.adhanAudioEnabled && Platform.OS === "android" ? ADHAN_CHANNEL_ID : CHANNEL_ID;
 }
 
-function contentFor(reminder: PlannedReminder): Notifications.NotificationContentInput {
+function contentFor(reminder: PlannedReminder, settings: ReminderSettings): Notifications.NotificationContentInput {
     const t = i18n.t.bind(i18n);
     switch (reminder.kind) {
         case "adhan":
             return {
                 title: t(`prayer.names.${reminder.prayer as PrayerName}`),
                 body: t("prayer.notifyBody", { prayer: t(`prayer.names.${reminder.prayer as PrayerName}`) }),
-                sound: true,
+                sound: Platform.OS === "ios" && settings.adhanAudioEnabled ? ADHAN_SOUND_IOS : true,
                 data: dataFor(reminder),
             };
         case "dailyAyah":
@@ -121,7 +128,7 @@ export async function rescheduleReminders(settings: ReminderSettings, days: DayT
     for (const reminder of planned) {
         await Notifications.scheduleNotificationAsync({
             identifier: reminder.id,
-            content: contentFor(reminder),
+            content: contentFor(reminder, settings),
             trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: reminder.at, channelId: channelIdFor(reminder, settings) },
         });
     }
@@ -145,6 +152,9 @@ function isAdhanNotification(notification: Notifications.Notification): boolean 
  * (even with the app killed), so the in-app player below is only needed on
  * iOS, where a bundled notification sound is capped at 30 seconds. Tapping an
  * adhan notification also dismisses it, which stops the system sound.
+ *
+ * Call once from the root layout: the listener has to be live on every screen,
+ * not just the Prayer tab, or an adhan arriving elsewhere stays silent.
  */
 export function setupAdhanPlayback(): () => void {
     const received = Notifications.addNotificationReceivedListener((notification) => {

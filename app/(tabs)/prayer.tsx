@@ -13,7 +13,7 @@ import { useTheme } from "@/components/useTheme";
 import { dailyAyahFor } from "@/constants/dailyAyahs";
 import { calculationMethods, minutesUntil, nextPrayer, PRAYER_NAMES, type PrayerName } from "@/services/prayerTimes";
 import { SUHOOR_LEAD_MINUTES } from "@/services/ramadan";
-import { getNotificationPermission, requestNotificationPermission, rescheduleReminders, setupAdhanPlayback, type PermissionState } from "@/services/notifications";
+import { getNotificationPermission, requestNotificationPermission, rescheduleReminders, type PermissionState } from "@/services/notifications";
 import { useKhatamStore } from "@/store/khatam";
 import { usePrayerStore } from "@/store/prayer";
 
@@ -37,7 +37,6 @@ export default function PrayerScreen() {
 
     useEffect(() => {
         void getNotificationPermission().then(setPermission);
-        return setupAdhanPlayback();
     }, []);
 
     // Ask for the location once, the first time the tab opens with none saved.
