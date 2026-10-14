@@ -1,5 +1,6 @@
 import { FATHAH, HIJAIYAH, learnLanguage } from "@/constants/hijaiyah";
-import { buildQuiz, hasPassed, LESSON_SIZE, LEVEL_1, lessonById, QUIZ_LENGTH, readingRows, seededRandom } from "../learnRead";
+import { buildQuiz, hasPassed, LESSON_SIZE, LEVEL_1, LEVEL_2, lessonById, lessonsForLevel, QUIZ_LENGTH, readingRows, seededRandom } from "../learnRead";
+import { hasClip } from "../learnReadAudio";
 
 describe("hijaiyah letters", () => {
     it("has the 28 letters once each, each read with fathah", () => {
@@ -146,3 +147,156 @@ describe("passing", () => {
         expect(hasPassed(0, 0)).toBe(false);
     });
 });
+
+describe("advanced levels and harakat", () => {
+    it("provides kasrah and dammah with correct Arabic marks and sounds for every letter", () => {
+        for (const letter of HIJAIYAH) {
+            expect(letter.kasrah).toBeDefined();
+            expect(letter.dammah).toBeDefined();
+            expect(letter.soundKasrah.en.length).toBeGreaterThan(0);
+            expect(letter.soundDammah.en.length).toBeGreaterThan(0);
+            expect(letter.soundKasrah.id.length).toBeGreaterThan(0);
+            expect(letter.soundDammah.id.length).toBeGreaterThan(0);
+        }
+    });
+
+    it("has isolated, initial, medial, and final letter shapes for every letter", () => {
+        for (const letter of HIJAIYAH) {
+            expect(letter.forms.isolated).toBeDefined();
+            expect(letter.forms.initial).toBeDefined();
+            expect(letter.forms.medial).toBeDefined();
+            expect(letter.forms.final).toBeDefined();
+        }
+    });
+
+    it("correctly marks non-connecting letters", () => {
+        const nonConnectingIds = HIJAIYAH.filter((l) => l.nonConnecting).map((l) => l.id);
+        expect(nonConnectingIds).toEqual(["alif", "dal", "dhal", "ra", "zay", "waw"]);
+    });
+
+    it("provides articulation makhraj descriptions for both English and Indonesian", () => {
+        for (const letter of HIJAIYAH) {
+            expect(letter.makhraj.en.length).toBeGreaterThan(5);
+            expect(letter.makhraj.id.length).toBeGreaterThan(5);
+        }
+    });
+
+    it("contains levels 1 through 5 with valid lesson structures", () => {
+        expect(lessonsForLevel(1).length).toBe(7);
+        expect(lessonsForLevel(2).length).toBe(7);
+        expect(lessonsForLevel(3).length).toBe(7);
+        expect(lessonsForLevel(4).length).toBe(4);
+        expect(lessonsForLevel(5).length).toBe(4);
+
+        expect(lessonById("2-1")?.level).toBe(2);
+        expect(lessonById("3-1")?.level).toBe(3);
+        expect(lessonById("4-1")?.level).toBe(4);
+        expect(lessonById("5-1")?.level).toBe(5);
+    });
+
+    it("provides valid Quranic words in Level 5 with authentic Quran.com CDN audio URLs", () => {
+        const level5 = lessonsForLevel(5);
+        for (const lesson of level5) {
+            expect(lesson.words).toBeDefined();
+            expect(lesson.words!.length).toBeGreaterThan(0);
+            for (const word of lesson.words!) {
+                expect(word.arabic.length).toBeGreaterThan(0);
+                expect(word.audioUrl).toMatch(/^https:\/\/audio\.qurancdn\.com\/wbw\/\d{3}_\d{3}_\d{3}\.mp3$/);
+                expect(word.meaning.en.length).toBeGreaterThan(0);
+                expect(word.meaning.id.length).toBeGreaterThan(0);
+                expect(hasClip("word", word.id)).toBe(true);
+            }
+        }
+    });
+
+    it("provides bundled audio clips for all 28 letters across names, fathah, kasrah, and dammah", () => {
+        for (const letter of HIJAIYAH) {
+            expect(hasClip("name", letter.id)).toBe(true);
+            expect(hasClip("fathah", letter.id)).toBe(true);
+            expect(hasClip("kasrah", letter.id)).toBe(true);
+            expect(hasClip("dammah", letter.id)).toBe(true);
+        }
+    });
+
+    it("generates vowel-aware questions for Level 2 contrasting kasrah and dammah", () => {
+        const level2Lesson = LEVEL_2[0];
+        const quiz = buildQuiz(level2Lesson, "en", seededRandom(42));
+        expect(quiz).toHaveLength(QUIZ_LENGTH);
+        const vowels = new Set(quiz.map((q) => q.vowel));
+        expect(vowels.has("kasrah")).toBe(true);
+        expect(vowels.has("dammah")).toBe(true);
+    });
+
+    it("provides connected words and shape recognition quizzes for Level 3", () => {
+        const level3Lessons = lessonsForLevel(3);
+        expect(level3Lessons.length).toBe(7);
+        for (const lesson of level3Lessons) {
+            expect(lesson.connectedWords).toBeDefined();
+            expect(lesson.connectedWords!.length).toBeGreaterThanOrEqual(4);
+            for (const word of lesson.connectedWords!) {
+                expect(word.arabic.length).toBeGreaterThan(0);
+                expect(word.transliteration.en.length).toBeGreaterThan(0);
+                expect(word.transliteration.id.length).toBeGreaterThan(0);
+            }
+        }
+
+        // Test quiz for Level 3
+        const quiz = buildQuiz(level3Lessons[0], "en", seededRandom(10));
+        expect(quiz).toHaveLength(QUIZ_LENGTH);
+        const kinds = new Set(quiz.map((q) => q.kind));
+        expect(kinds.has("connectedForm")).toBe(true);
+        expect(kinds.has("whichLetter")).toBe(true);
+        for (const q of quiz) {
+            expect(q.options.length).toBe(4);
+            if (q.kind === "connectedForm") {
+                expect(["initial", "medial", "final"]).toContain(q.formPosition);
+            }
+        }
+    });
+
+    it("configures Level 4 lessons for fathatain, kasratain, dammatain, and sukun", () => {
+        const level4Lessons = lessonsForLevel(4);
+        expect(level4Lessons.length).toBe(4);
+
+        expect(level4Lessons[0].vowelKind).toBe("fathatain");
+        expect(level4Lessons[1].vowelKind).toBe("kasratain");
+        expect(level4Lessons[2].vowelKind).toBe("dammatain");
+        expect(level4Lessons[3].vowelKind).toBe("sukun");
+
+        // Tanwin audio clips for all 28 letters
+        for (const letter of HIJAIYAH) {
+            expect(hasClip("fathatain", letter.id)).toBe(true);
+            expect(hasClip("kasratain", letter.id)).toBe(true);
+            expect(hasClip("dammatain", letter.id)).toBe(true);
+        }
+
+        // Sukun words and clips
+        expect(level4Lessons[3].words).toBeDefined();
+        expect(level4Lessons[3].words!.length).toBe(6);
+        for (const word of level4Lessons[3].words!) {
+            expect(hasClip("sukun", word.id)).toBe(true);
+            expect(hasClip("word", word.id)).toBe(true);
+            expect(word.meaning.en.length).toBeGreaterThan(0);
+            expect(word.meaning.id.length).toBeGreaterThan(0);
+        }
+
+        // Tanwin quiz for 4-1
+        const tanwinQuiz = buildQuiz(level4Lessons[0], "en", seededRandom(15));
+        expect(tanwinQuiz).toHaveLength(QUIZ_LENGTH);
+        for (const q of tanwinQuiz) {
+            expect(q.vowel).toBe("fathatain");
+            expect(q.options.length).toBe(4);
+        }
+
+        // Sukun word quiz for 4-4
+        const sukunQuiz = buildQuiz(level4Lessons[3], "en", seededRandom(20));
+        expect(sukunQuiz.length).toBe(6);
+        for (const q of sukunQuiz) {
+            expect(["readWord", "findWord"]).toContain(q.kind);
+            expect(q.wordAnswer).toBeDefined();
+            expect(q.wordOptions).toBeDefined();
+            expect(q.wordOptions!.length).toBeGreaterThanOrEqual(2);
+        }
+    });
+});
+

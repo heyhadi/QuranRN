@@ -6,8 +6,10 @@ describe("learn to read audio", () => {
         expect(HIJAIYAH.filter((letter) => !hasClip("name", letter.id)).map((letter) => letter.id)).toEqual([]);
     });
 
-    it("has no fathah clips yet, so lessons stay text-only for syllables", () => {
-        expect(HIJAIYAH.some((letter) => hasClip("fathah", letter.id))).toBe(false);
+    it("has fathah, kasrah, and dammah clips for all letters", () => {
+        expect(HIJAIYAH.filter((letter) => !hasClip("fathah", letter.id)).map((letter) => letter.id)).toEqual([]);
+        expect(HIJAIYAH.filter((letter) => !hasClip("kasrah", letter.id)).map((letter) => letter.id)).toEqual([]);
+        expect(HIJAIYAH.filter((letter) => !hasClip("dammah", letter.id)).map((letter) => letter.id)).toEqual([]);
     });
 
     it("knows nothing about letters outside the alphabet", () => {

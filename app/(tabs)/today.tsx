@@ -24,6 +24,7 @@ import { useKhatamStore } from "@/store/khatam";
 import { useReadingProgressStore } from "@/store/readingProgress";
 import { useSettingsStore } from "@/store/settings";
 import { useTasbihStore } from "@/store/tasbih";
+import { nextOverallLesson, totalPassedCount, TOTAL_LESSONS, useLearnReadStore } from "@/store/learnRead";
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
 
@@ -84,6 +85,26 @@ export default function TodayScreen() {
 
     const openAyah = () => router.push({ pathname: "/surah/[id]", params: { id: surahNumber, ayah: ayahNumber } });
     const continueReading = () => (lastRead ? router.push({ pathname: "/surah/[id]", params: { id: lastRead.surahNumber, ayah: lastRead.ayahNumber } }) : router.navigate("/"));
+
+    const learnProgress = useLearnReadStore((s) => s.lessons);
+    const totalLearnPassed = useMemo(() => totalPassedCount(learnProgress), [learnProgress]);
+    const nextLearn = useMemo(() => nextOverallLesson(learnProgress), [learnProgress]);
+    const learnProgressRatio = TOTAL_LESSONS > 0 ? totalLearnPassed / TOTAL_LESSONS : 0;
+    const learnPreviewArabic = useMemo(() => {
+        if (!nextLearn) return "مَا شَاءَ اللَّهُ";
+        if (nextLearn.connectedWords?.length) return nextLearn.connectedWords[0].arabic;
+        if (nextLearn.words?.length) return nextLearn.words[0].arabic;
+        if (nextLearn.level === 4) {
+            if (nextLearn.vowelKind === "fathatain") return "أً بً تً";
+            if (nextLearn.vowelKind === "kasratain") return "إٍ بٍ تٍ";
+            if (nextLearn.vowelKind === "dammatain") return "أٌ بٌ تٌ";
+        }
+        if (nextLearn.level === 2) {
+            const first = nextLearn.letters[0];
+            return first ? `${first.fathah} ${first.kasrah} ${first.dammah}` : "أَ إِ أُ";
+        }
+        return nextLearn.letters.slice(0, 3).map((l) => l.fathah).join(" ");
+    }, [nextLearn]);
 
     const cardContent = { padding: spacing.lg, gap: 10 };
     const quick = (icon: IconName, title: string, subtitle: string, onPress: () => void) => (
@@ -160,6 +181,46 @@ export default function TodayScreen() {
                     </Pressable>
                 </OrnateCard>
 
+                <OrnateCard
+                    onPress={() => (nextLearn ? router.push({ pathname: "/learn/[lesson]", params: { lesson: nextLearn.id } }) : router.push("/learn"))}
+                    accessibilityLabel={`${t("learn.title")}. ${nextLearn ? t("learn.lessonWithNum", { level: nextLearn.level, lesson: nextLearn.number }) : t("learn.allLevelsDone")}`}
+                    style={cardContent}
+                >
+                    <View style={styles.row}>
+                        <Ionicons name="school-outline" size={16} color={colors.mushaf} />
+                        <AppText variant="label" muted style={styles.flex}>
+                            {t("learn.title")}
+                        </AppText>
+                        <AppText variant="caption" color={colors.brass}>
+                            {totalLearnPassed}/{TOTAL_LESSONS}
+                        </AppText>
+                    </View>
+                    <View style={styles.learnRowBetween}>
+                        <View style={styles.flex}>
+                            <AppText variant="title">
+                                {nextLearn ? t(`learn.level${nextLearn.level}Title`) : t("learn.allLevelsDone")}
+                            </AppText>
+                            <AppText variant="caption" muted>
+                                {nextLearn ? t("learn.lessonWithNum", { level: nextLearn.level, lesson: nextLearn.number }) : t("learn.progress", { done: totalLearnPassed, total: TOTAL_LESSONS })}
+                            </AppText>
+                        </View>
+                        <View style={[styles.learnArabicBadge, { backgroundColor: colors.surface2, borderRadius: radius.md }]}>
+                            <AppText variant="arabic" size={24} color={colors.mushaf} style={styles.learnArabicText}>
+                                {learnPreviewArabic}
+                            </AppText>
+                        </View>
+                    </View>
+                    <View style={[styles.track, { backgroundColor: colors.surface2 }]}>
+                        <View style={[styles.fill, { backgroundColor: totalLearnPassed === TOTAL_LESSONS ? colors.brass : colors.mushaf, width: `${Math.round(learnProgressRatio * 100)}%` }]} />
+                    </View>
+                    <View style={styles.link}>
+                        <AppText variant="bodyStrong" color={colors.mushaf}>
+                            {nextLearn ? (totalLearnPassed === 0 ? t("learn.start") : t("learn.continue", { number: nextLearn.number })) : t("learn.backToLessons")}
+                        </AppText>
+                        <Ionicons name="chevron-forward" size={16} color={colors.mushaf} />
+                    </View>
+                </OrnateCard>
+
                 <OrnateCard onPress={openAyah} style={[cardContent, { gap: spacing.md }]}>
                     <View style={styles.row}>
                         <AppText variant="label" muted style={styles.flex}>
@@ -208,6 +269,9 @@ const styles = StyleSheet.create({
     track: { height: 8, borderRadius: 4, overflow: "hidden" },
     fill: { height: 8, borderRadius: 4 },
     link: { flexDirection: "row", alignItems: "center", gap: 4, alignSelf: "flex-start", paddingVertical: 4 },
+    learnRowBetween: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
+    learnArabicBadge: { paddingHorizontal: 12, paddingVertical: 4, alignItems: "center", justifyContent: "center" },
+    learnArabicText: { writingDirection: "rtl" },
     adhkar: { flexDirection: "row", alignItems: "center", gap: 12 },
     grid: { flexDirection: "row", gap: 12 },
     quickWrap: { flex: 1 },

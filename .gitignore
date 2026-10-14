@@ -41,3 +41,7 @@ yarn-error.*
 
 # Intermediate captures for the README images (scripts/readme-images.mjs)
 /docs/readme-src/.out
+
+# Test coverage
+coverage/
+wird-ios-screenshot.png

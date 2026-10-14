@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Your daily portion of the Quran.</strong><br>
-  A Quran app for iOS and Android: read by Surah or page by page with tajweed colours, listen to 27 reciters,
+  A Quran app for iOS and Android: learn to read Arabic from the basics with interactive lessons, read by Surah or page by page with tajweed colours, listen to 27 reciters,
   keep a daily habit with a Khatam plan and Hifz practice, and have prayer times, adhkar and a Qibla compass
   in the same place. In Indonesian and English. No account, no ads, no tracking.
 </p>
@@ -31,15 +31,15 @@
 
 |  |  |
 |---|---|
-| **Read all 114 Surahs.** Arabic in the Amiri typeface with the translation under every ayah: Kemenag in Indonesian, or one of six English editions with tappable footnotes. Transliteration is on by default, and the Arabic size is yours to set. | **Mushaf page mode.** All 604 pages of the Madani mushaf: justified lines, the Surah title plate and bismillah, ayah-end circles, tajweed colours, swipe right to turn the page, jump by page or Surah. Two pages side by side when a tablet is turned sideways. |
-| **Tajweed you can tap.** Every rule in its own colour, in the reader and on the mushaf page. Tap a letter to see the rule and how to say it, or open the learning screen for a real example of each rule that you can hear. | **Word by word.** Tap any ayah for each word's transliteration and meaning, and hear the word. |
-| **Tafsir.** Eight editions: Kemenag, Ibn Kathir, Ma'arif al-Qur'an, Tazkirul Quran, Muyassar, As-Sa'di, At-Tabari and Al-Qurtubi. | **27 reciters.** Per-ayah audio with a mini-player that keeps going while you browse. Repeat, loop, speed, sleep timer, lock-screen controls. The next ayahs are fetched ahead, so playback flows. |
-| **Listen offline, or save data.** Download a Surah to hear it without a connection, or switch on the data saver for smaller files (half the size or less) where a reciter has them. A size-limited cache keeps what you have streamed; see and clear it in Settings. | **Today.** One calm screen: the next prayer, your reading goal and streak, the ayah of the day, your adhkar and quick links to Hifz and tasbih. |
-| **Khatam planner.** Finish the Quran in 30 to 180 days, with a daily goal, a streak and a map of the 30 Juz. Pages you read in the mushaf count too. | **Hifz mode.** Repeat an ayah or range, hide the text and tap to check yourself, practise with Husary's slow teaching recitation, and mark ayahs memorized. |
-| **Prayer times and Ramadan.** By location with MUIS, Kemenag, JAKIM and five other methods, a countdown to the next prayer, reminders, and a Qibla compass. In Ramadan: the day, a countdown to imsak and iftar, and suhoor and iftar reminders. | **Adhkar, dua, Asmaul Husna and tasbih.** Morning, evening and after-prayer adhkar with counters that start again each day, everyday dua with hadith sources, the 99 names, and a counter that vibrates at 33, 66 and 99. |
-| **Notes, collections and search.** Write a note on any ayah, file bookmarks into coloured collections, and search by Surah name, meaning, number, Juz, or every ayah by meaning. | **Share an ayah** as an image card or as text. |
-| **Indonesian and English**, light and dark (dark by default). Surahs you have read open again without a connection. | **Built for tablets too.** On a wide screen the app stays a centred reading column, sheets keep a sensible width, and tablets can turn to landscape (phones stay upright). |
-| **Feedback.** Send feedback by email or open a GitHub issue from Settings; the report carries only the app version, phone system and language. | **Accessible text.** The text follows the phone's font size, with limits so layouts hold at large sizes. |
+| **Learn to read Arabic.** A complete 5-level interactive curriculum from the ground up: 28 letters with fathah, kasrah and dammah vowel contrasts, connected letter shapes (initial, medial, final), tanwin and sukun, and reading real Quran words. Includes offline audio pronunciations, reading practice rows, and quizzes with progress tracking. | **Read all 114 Surahs.** Arabic in the Amiri typeface with the translation under every ayah: Kemenag in Indonesian, or one of six English editions with tappable footnotes. Transliteration is on by default, and the Arabic size is yours to set. |
+| **Mushaf page mode.** All 604 pages of the Madani mushaf: justified lines, the Surah title plate and bismillah, ayah-end circles, tajweed colours, swipe right to turn the page, jump by page or Surah. Two pages side by side when a tablet is turned sideways. | **Tajweed you can tap.** Every rule in its own colour, in the reader and on the mushaf page. Tap a letter to see the rule and how to say it, or open the learning screen for a real example of each rule that you can hear. |
+| **Word by word.** Tap any ayah for each word's transliteration and meaning, and hear the word. | **Tafsir.** Eight editions: Kemenag, Ibn Kathir, Ma'arif al-Qur'an, Tazkirul Quran, Muyassar, As-Sa'di, At-Tabari and Al-Qurtubi. |
+| **27 reciters.** Per-ayah audio with a mini-player that keeps going while you browse. Repeat, loop, speed, sleep timer, lock-screen controls. The next ayahs are fetched ahead, so playback flows. | **Listen offline, or save data.** Download a Surah to hear it without a connection, or switch on the data saver for smaller files (half the size or less) where a reciter has them. A size-limited cache keeps what you have streamed; see and clear it in Settings. |
+| **Today.** One calm screen: the next prayer, your reading goal and streak, the ayah of the day, your adhkar, the Learn to Read card, and quick links to Hifz and tasbih. | **Khatam planner.** Finish the Quran in 30 to 180 days, with a daily goal, a streak and a map of the 30 Juz. Pages you read in the mushaf count too. |
+| **Hifz mode.** Repeat an ayah or range, hide the text and tap to check yourself, practise with Husary's slow teaching recitation, and mark ayahs memorized. | **Prayer times and Ramadan.** By location with MUIS, Kemenag, JAKIM and five other methods, a countdown to the next prayer, reminders, and a Qibla compass. In Ramadan: the day, a countdown to imsak and iftar, and suhoor and iftar reminders. |
+| **Adhkar, dua, Asmaul Husna and tasbih.** Morning, evening and after-prayer adhkar with counters that start again each day, everyday dua with hadith sources, the 99 names, and a counter that vibrates at 33, 66 and 99. | **Notes, collections and search.** Write a note on any ayah, file bookmarks into coloured collections, and search by Surah name, meaning, number, Juz, or every ayah by meaning. |
+| **Share an ayah** as an image card or as text. | **Indonesian and English**, light and dark (dark by default). Surahs you have read open again without a connection. |
+| **Built for tablets too.** On a wide screen the app stays a centred reading column, sheets keep a sensible width, and tablets can turn to landscape (phones stay upright). | **Accessible text and feedback.** The text follows the phone's font size, with limits so layouts hold at large sizes. Send feedback by email or open a GitHub issue from Settings; the report carries only the app version, phone system and language. |
 
 ## How it works
 
@@ -47,6 +47,8 @@
 Screens never see the raw responses: `services/mappers.ts` turns them into the app's own types
 (`services/types.ts`), so a change in the API is fixed in one place. Requests go through a small
 `fetch` wrapper with a timeout and typed errors (`services/http.ts`).
+
+**Learn to Read.** A 5-level curriculum (`services/learnRead.ts`) teaches Arabic reading from scratch: 28 letters with fathah, kasrah and dammah vowel contrasts, connected letter shapes (initial, medial, and final forms with connected word examples), tanwin and sukun with authentic Quranic particles, and reading real Quran words with meaning. All letter pronunciations are bundled locally as lightweight AAC audio clips (`services/learnReadAudio.ts`), enabling instant playback with zero latency and full offline support. Lesson progress, quiz scores, and completion states are persisted in MMKV via `store/learnRead.ts`.
 
 **Offline.** Data is fetched with TanStack Query. Quran text and tafsir never change, so cached
 entries never go stale, and the whole query cache is saved to MMKV with the sync persister. A Surah
@@ -122,7 +124,7 @@ size, and the version code rises with each build. Settings shows the build you a
 - Stack: Expo SDK 57, React Native 0.86, React 19, Expo Router, TanStack Query, zustand, MMKV,
   react-native-paper.
 - `ios/` and `android/` are generated from `app.json` by `expo prebuild` and are not committed.
-- Tests cover the API mappers, the tajweed (including nested rules and the Android re-cutting) and rich-text parsers, search, Qibla maths, prayer times and time zones, reminder planning including Ramadan, khatam maths, the mushaf page mapping and layout, the audio cache and player, and every store. Fixtures are trimmed copies of real API responses
+- Tests cover the API mappers, the tajweed (including nested rules and the Android re-cutting) and rich-text parsers, the learn-to-read curriculum and progress store, search, Qibla maths, prayer times and time zones, reminder planning including Ramadan, khatam maths, the mushaf page mapping and layout, the audio cache and player, and every store. Fixtures are trimmed copies of real API responses
   (`services/__tests__/fixtures/`).
 - `node scripts/readme-images.mjs` regenerates the README images from the design mockups in
   `docs/quranrn-plan.html`, and `node scripts/app-icons.mjs` regenerates the app icon, splash and
@@ -166,7 +168,7 @@ prayer times are sample data. The app itself now follows them closely.
 - English translations, tajweed text, word-by-word, the mushaf page line data, other tafsirs and ayah search via [quran.com](https://quran.com); more recitations from [everyayah.com](https://everyayah.com); prayer times and Asmaul Husna from [aladhan.com](https://aladhan.com).
 - [Amiri](https://github.com/aliftype/amiri) typeface by Khaled Hosny, [Reem Kufi](https://github.com/aliftype/reem-kufi) and [Source Sans 3](https://github.com/adobe-fonts/source-sans), all under the SIL Open Font License.
 - Adhan audio (`assets/audio/adhan.mp3`) downloaded from [islamcan.com/audio/adhan](https://www.islamcan.com/audio/adhan/) (free download).
-- Letter name audio for Learn to Read (`assets/audio/learn/names/`) by Ruaa GHAREEB on [Wikimedia Commons](https://commons.wikimedia.org/w/index.php?title=Special:ListFiles/Ruaa_GHAREEB), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); levelled and converted to AAC. These clips stay under CC BY-SA 4.0 (see the folder's `LICENSE.md`).
+- Letter name audio for Learn to Read (`assets/audio/learn/names/`) by Ruaa GHAREEB on [Wikimedia Commons](https://commons.wikimedia.org/w/index.php?title=Special:ListFiles/Ruaa_GHAREEB), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); levelled and converted to AAC. These clips stay under CC BY-SA 4.0 (see the folder's `LICENSE.md`). All vowel and word pronunciations are bundled locally in AAC format for fast offline playback.
 
 ---
 

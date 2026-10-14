@@ -54,6 +54,10 @@ export default function MushafScreen() {
     const [pageInput, setPageInput] = useState("");
     const listRef = useRef<FlatList<number>>(null);
 
+    useEffect(() => {
+        setSavedPage(page);
+    }, [page, setSavedPage]);
+
     // One page, or two side by side when a tablet is turned sideways; the page always keeps its proportions.
     const layout = size ? mushafLayout(size.width, size.height, FOOTER) : null;
     const spread = layout?.spread ?? false;

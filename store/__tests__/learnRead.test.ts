@@ -1,5 +1,5 @@
 import { LEVEL_1 } from "@/services/learnRead";
-import { nextLesson, passedCount, useLearnReadStore } from "../learnRead";
+import { nextLesson, nextOverallLesson, passedCount, totalPassedCount, useLearnReadStore } from "../learnRead";
 import { storage } from "../storage";
 
 const state = () => useLearnReadStore.getState();
@@ -56,4 +56,29 @@ describe("progress", () => {
         expect(passedCount(state().lessons)).toBe(LEVEL_1.length);
         expect(nextLesson(state().lessons)).toBeUndefined();
     });
+
+    it("tracks progress across different levels independently", () => {
+        state().recordQuiz("2-1", 8, 8, now);
+        state().recordQuiz("3-1", 8, 8, now);
+        expect(passedCount(state().lessons, 2)).toBe(1);
+        expect(passedCount(state().lessons, 3)).toBe(1);
+        expect(passedCount(state().lessons, 1)).toBe(0);
+        expect(nextLesson(state().lessons, 2)?.id).toBe("2-2");
+    });
+
+    it("computes totalPassedCount and nextOverallLesson across all levels", () => {
+        expect(totalPassedCount(state().lessons)).toBe(0);
+        expect(nextOverallLesson(state().lessons)?.id).toBe("1-1");
+
+        // Finish all level 1
+        for (const lesson of LEVEL_1) state().recordQuiz(lesson.id, 8, 8, now);
+        expect(totalPassedCount(state().lessons)).toBe(7);
+        expect(nextOverallLesson(state().lessons)?.id).toBe("2-1");
+
+        // Pass one in level 2
+        state().recordQuiz("2-1", 8, 8, now);
+        expect(totalPassedCount(state().lessons)).toBe(8);
+        expect(nextOverallLesson(state().lessons)?.id).toBe("2-2");
+    });
 });
+

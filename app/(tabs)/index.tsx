@@ -22,8 +22,10 @@ import { filterSurahs } from "@/services/surahSearch";
 import type { SurahSummary } from "@/services/types";
 import { dateKey, dailyTarget } from "@/services/khatam";
 import { TOTAL_AYAHS } from "@/constants/ayahCounts";
+import { MUSHAF_PAGES, surahOnPage } from "@/constants/surahPages";
 import { useHifzStore } from "@/store/hifz";
 import { useKhatamStore, useReadCount } from "@/store/khatam";
+import { useMushafStore } from "@/store/mushaf";
 import { useReadingProgressStore } from "@/store/readingProgress";
 
 type ListMode = "surah" | "juz" | "ayah" | "saved";
@@ -40,6 +42,7 @@ export default function Home() {
     const khatamPlan = useKhatamStore((state) => state.plan);
     const todayRead = useKhatamStore((state) => state.log[dateKey(new Date())] ?? 0);
     const memorizedTotal = useHifzStore((state) => Object.keys(state.memorized).length);
+    const mushafPage = useMushafStore((state) => state.page);
     const [searchQuery, setSearchQuery] = useState("");
     const [mode, setMode] = useState<ListMode>("surah");
 
@@ -134,6 +137,32 @@ export default function Home() {
                         </OrnateCard>
                     </View>
                 </View>
+            ) : null}
+
+            {!searchQuery ? (
+                <OrnateCard
+                    onPress={() => router.push("/mushaf")}
+                    accessibilityLabel={`${t("mushaf.title")}. ${mushafPage ? t("mushaf.page", { page: mushafPage }) : t("mushaf.subtitle")}`}
+                    style={[styles.mushafBanner, { padding: spacing.md }]}
+                >
+                    <View style={[styles.mushafIconBox, { backgroundColor: colors.mushafSoft, borderRadius: radius.md }]}>
+                        <Ionicons name="book-outline" size={20} color={colors.mushaf} />
+                    </View>
+                    <View style={styles.mushafBannerBody}>
+                        <View style={styles.mushafHeaderRow}>
+                            <AppText variant="bodyStrong">{t("mushaf.title")}</AppText>
+                            <AppText variant="caption" color={colors.brass}>
+                                {mushafPage ? `${mushafPage}/${MUSHAF_PAGES}` : `${MUSHAF_PAGES}`}
+                            </AppText>
+                        </View>
+                        <AppText variant="caption" muted numberOfLines={1}>
+                            {mushafPage
+                                ? `${t("mushaf.page", { page: mushafPage })} · ${surahByNumber.get(surahOnPage(mushafPage))?.nameLatin ?? ""}`
+                                : t("mushaf.subtitle")}
+                        </AppText>
+                    </View>
+                    <Ionicons name="chevron-forward" size={18} color={colors.ink2} />
+                </OrnateCard>
             ) : null}
 
             {mode !== "saved" ? (
@@ -283,6 +312,10 @@ const styles = StyleSheet.create({
     tiles: { flexDirection: "row", gap: 12 },
     tileWrap: { flex: 1 },
     tile: { padding: 16, gap: 2 },
+    mushafBanner: { flexDirection: "row", alignItems: "center", gap: 12 },
+    mushafIconBox: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
+    mushafBannerBody: { flex: 1, gap: 2 },
+    mushafHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
     search: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 12 },
     searchInput: { flex: 1, fontSize: 16, paddingVertical: 10 },
     result: { paddingVertical: 12, gap: 4, borderBottomWidth: StyleSheet.hairlineWidth },

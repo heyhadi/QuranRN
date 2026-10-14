@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { hasPassed, LEVEL_1, type Lesson } from "@/services/learnRead";
+import { hasPassed, lessonsForLevel, LEVEL_1, type Lesson, type LessonLevel } from "@/services/learnRead";
 import { zustandStorage } from "./storage";
 
 export interface LessonProgress {
@@ -38,12 +38,32 @@ export const useLearnReadStore = create<LearnReadState>()(
     ),
 );
 
-/** How many level 1 lessons have a passed quiz. */
-export function passedCount(lessons: Record<string, LessonProgress>): number {
-    return LEVEL_1.filter((lesson) => lessons[lesson.id]?.passedAt).length;
+/** How many lessons in a level have a passed quiz. Defaults to level 1. */
+export function passedCount(lessons: Record<string, LessonProgress>, level: LessonLevel = 1): number {
+    const list = lessonsForLevel(level);
+    return list.filter((lesson) => lessons[lesson.id]?.passedAt).length;
 }
 
-/** The first lesson not passed yet, or undefined once the level is done. */
-export function nextLesson(lessons: Record<string, LessonProgress>): Lesson | undefined {
-    return LEVEL_1.find((lesson) => !lessons[lesson.id]?.passedAt);
+/** The first lesson in a level not passed yet, or undefined once the level is done. Defaults to level 1. */
+export function nextLesson(lessons: Record<string, LessonProgress>, level: LessonLevel = 1): Lesson | undefined {
+    const list = lessonsForLevel(level);
+    return list.find((lesson) => !lessons[lesson.id]?.passedAt);
 }
+
+/** Total lessons passed across all levels. */
+export function totalPassedCount(lessons: Record<string, LessonProgress>): number {
+    return Object.values(lessons).filter((p) => p.passedAt).length;
+}
+
+export const TOTAL_LESSONS = 29;
+
+/** The next unpassed lesson across all levels (1 to 5), or undefined once all levels are done. */
+export function nextOverallLesson(lessons: Record<string, LessonProgress>): Lesson | undefined {
+    for (const lvl of [1, 2, 3, 4, 5] as const) {
+        const next = nextLesson(lessons, lvl);
+        if (next) return next;
+    }
+    return undefined;
+}
+
+
