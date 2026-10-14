@@ -528,7 +528,8 @@
     "copyDoa": "Salin",
     "sourceLabel": "Sumber",
     "duaDaily": "Doa harian",
-    "duaSelected": "Doa pilihan"
+    "duaSelected": "Doa pilihan",
+    "shareDua": "Bagikan"
   },
   "today": {
     "morning": "Selamat pagi",

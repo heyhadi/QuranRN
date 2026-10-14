@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Pressable, SectionList, Share, StyleSheet, TextInput, View } from "react-native";
 import { Button } from "react-native-paper";
 import { AppText } from "@/components/ui/AppText";
+import { OrnateCard } from "@/components/ui/Plate";
 import { useTheme } from "@/components/useTheme";
 import { getAdhkar } from "@/services/adhkar";
 import { filterDuas, groupDuas, type Dua } from "@/services/duas";
@@ -15,38 +16,63 @@ function DuaCard({ dua }: { dua: Dua }) {
     const { colors, spacing, radius } = useTheme();
     const [open, setOpen] = useState(false);
     return (
-        <Pressable
-            onPress={() => setOpen((value) => !value)}
-            accessibilityRole="button"
-            accessibilityState={{ expanded: open }}
-            style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.lg, padding: spacing.lg, gap: spacing.sm }]}
-        >
-            <View style={styles.head}>
+        <OrnateCard style={{ padding: spacing.lg, gap: spacing.md }}>
+            <Pressable
+                onPress={() => setOpen((value) => !value)}
+                accessibilityRole="button"
+                accessibilityLabel={dua.title}
+                accessibilityState={{ expanded: open }}
+                style={styles.head}
+            >
+                <View style={[styles.iconWrap, { backgroundColor: colors.surface2, borderRadius: radius.sm }]}>
+                    <Ionicons name="sparkles-outline" size={14} color={colors.brass} />
+                </View>
                 <AppText variant="bodyStrong" style={styles.flex}>
                     {dua.title}
                 </AppText>
-                <Ionicons name={open ? "chevron-up" : "chevron-down"} size={20} color={colors.ink2} />
-            </View>
+                <Ionicons name={open ? "chevron-up" : "chevron-down"} size={18} color={colors.ink2} />
+            </Pressable>
             {open ? (
-                <View style={{ gap: spacing.md }}>
-                    <AppText variant="arabic" size={26}>
-                        {dua.arabic}
-                    </AppText>
-                    <AppText variant="caption" muted style={styles.italic}>
-                        {dua.transliteration}
-                    </AppText>
-                    <AppText>{dua.meaning}</AppText>
-                    {dua.source ? (
-                        <AppText variant="caption" muted>
-                            {`${t("more.sourceLabel")}: ${dua.source}`}
+                <View style={[styles.expandedContent, { borderTopColor: colors.line, paddingTop: spacing.md, gap: spacing.md }]}>
+                    <View style={[styles.arabicBox, { backgroundColor: colors.paper, borderRadius: radius.md, padding: spacing.md }]}>
+                        <AppText variant="arabic" size={24} style={styles.arabicText}>
+                            {dua.arabic}
+                        </AppText>
+                    </View>
+                    {dua.transliteration ? (
+                        <AppText variant="caption" muted style={styles.italic}>
+                            {dua.transliteration}
                         </AppText>
                     ) : null}
-                    <Button mode="text" icon="share-variant-outline" onPress={() => void Share.share({ message: `${dua.arabic}\n\n${dua.transliteration}\n\n${dua.meaning}` })} style={styles.start}>
-                        {t("reader.share", { ayah: "" }).trim()}
-                    </Button>
+                    <AppText style={styles.meaningText}>{dua.meaning}</AppText>
+                    {dua.source ? (
+                        <View style={[styles.sourceBox, { backgroundColor: colors.surface2, borderRadius: radius.sm, padding: spacing.sm }]}>
+                            <Ionicons name="book-outline" size={13} color={colors.ink2} style={{ marginTop: 2 }} />
+                            <AppText variant="caption" muted style={styles.sourceText}>
+                                {dua.source.toLowerCase().startsWith("sumber") || dua.source.toLowerCase().startsWith("source")
+                                    ? dua.source
+                                    : `${t("more.sourceLabel")}: ${dua.source}`}
+                            </AppText>
+                        </View>
+                    ) : null}
+                    <Pressable
+                        onPress={() => void Share.share({ message: `${dua.title}\n\n${dua.arabic}\n\n${dua.transliteration ? dua.transliteration + "\n\n" : ""}${dua.meaning}${dua.source ? "\n\n(" + dua.source + ")" : ""}` })}
+                        style={({ pressed }) => [
+                            styles.shareBtn,
+                            {
+                                backgroundColor: pressed ? colors.mushafSoft : colors.surface2,
+                                borderRadius: radius.pill,
+                            },
+                        ]}
+                    >
+                        <Ionicons name="share-outline" size={14} color={colors.ink} />
+                        <AppText variant="caption" color={colors.ink} style={styles.shareText}>
+                            {t("more.shareDua")}
+                        </AppText>
+                    </Pressable>
                 </View>
             ) : null}
-        </Pressable>
+        </OrnateCard>
     );
 }
 
@@ -94,7 +120,7 @@ export default function DoaScreen() {
                     ListHeaderComponent={
                         <View style={{ padding: spacing.lg, gap: spacing.sm }}>
                             <AppText muted>{t("more.doaIntro")}</AppText>
-                            <View style={[styles.search, { backgroundColor: colors.surface2, borderRadius: radius.md }]}>
+                            <View style={[styles.search, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.md }]}>
                                 <Ionicons name="search" size={18} color={colors.ink2} />
                                 <TextInput
                                     value={query}
@@ -107,6 +133,11 @@ export default function DoaScreen() {
                                     accessibilityLabel={t("more.doaSearch")}
                                     style={[styles.input, { color: colors.ink }]}
                                 />
+                                {query ? (
+                                    <Pressable onPress={() => setQuery("")} accessibilityLabel={t("common.clear")}>
+                                        <Ionicons name="close-circle" size={18} color={colors.ink2} />
+                                    </Pressable>
+                                ) : null}
                             </View>
                         </View>
                     }
@@ -116,9 +147,12 @@ export default function DoaScreen() {
                         </AppText>
                     }
                     renderSectionHeader={({ section }) => (
-                        <AppText variant="label" muted style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.lg, paddingBottom: spacing.sm }} accessibilityRole="header">
-                            {section.title}
-                        </AppText>
+                        <View style={styles.sectionHeaderWrap}>
+                            <Ionicons name="sparkles" size={12} color={colors.brass} style={{ opacity: 0.8 }} />
+                            <AppText variant="label" muted style={styles.sectionHeaderText} accessibilityRole="header">
+                                {section.title}
+                            </AppText>
+                        </View>
                     )}
                     renderItem={({ item }) => (
                         <View style={{ paddingHorizontal: spacing.lg, paddingBottom: spacing.sm }}>
@@ -137,10 +171,19 @@ const styles = StyleSheet.create({
     flex: { flex: 1 },
     center: { textAlign: "center" },
     centered: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24, gap: 16 },
-    card: { borderWidth: StyleSheet.hairlineWidth },
-    head: { flexDirection: "row", alignItems: "center", gap: 8 },
-    italic: { fontStyle: "italic", lineHeight: 20 },
-    start: { alignSelf: "flex-start" },
-    search: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 12 },
+    head: { flexDirection: "row", alignItems: "center", gap: 10 },
+    iconWrap: { width: 26, height: 26, alignItems: "center", justifyContent: "center" },
+    expandedContent: { borderTopWidth: StyleSheet.hairlineWidth },
+    arabicBox: { width: "100%" },
+    arabicText: { textAlign: "right", lineHeight: 46 },
+    italic: { fontStyle: "italic", lineHeight: 22 },
+    meaningText: { lineHeight: 22 },
+    sourceBox: { flexDirection: "row", alignItems: "flex-start", gap: 6 },
+    sourceText: { flex: 1, lineHeight: 18 },
+    shareBtn: { flexDirection: "row", alignItems: "center", gap: 6, alignSelf: "flex-start", paddingHorizontal: 12, paddingVertical: 6 },
+    shareText: { fontWeight: "600" },
+    search: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 12, borderWidth: StyleSheet.hairlineWidth },
     input: { flex: 1, fontSize: 16, paddingVertical: 10 },
+    sectionHeaderWrap: { flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
+    sectionHeaderText: { letterSpacing: 0.5 },
 });

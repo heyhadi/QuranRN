@@ -138,7 +138,6 @@ Phases 1 to 9 of [ROADMAP.md](ROADMAP.md) are built. Still to do:
 1. Home-screen widgets (they need native work on both platforms)
 2. Store screenshots in English and Indonesian
 3. Checks on real devices: reminders, lock-screen audio, share-as-image, and an iPad turned sideways
-4. A softer look for the Adhkar and dua cards, to match the rest
 
 ![Tajweed colours you can tap, and word-by-word meaning](docs/images/2-tajweed-you-can-tap.png)
 

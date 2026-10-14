@@ -102,7 +102,7 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Android notification icon (white star silhouette) instead of a square
 - [x] Development build profile for live testing on a phone; arm64-only Android builds and a rising version code; the build commit shown in Settings
 - [ ] Check on real devices: reminders, lock-screen audio card, share-as-image, iPad landscape and the mushaf spread
-- [ ] Softer look for the Adhkar and dua cards
+- [x] Softer look for the Adhkar and dua cards: OrnateCard styling with inner brass frames, paper-toned Arabic calligraphy boxes, subtle badges, benefit callouts, and tactile progress-fill counters
 
 ## Phase 10: Learn to Read / Belajar Membaca (level 1 built, needs audio and review)
 A beginner course for reading Arabic, taught the way the classic primers do it (a few letters at a time, read in rows), with our own lessons and name. It does not use the Iqro brand or copy any book's pages.

@@ -6,6 +6,8 @@ interface PlateProps {
     children: React.ReactNode;
     /** Layout and padding of the content (the plate itself has none). */
     style?: StyleProp<ViewStyle>;
+    /** Optional style for the outer card container (e.g. custom borderColor or backgroundColor). */
+    containerStyle?: StyleProp<ViewStyle>;
     onPress?: () => void;
     accessibilityLabel?: string;
     /** Which corner holds the star watermark. */
@@ -36,10 +38,10 @@ function Wrapper({ onPress, accessibilityLabel, style, children }: { onPress?: (
  * A deep green plate like the heading of a printed mushaf: brass inner frame, a faint star in the
  * corner and a soft shaded disc for depth. Used for the cards that carry a screen's main message.
  */
-export function PlateCard({ children, style, onPress, accessibilityLabel, corner = "right" }: PlateProps) {
+export function PlateCard({ children, style, containerStyle, onPress, accessibilityLabel, corner = "right" }: PlateProps) {
     const { colors } = useTheme();
     return (
-        <Wrapper onPress={onPress} accessibilityLabel={accessibilityLabel} style={[styles.plate, { backgroundColor: colors.heroBackground }]}>
+        <Wrapper onPress={onPress} accessibilityLabel={accessibilityLabel} style={[styles.plate, { backgroundColor: colors.heroBackground }, containerStyle]}>
             <View pointerEvents="none" style={[styles.disc, corner === "right" ? { left: -60 } : { right: -60 }]} />
             <Star size={150} color={colors.heroAccent} opacity={0.09} style={corner === "right" ? { right: -50, top: -50 } : { left: -50, top: -50 }} />
             <View pointerEvents="none" style={[styles.frame, { borderColor: colors.heroAccent }]} />
@@ -52,10 +54,10 @@ export function PlateCard({ children, style, onPress, accessibilityLabel, corner
  * The surface card with the same hand-finished feel, lighter: just a hairline brass inner frame. The
  * star stays on the main plate cards.
  */
-export function OrnateCard({ children, style, onPress, accessibilityLabel }: PlateProps) {
+export function OrnateCard({ children, style, containerStyle, onPress, accessibilityLabel }: PlateProps) {
     const { colors } = useTheme();
     return (
-        <Wrapper onPress={onPress} accessibilityLabel={accessibilityLabel} style={[styles.ornate, { backgroundColor: colors.surface, borderColor: colors.line }]}>
+        <Wrapper onPress={onPress} accessibilityLabel={accessibilityLabel} style={[styles.ornate, { backgroundColor: colors.surface, borderColor: colors.line }, containerStyle]}>
             <View pointerEvents="none" style={[styles.innerFrame, { borderColor: colors.brass, opacity: 0.22 }]} />
             <View style={style}>{children}</View>
         </Wrapper>

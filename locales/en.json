@@ -528,7 +528,8 @@
     "copyDoa": "Copy",
     "sourceLabel": "Source",
     "duaDaily": "Daily dua",
-    "duaSelected": "Selected dua"
+    "duaSelected": "Selected dua",
+    "shareDua": "Share"
   },
   "today": {
     "morning": "Good morning",
