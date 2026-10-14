@@ -123,7 +123,9 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.stamp.outputs.version }}
+          # The trailing -<versionCode> is what the in-app updater reads (services/update.ts). Builds up
+          # to 15 only understand this form, so keep it even though the version ends in the same number.
+          tag_name: v${{ steps.stamp.outputs.version }}-${{ github.run_number }}
           name: Wird Android v${{ steps.stamp.outputs.version }}
           body: |
             Automated Android build from main (${{ github.sha }}).
