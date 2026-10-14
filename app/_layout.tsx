@@ -154,6 +154,8 @@ function RootLayoutNav() {
                             <Stack.Screen name="tasbih" />
                             <Stack.Screen name="hifz/index" />
                             <Stack.Screen name="hifz/[id]" />
+                            <Stack.Screen name="learn/index" />
+                            <Stack.Screen name="learn/[lesson]" />
                         </Stack>
                         </AppColumn>
                         <Toast />

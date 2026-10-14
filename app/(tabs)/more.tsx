@@ -9,6 +9,8 @@ import { useTheme } from "@/components/useTheme";
 import { dateKey } from "@/services/khatam";
 import { useKhatamStore } from "@/store/khatam";
 import { useHifzStore } from "@/store/hifz";
+import { LEVEL_1 } from "@/services/learnRead";
+import { passedCount, useLearnReadStore } from "@/store/learnRead";
 import { useTasbihStore } from "@/store/tasbih";
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -20,8 +22,10 @@ export default function MoreScreen() {
     const tasbihToday = useTasbihStore((state) => state.history[dateKey(new Date())] ?? 0);
     const khatamPlan = useKhatamStore((state) => state.plan);
     const memorized = useHifzStore((state) => Object.keys(state.memorized).length);
+    const lessonsPassed = useLearnReadStore((state) => passedCount(state.lessons));
 
     const items: { icon: IconName; title: string; subtitle: string; onPress: () => void }[] = [
+        { icon: "school-outline", title: t("learn.title"), subtitle: lessonsPassed > 0 ? t("learn.progress", { done: lessonsPassed, total: LEVEL_1.length }) : t("learn.moreIntro"), onPress: () => router.push("/learn") },
         { icon: "documents-outline", title: t("mushaf.title"), subtitle: t("mushaf.subtitle"), onPress: () => router.push("/mushaf") },
         { icon: "flag-outline", title: t("khatam.title"), subtitle: khatamPlan ? t("khatam.daysLeft", { count: Math.max(0, khatamPlan.targetDays) }) : t("khatam.intro"), onPress: () => router.push("/khatam") },
         { icon: "repeat-outline", title: t("hifz.title"), subtitle: t("hifz.count", { count: memorized }), onPress: () => router.push("/hifz") },

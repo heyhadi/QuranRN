@@ -104,6 +104,16 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [ ] Check on real devices: reminders, lock-screen audio card, share-as-image, iPad landscape and the mushaf spread
 - [ ] Softer look for the Adhkar and dua cards
 
+## Phase 10: Learn to Read / Belajar Membaca (level 1 built, needs audio and review)
+A beginner course for reading Arabic, taught the way the classic primers do it (a few letters at a time, read in rows), with our own lessons and name. It does not use the Iqro brand or copy any book's pages.
+- [x] Level 1: the 28 letters with fathah in 7 lessons of 4. Meet each letter, read mixed rows right to left (tap to check), then an 8-question quiz; 80% finishes a lesson. Progress saved per lesson; entry on the More tab
+- [x] Quiz distractors favour look-alike letters; no two options spelled the same; no letter asked twice in a row
+- [x] Development builds install next to the release app as "Wird Dev" (`APP_VARIANT=development`), so testing a branch on a phone keeps the release app's data
+- [x] Letter names you can hear on each letter card: 28 clips by Ruaa GHAREEB (Wikimedia Commons, CC BY-SA 4.0), checked by ear, levelled and converted to AAC
+- [ ] **Fathah audio:** record the syllables with a qualified reciter (28 fathah clips first, then kasrah/dammah and letter names: about 116 clips, WAV 48 kHz mono, delivered as AAC/MP3), with a signed release and an open licence (CC BY 4.0 or CC0). Drop them into `assets/audio/learn/` and `services/learnReadAudio.ts`; play buttons appear on their own. Openly licensed sets were checked and rejected after listening (Oct 2026): Freesound "Zulhusnayain" makhraj clips (CC0, poor sound) and Ruaa GHAREEB's Wikimedia Commons clips (CC BY-SA 4.0; the audio doesn't match the letter labels). Arabic TTS isn't reliable enough for single syllables
+- [ ] **Review by a teacher (ustadz/ustadzah):** letter order (Indonesian classes put و before ه), Latin spellings for both languages, alif's fathah written on hamzah (أَ), and the lesson wording
+- [ ] Level 2: kasrah and dammah. Level 3: joined letters (start, middle, end forms; needs the Android shaping care from Phase 9). Then tanwin, sukun and shaddah, mad, and reading real Quran words with quran.com's word audio
+
 ## Later (not planned now)
 - Cloud sync / accounts
 - AI-generated tafsir; if ever added, quote real tafsir text with its source named
