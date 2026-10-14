@@ -53,7 +53,7 @@ class UpdateModule(reactContext: ReactApplicationContext) :
           .setData(Uri.parse("package:${context.packageName}"))
           .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
       )
-      promise.reject("NEEDS_INSTALL_PERMISSION", "Allow installs from Workout Alarm, then try again")
+      promise.reject("NEEDS_INSTALL_PERMISSION", "Allow installs from Wird, then try again")
       return
     }
 
@@ -137,7 +137,7 @@ class UpdateModule(reactContext: ReactApplicationContext) :
     val installed = installedInfo(flags)
 
     if (candidate.packageName != installed.packageName) {
-      throw IllegalStateException("Downloaded app isn't Workout Alarm")
+      throw IllegalStateException("Downloaded app isn't Wird")
     }
     if (versionCode(candidate) <= versionCode(installed)) {
       throw IllegalStateException("Downloaded build isn't newer")
@@ -171,7 +171,7 @@ class UpdateModule(reactContext: ReactApplicationContext) :
 
   companion object {
     private const val ALLOWED_URL_PREFIX =
-      "https://github.com/heyhadi/workout-alarm-app/releases/download/"
+      "https://github.com/heyhadi/wird/releases/download/"
   }
 }
 
