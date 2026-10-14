@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_prayer_label">Wird Prayer Times</string>
+    <string name="widget_prayer_description">Next prayer countdown and full day prayer schedule</string>
+    <string name="widget_daily_ayah_label">Wird Daily Ayah</string>
+    <string name="widget_daily_ayah_description">Daily Quranic verse with Arabic calligraphy and translation</string>
+    <string name="widget_khatam_label">Wird Khatam Tracker</string>
+    <string name="widget_khatam_description">Quran reading streak and daily page goal progress</string>
+</resources>

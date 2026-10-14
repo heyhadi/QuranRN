@@ -14,10 +14,11 @@ import type { AppLanguage } from "@/i18n";
 import { getAdhkar, routineForHour } from "@/services/adhkar";
 import { currentStreak, dailyTarget, dateKey } from "@/services/khatam";
 import { formatDates } from "@/services/hijri";
-import { minutesUntil, nextPrayer } from "@/services/prayerTimes";
+import { formatClock, minutesUntil, nextPrayer } from "@/services/prayerTimes";
 import { useEnglishTranslation, useSurahDetail } from "@/services/queries";
 import { fastStatus, ramadanDay } from "@/services/ramadan";
 import { translationText } from "@/services/richText";
+import { saveWidgetPayload } from "@/services/widgets";
 import { completedIn, countsFor, useAdhkarStore } from "@/store/adhkar";
 import { useHifzStore } from "@/store/hifz";
 import { useKhatamStore } from "@/store/khatam";
@@ -85,6 +86,52 @@ export default function TodayScreen() {
 
     const openAyah = () => router.push({ pathname: "/surah/[id]", params: { id: surahNumber, ayah: ayahNumber } });
     const continueReading = () => (lastRead ? router.push({ pathname: "/surah/[id]", params: { id: lastRead.surahNumber, ayah: lastRead.ayahNumber } }) : router.navigate("/"));
+
+    useEffect(() => {
+        const prayerData =
+            state.status === "ready" && next
+                ? {
+                      nextPrayerName: next.name,
+                      nextPrayerTime: formatClock(next.at, state.timezone),
+                      nextPrayerTimestamp: next.at.getTime(),
+                      locationName: state.timezone.split("/")[1]?.replace(/_/g, " ") || "Wird",
+                      schedule: [
+                          { name: "Fajr", time: state.today.times.fajr, isNext: next.name.toLowerCase() === "fajr" },
+                          { name: "Dhuhr", time: state.today.times.dhuhr, isNext: next.name.toLowerCase() === "dhuhr" },
+                          { name: "Asr", time: state.today.times.asr, isNext: next.name.toLowerCase() === "asr" },
+                          { name: "Maghrib", time: state.today.times.maghrib, isNext: next.name.toLowerCase() === "maghrib" },
+                          { name: "Isha", time: state.today.times.isha, isNext: next.name.toLowerCase() === "isha" },
+                      ],
+                  }
+                : undefined;
+
+        const dailyAyahData =
+            ayah && meaning
+                ? {
+                      surahNumber,
+                      ayahNumber,
+                      surahName: detail.data?.nameLatin || `Surah ${surahNumber}`,
+                      textArabic: ayah.textArabic,
+                      translation: meaning,
+                  }
+                : undefined;
+
+        const khatamData = {
+            streakDays: streak,
+            todayPages: todayRead,
+            targetPages: goal || 4,
+            percentComplete: Math.round(progress * 100),
+            daysRemaining: plan ? Math.max(0, plan.targetDays - streak) : 0,
+        };
+
+        saveWidgetPayload({
+            updatedAt: Date.now(),
+            language: language === "id" ? "id" : "en",
+            prayer: prayerData,
+            dailyAyah: dailyAyahData,
+            khatam: khatamData,
+        });
+    }, [state, next, ayah, meaning, detail.data, surahNumber, ayahNumber, streak, todayRead, goal, progress, plan, language]);
 
     const learnProgress = useLearnReadStore((s) => s.lessons);
     const totalLearnPassed = useMemo(() => totalPassedCount(learnProgress), [learnProgress]);

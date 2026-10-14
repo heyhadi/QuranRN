@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_prayer_small_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg_emerald"
+    android:padding="14dp">
+
+    <!-- Top header: location & title -->
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/prayer_small_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/widget_badge_bg"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:text="Wird"
+            android:textColor="#E6C875"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/prayer_small_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="NEXT PRAYER"
+            android:textColor="#A3C2B8"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Center content: Prayer Name & Time -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/prayer_small_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dhuhr • الظهر"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/prayer_small_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="12:56"
+            android:textColor="#FFFFFF"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- Bottom: Countdown & Wird branding -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/prayer_small_countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="in 35 min"
+            android:textColor="#E6C875"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/prayer_small_brand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="وِرْد"
+            android:textColor="#66B39E"
+            android:textSize="13sp" />
+    </RelativeLayout>
+</RelativeLayout>

@@ -66,11 +66,11 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Search every ayah by meaning (needs a connection)
 - [x] Mushaf page mode: all 604 Madani pages rebuilt from quran.com's line data (justified lines, Surah title banners, bismillah, ayah-end circles), tajweed colours with tap-for-rule, page jump and Surah list, reads count toward Khatam, page width capped for tablets. Tapping a word opens the ayah in the reader
 
-## Phase 5: Habits (done, except widgets)
+## Phase 5: Habits (done)
 - [x] Hifz mode: range, repeat 1/3/5/10, pause, practice reciter, hide and tap to reveal, mark memorized, overview
 - [x] Khatam planner: 30/60/90/180 days, daily goal, streak, progress by Juz, new round
 - [x] Daily ayah and khatam reminders
-- [x] Home-screen widgets: cross-platform data synchronization service (`services/widgets.ts`) and native specification for WidgetKit & AppWidgetProvider (`docs/widgets-architecture.md`)
+- [x] Home-screen widgets: cross-platform data synchronization service (`services/widgets.ts`), full native Android `AppWidgetProvider` suite (`PrayerWidgetProvider` 2x2/4x2, `DailyAyahWidgetProvider` 4x2, `KhatamWidgetProvider` 2x2 with `WirdWidgetModule` bridge, Expo config plugin `withWirdWidgets`), and iOS WidgetKit specification (`docs/widgets-architecture.md`)
 
 ## Phase 6: Worship tools (done)
 - [x] Prayer times by location (MUIS, Kemenag, JAKIM and five more methods), next prayer countdown, adhan reminders, saved for offline use

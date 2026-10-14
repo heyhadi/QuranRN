@@ -1,3 +1,4 @@
+import { NativeModules, Platform } from "react-native";
 import { storage } from "@/store/storage";
 
 export const WIDGET_STORAGE_KEY = "wird_widgets_payload";
@@ -42,11 +43,23 @@ export interface WidgetPayload {
 
 /**
  * Saves the combined widget payload into shared storage.
- * On iOS and Android native builds, this data is mapped to App Groups
- * (UserDefaults suite "group.com.heyhadi.wird") and SharedPreferences.
+ * On Android, writes to SharedPreferences and updates all home screen widgets via WirdWidgetModule.
+ * On iOS, writes to App Group UserDefaults.
  */
 export function saveWidgetPayload(payload: WidgetPayload): void {
-    storage.set(WIDGET_STORAGE_KEY, JSON.stringify(payload));
+    const raw = JSON.stringify(payload);
+    storage.set(WIDGET_STORAGE_KEY, raw);
+
+    if (Platform.OS === "android") {
+        const module = NativeModules.WirdWidgetModule;
+        if (module && typeof module.updateWidgetData === "function") {
+            try {
+                module.updateWidgetData(raw);
+            } catch {
+                // Silently ignore in mock or test environments
+            }
+        }
+    }
 }
 
 /**
@@ -59,5 +72,36 @@ export function getWidgetPayload(): WidgetPayload | null {
         return JSON.parse(raw) as WidgetPayload;
     } catch {
         return null;
+    }
+}
+
+export interface BuildWidgetPayloadParams {
+    language: "en" | "id";
+    prayer?: PrayerWidgetData;
+    dailyAyah?: DailyAyahWidgetData;
+    khatam?: KhatamWidgetData;
+}
+
+export function buildWidgetPayload(params: BuildWidgetPayloadParams): WidgetPayload {
+    return {
+        updatedAt: Date.now(),
+        language: params.language,
+        prayer: params.prayer,
+        dailyAyah: params.dailyAyah,
+        khatam: params.khatam,
+    };
+}
+
+export async function syncWidgetData(payload: WidgetPayload): Promise<void> {
+    saveWidgetPayload(payload);
+    if (Platform.OS === "android") {
+        const module = NativeModules.WirdWidgetModule;
+        if (module && typeof module.updateWidgetData === "function") {
+            try {
+                await module.updateWidgetData(JSON.stringify(payload));
+            } catch {
+                // Ignore in testing or dev environments
+            }
+        }
     }
 }

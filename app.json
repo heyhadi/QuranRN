@@ -70,7 +70,8 @@
       ],
       "expo-sharing",
       "./plugins/withReleaseSigning",
-      "./plugins/withWirdUpdate"
+      "./plugins/withWirdUpdate",
+      "./plugins/withWirdWidgets"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_daily_ayah_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg_emerald"
+    android:padding="14dp">
+
+    <!-- Header: Surah reference & Label -->
+    <RelativeLayout
+        android:id="@+id/ayah_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/ayah_reference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/widget_badge_bg"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:text="Al-'Asr 103:3"
+            android:textColor="#E6C875"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/ayah_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="AYAH OF THE DAY"
+            android:textColor="#A3C2B8"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- Center: Arabic verse and translation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/ayah_header"
+        android:layout_above="@+id/ayah_footer"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/ayah_text_arabic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ"
+            android:textColor="#FFFFFF"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/ayah_text_translation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="Except for those who have believed and done righteous deeds"
+            android:textColor="#EDE6D8"
+            android:textSize="12sp"
+            android:maxLines="3"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <!-- Footer: Wird branding -->
+    <TextView
+        android:id="@+id/ayah_footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="وِرْد • Wird"
+        android:textColor="#66B39E"
+        android:textSize="11sp" />
+</RelativeLayout>
