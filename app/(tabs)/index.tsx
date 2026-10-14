@@ -6,6 +6,7 @@ import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TextInput, Vi
 import { Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SavedList } from "@/components/SavedList";
+import { UpdateCard } from "@/components/UpdateCard";
 import { ListRow } from "@/components/SurahRow";
 import { OrnateCard, PlateCard } from "@/components/ui/Plate";
 import { AppText } from "@/components/ui/AppText";
@@ -86,6 +87,8 @@ export default function Home() {
                 <AppText variant="display">{t("home.greeting")}</AppText>
                 <AppText muted>{dates}</AppText>
             </View>
+
+            <UpdateCard />
 
             {lastRead && !searchQuery ? (
                 <PlateCard onPress={() => openSurah(lastRead.surahNumber, lastRead.ayahNumber)} accessibilityLabel={`${t("home.continueReading")}: ${lastRead.surahNameLatin}`} style={styles.continueCard}>
