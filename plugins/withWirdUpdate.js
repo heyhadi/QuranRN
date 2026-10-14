@@ -76,12 +76,14 @@ const withWirdUpdate = (config) => {
       // FileProvider declaration in AndroidManifest
       const manifestPath = path.join(androidDir, 'app', 'src', 'main', 'AndroidManifest.xml');
       let manifest = fs.readFileSync(manifestPath, 'utf8');
-      if (!manifest.includes('com.heyhadi.wird.updates')) {
+      // ${applicationId} keeps the authority unique per app id (UpdateModule.kt builds it from packageName),
+      // so a development variant with its own id can be installed next to the release app.
+      if (!manifest.includes('@xml/wird_update_paths')) {
         manifest = manifest.replace(
           '</application>',
           `    <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.heyhadi.wird.updates"
+            android:authorities="\${applicationId}.updates"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
