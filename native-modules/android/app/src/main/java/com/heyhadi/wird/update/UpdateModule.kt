@@ -48,12 +48,23 @@ class UpdateModule(reactContext: ReactApplicationContext) :
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
       !context.packageManager.canRequestPackageInstalls()
     ) {
+      // Without REQUEST_INSTALL_PACKAGES in the manifest (app.json android.permissions) this is
+      // always false and the switch below can't help, so say so instead of looping.
+      if (!declaresInstallPermission()) {
+        promise.reject("MISSING_INSTALL_PERMISSION", "REQUEST_INSTALL_PACKAGES isn't declared in the manifest")
+        return
+      }
       // One-time "Install unknown apps" switch for this app.
-      context.startActivity(
-        Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
-          .setData(Uri.parse("package:${context.packageName}"))
-          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-      )
+      try {
+        context.startActivity(
+          Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
+            .setData(Uri.parse("package:${context.packageName}"))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+      } catch (e: Exception) {
+        promise.reject("UPDATE_FAILED", "Couldn't open the install permission screen: ${e.message}", e)
+        return
+      }
       promise.reject("NEEDS_INSTALL_PERMISSION", "Allow installs from Wird, then try again")
       return
     }
@@ -148,6 +159,10 @@ class UpdateModule(reactContext: ReactApplicationContext) :
       throw IllegalStateException("Downloaded app isn't signed with this app's key")
     }
   }
+
+  private fun declaresInstallPermission(): Boolean =
+    installedInfo(PackageManager.GET_PERMISSIONS).requestedPermissions
+      ?.contains("android.permission.REQUEST_INSTALL_PACKAGES") == true
 
   private fun installedInfo(flags: Int): PackageInfo =
     reactApplicationContext.packageManager.getPackageInfo(reactApplicationContext.packageName, flags)
