@@ -33,6 +33,14 @@
     "juzStartsAt": "Starts at {{surah}} {{ayah}}",
     "tabAll": "All"
   },
+  "update": {
+    "title": "Update available",
+    "ready": "{{title}} is ready to install.",
+    "downloading": "Downloading… {{percent}}%",
+    "needsPermission": "Allow Wird to install apps in the settings that just opened, then tap Update again.",
+    "failed": "Couldn't install the update. Check your connection and try again.",
+    "action": "Update"
+  },
   "reader": {
     "loadError": "Couldn't load this Surah. Check your connection and try again.",
     "play": "Play ayah {{ayah}}",

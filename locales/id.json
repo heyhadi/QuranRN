@@ -33,6 +33,14 @@
     "juzStartsAt": "Dimulai di {{surah}} {{ayah}}",
     "tabAll": "Semua"
   },
+  "update": {
+    "title": "Ada versi baru",
+    "ready": "{{title}} siap dipasang.",
+    "downloading": "Lagi download… {{percent}}%",
+    "needsPermission": "Izinkan Wird pasang aplikasi di pengaturan yang kebuka, terus ketuk Update lagi.",
+    "failed": "Gagal pasang update. Cek internet kamu terus coba lagi.",
+    "action": "Update"
+  },
   "reader": {
     "loadError": "Surah ini tidak dapat dimuat. Periksa koneksi internet, lalu coba lagi.",
     "play": "Putar ayat {{ayah}}",

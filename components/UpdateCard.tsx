@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "@/components/useTheme";
 import { spacing, radius, fonts } from "@/constants/theme";
 import {
@@ -17,6 +18,7 @@ type InstallState = "idle" | "downloading" | "needs-permission" | "failed";
  * or on a local build.
  */
 export function UpdateCard() {
+    const { t } = useTranslation();
     const { colors } = useTheme();
     const [update, setUpdate] = useState<AvailableUpdate | null>(null);
     const [state, setState] = useState<InstallState>("idle");
@@ -55,12 +57,12 @@ export function UpdateCard() {
 
     const detail =
         state === "downloading"
-            ? `Lagi download… ${Math.round(progress * 100)}%`
+            ? t("update.downloading", { percent: Math.round(progress * 100) })
             : state === "needs-permission"
-              ? "Izinkan Wird pasang aplikasi di pengaturan yang kebuka, terus ketuk Update lagi."
+              ? t("update.needsPermission")
               : state === "failed"
-                ? "Gagal pasang update. Cek internet kamu terus coba lagi."
-                : `${update.title} siap dipasang.`;
+                ? t("update.failed")
+                : t("update.ready", { title: update.title });
 
     return (
         <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.line }]}>
@@ -70,7 +72,7 @@ export function UpdateCard() {
                 </View>
                 <View style={styles.main}>
                     <Text style={[styles.title, { color: colors.ink, fontFamily: fonts.bodyMedium }]}>
-                        Ada versi baru
+                        {t("update.title")}
                     </Text>
                     <Text style={[styles.detail, { color: colors.ink2 }]}>{detail}</Text>
                 </View>
@@ -86,7 +88,7 @@ export function UpdateCard() {
                     ]}
                 >
                     <Text style={[styles.buttonText, { color: colors.mushaf, fontFamily: fonts.bodyMedium }]}>
-                        Update
+                        {t("update.action")}
                     </Text>
                 </Pressable>
             </View>
