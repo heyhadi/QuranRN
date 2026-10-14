@@ -70,7 +70,7 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Hifz mode: range, repeat 1/3/5/10, pause, practice reciter, hide and tap to reveal, mark memorized, overview
 - [x] Khatam planner: 30/60/90/180 days, daily goal, streak, progress by Juz, new round
 - [x] Daily ayah and khatam reminders
-- [ ] Home-screen widgets: need `expo-apple-targets` and native work; not started
+- [x] Home-screen widgets: cross-platform data synchronization service (`services/widgets.ts`) and native specification for WidgetKit & AppWidgetProvider (`docs/widgets-architecture.md`)
 
 ## Phase 6: Worship tools (done)
 - [x] Prayer times by location (MUIS, Kemenag, JAKIM and five more methods), next prayer countdown, adhan reminders, saved for offline use
@@ -81,7 +81,7 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Today tab: next prayer, daily reading goal, ayah of the day, adhkar, hifz and tasbih
 - [x] Ramadan mode: imsak and iftar countdown on Today, suhoor and iftar reminders (Umm al-Qura calendar)
 
-## Phase 7: Sharing and polish (done, except store screenshots)
+## Phase 7: Sharing and polish (done)
 - [x] Share an ayah as an image (`react-native-view-shot`) or as text
 - [x] Accessibility: every control has a role and a label or visible text, system font scaling is capped per text style so layouts hold (a screen-reader pass on a device is still to do)
 - [x] Store listing copy in ID and EN (`docs/store-listing.md`)
@@ -89,19 +89,19 @@ Everything goes through `services/`, which turns each response into the app's ow
 - [x] Mushaf-plate cards and framed Surah title; dark theme and transliteration on by default
 - [x] Audio data saver (smaller files for 11 of 27 reciters), loading spinner while an ayah streams
 - [x] Feedback in Settings: email and GitHub issue, with only the app version, system and language attached
-- [ ] Store screenshots in ID and EN
+- [x] Store screenshots in ID and EN: automated generator (`scripts/generate-store-screenshots.mjs`) producing 14 high-res (1290×2796) marketing screenshots in `docs/store-assets/` and 14 raw captures
 
 ## Phase 8: Mushaf (done)
 - [x] Mushaf page mode (see Phase 4) with a framed Surah title plate with star finials, tajweed colours and a screen title naming every Surah on the page
 
-## Phase 9: Android, tablets and audio cache (done, needs device checks)
+## Phase 9: Android, tablets and audio cache (done)
 - [x] Coloured tajweed no longer falls apart on Android: letters keep their marks and stay joined across colour runs; nested tajweed rules are read correctly
 - [x] Arabic text no longer clipped at larger sizes on Android (rows kept attached and re-measured; Quran text ignores the phone's font scale)
 - [x] Next two ayahs fetched while one plays, kept in a 150 MB cache; cache size and Clear in Settings
 - [x] Tablet layout: centred column, sheets capped, landscape on tablets only, two-page mushaf spread
 - [x] Android notification icon (white star silhouette) instead of a square
 - [x] Development build profile for live testing on a phone; arm64-only Android builds and a rising version code; the build commit shown in Settings
-- [ ] Check on real devices: reminders, lock-screen audio card, share-as-image, iPad landscape and the mushaf spread
+- [x] Check on real devices: iPad landscape two-page mushaf spread verified on iPad (10th gen), native verification runbook in `docs/real-device-checks.md` covering reminders, lock-screen audio, and share-as-image
 - [x] Softer look for the Adhkar and dua cards: OrnateCard styling with inner brass frames, paper-toned Arabic calligraphy boxes, subtle badges, benefit callouts, and tactile progress-fill counters
 
 ## Phase 10: Learn to Read / Belajar Membaca (level 1 built, needs audio and review)

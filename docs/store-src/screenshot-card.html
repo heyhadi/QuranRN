@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wird Store Screenshot</title>
+  <style>
+    @font-face {
+      font-family: "Reem Kufi";
+      src: url("../../assets/fonts/ReemKufi-SemiBold.ttf");
+      font-weight: 600;
+    }
+    @font-face {
+      font-family: "Reem Kufi";
+      src: url("../../assets/fonts/ReemKufi-Bold.ttf");
+      font-weight: 700;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1290px;
+      height: 2796px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      background:
+        radial-gradient(85% 55% at 15% 0%, rgba(201, 163, 90, 0.28) 0%, transparent 60%),
+        linear-gradient(170deg, #13745B 0%, #0F5A46 38%, #082F25 100%);
+      color: #F4F7F4;
+      position: relative;
+    }
+    /* Islamic eight-point star watermark */
+    .star-watermark {
+      position: absolute;
+      right: -140px;
+      top: -140px;
+      width: 580px;
+      height: 580px;
+      opacity: 0.08;
+      pointer-events: none;
+    }
+    .star-watermark i {
+      position: absolute;
+      inset: 0;
+      border: 14px solid #C9A35A;
+      border-radius: 46px;
+    }
+    .star-watermark i:last-child {
+      transform: rotate(45deg);
+    }
+
+    /* Header copy */
+    .header {
+      padding: 130px 90px 0 90px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      position: relative;
+      z-index: 2;
+    }
+    .eyebrow {
+      font-size: 26px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #E2C98F;
+      font-weight: 700;
+    }
+    h1 {
+      font-size: 74px;
+      line-height: 1.14;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: #FFFFFF;
+    }
+    p {
+      font-size: 34px;
+      line-height: 1.42;
+      color: rgba(244, 247, 244, 0.88);
+      max-width: 1100px;
+    }
+
+    /* Phone frame holding the screenshot */
+    .phone-container {
+      position: absolute;
+      bottom: -130px;
+      left: 115px;
+      width: 1060px;
+      display: flex;
+      justify-content: center;
+      z-index: 1;
+    }
+    .phone {
+      width: 100%;
+      background: #0B0F0D;
+      border-radius: 64px;
+      padding: 14px;
+      box-shadow: 0 45px 120px -15px rgba(0, 0, 0, 0.82), 0 0 0 2px rgba(255, 255, 255, 0.12) inset;
+    }
+    .phone img {
+      display: block;
+      width: 100%;
+      border-radius: 52px;
+    }
+  </style>
+</head>
+<body>
+  <div class="star-watermark"><i></i><i></i></div>
+  <div class="header">
+    <div class="eyebrow" id="eyebrow">Wird</div>
+    <h1 id="title">Your Daily Portion</h1>
+    <p id="subtitle">Read, listen and build a daily Quran habit.</p>
+  </div>
+  <div class="phone-container">
+    <div class="phone">
+      <img id="shot" src="" alt="App Screenshot" />
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    if (params.get("e")) document.getElementById("eyebrow").textContent = params.get("e");
+    if (params.get("h")) document.getElementById("title").textContent = params.get("h");
+    if (params.get("s")) document.getElementById("subtitle").textContent = params.get("s");
+    if (params.get("img")) document.getElementById("shot").src = params.get("img");
+  </script>
+</body>
+</html>

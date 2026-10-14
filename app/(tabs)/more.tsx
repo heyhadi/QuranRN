@@ -33,7 +33,6 @@ export default function MoreScreen() {
         { icon: "hand-left-outline", title: t("more.doa"), subtitle: t("more.doaIntro"), onPress: () => router.push("/doa") },
         { icon: "sparkles-outline", title: t("more.asma"), subtitle: t("more.asmaIntro"), onPress: () => router.push("/asma") },
         { icon: "ellipse-outline", title: t("more.tasbih"), subtitle: t("more.today", { count: tasbihToday }), onPress: () => router.push("/tasbih") },
-        { icon: "school-outline", title: t("learn.title"), subtitle: t("learn.moreIntro"), onPress: () => router.push("/learn") },
         { icon: "color-palette-outline", title: t("tajweed.title"), subtitle: t("tajweed.learnIntro"), onPress: () => router.push("/tajweed") },
     ];
 

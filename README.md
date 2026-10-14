@@ -129,15 +129,17 @@ size, and the version code rises with each build. Settings shows the build you a
 - `node scripts/readme-images.mjs` regenerates the README images from the design mockups in
   `docs/quranrn-plan.html`, and `node scripts/app-icons.mjs` regenerates the app icon, splash and
   notification icon, both using your installed Chrome.
-- Store listing copy in English and Indonesian: [docs/store-listing.md](docs/store-listing.md).
+- Store listing copy and store screenshots in English and Indonesian: [docs/store-listing.md](docs/store-listing.md) and [docs/store-assets/](docs/store-assets/). Generated via `node scripts/generate-store-screenshots.mjs`.
+- Home-screen widgets specification & cross-platform bridge: [docs/widgets-architecture.md](docs/widgets-architecture.md) and [`services/widgets.ts`](services/widgets.ts).
+- Real device testing runbook: [docs/real-device-checks.md](docs/real-device-checks.md).
 
 ## Coming next
 
-Phases 1 to 9 of [ROADMAP.md](ROADMAP.md) are built. Still to do:
+Phases 1 to 9 of [ROADMAP.md](ROADMAP.md) are completed. Coming next:
 
-1. Home-screen widgets (they need native work on both platforms)
-2. Store screenshots in English and Indonesian
-3. Checks on real devices: reminders, lock-screen audio, share-as-image, and an iPad turned sideways
+1. Native WidgetKit extension (iOS) and AppWidgetProvider (Android) build integration
+2. Real device sign-off against [docs/real-device-checks.md](docs/real-device-checks.md)
+3. Learn to Read teacher review and reciter recording sessions
 
 ![Tajweed colours you can tap, and word-by-word meaning](docs/images/2-tajweed-you-can-tap.png)
 

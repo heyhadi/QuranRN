@@ -42,8 +42,8 @@ export function SurahHeaderCard({ number, nameArabic, nameLatin, meaning, detail
                     {`  ·  ${meaning}`}
                 </AppText>
                 <View style={styles.chips}>
-                    {details.map((detail) => (
-                        <View key={detail} style={[styles.chip, { backgroundColor: "rgba(255,255,255,0.12)" }]}>
+                    {details.map((detail, idx) => (
+                        <View key={`${detail}-${idx}`} style={[styles.chip, { backgroundColor: "rgba(255,255,255,0.12)" }]}>
                             <AppText variant="caption" color={heroInk} style={styles.chipText}>
                                 {detail}
                             </AppText>

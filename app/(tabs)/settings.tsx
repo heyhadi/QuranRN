@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Linking, Platform, Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
@@ -65,6 +65,15 @@ export default function SettingsScreen() {
     const feedbackContext = { version: Constants.expoConfig?.version ?? "1.0.0", platform: Platform.OS, osVersion: String(Platform.Version), language: i18n.language };
     const { colors, spacing } = useTheme();
     const settings = useSettingsStore();
+    const params = useLocalSearchParams<{ lang?: string; theme?: string }>();
+    React.useEffect(() => {
+        if (params.lang === "en" || params.lang === "id" || params.lang === "system") {
+            settings.setLanguagePreference(params.lang as LanguagePreference);
+        }
+        if (params.theme === "light" || params.theme === "dark" || params.theme === "system") {
+            settings.setThemePreference(params.theme as ThemePreference);
+        }
+    }, [params.lang, params.theme]);
     const language = i18n.language === "id" ? "id" : "en";
     const router = useRouter();
     const reciter = getReciter(settings.reciterId);
