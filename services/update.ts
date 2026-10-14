@@ -26,6 +26,17 @@ export interface AvailableUpdate {
 }
 
 /**
+ * The versionCode a release tag stands for, or 0 when it can't tell.
+ * CI tags "v1.0.16-16" (version, then versionCode after a dash); older releases were tagged
+ * "v1.0.15", where the versionCode is the last part of the version. Both are read here.
+ */
+export function buildFromTag(tag: string): number {
+    const match = /^v?\d+\.\d+\.(\d+)(?:-(\d+))?$/.exec(tag.trim());
+    if (!match) return 0;
+    return parseInt(match[2] ?? match[1], 10);
+}
+
+/**
  * A newer CI build, or null. Local builds (versionCode 1) never match a CI
  * build's signing key, so they don't offer updates they couldn't install.
  */
@@ -43,9 +54,7 @@ export async function checkForUpdate(): Promise<AvailableUpdate | null> {
         (a) => a.name.endsWith(".apk")
     );
     if (!apk) return null;
-    // Release tag is like "v2.4.0-62" where 62 is the versionCode.
-    const match = /-(\d+)$/.exec(release.tag_name as string);
-    const latest = match ? parseInt(match[1], 10) : 0;
+    const latest = buildFromTag(String(release.tag_name ?? ""));
     if (latest <= installed) return null;
     return { title: release.name ?? release.tag_name, apkUrl: apk.browser_download_url };
 }
