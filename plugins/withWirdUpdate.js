@@ -5,6 +5,9 @@
  * - Registers WirdUpdatePackage in MainApplication so the UpdateModule
  *   native module resolves from JS.
  * - Adds the FileProvider paths for the downloaded APK.
+ *
+ * Follows the same pattern as workout-alarm-app's withWorkoutAlarmPackage
+ * (proven working on Expo SDK 57).
  */
 const { withDangerousMod, withMainApplication } = require('@expo/config-plugins');
 const fs = require('fs');
@@ -13,21 +16,51 @@ const path = require('path');
 const PACKAGE_PATH = 'com/heyhadi/wird/update';
 const KOTLIN_FILES = ['UpdateModule.kt', 'WirdUpdatePackage.kt'];
 
-function copyKotlinSources(projectRoot, androidDir) {
-  const srcDir = path.join(projectRoot, 'native-modules', 'android', 'app', 'src', 'main', 'java', PACKAGE_PATH);
-  const destDir = path.join(androidDir, 'app', 'src', 'main', 'java', PACKAGE_PATH);
-  fs.mkdirSync(destDir, { recursive: true });
-  for (const file of KOTLIN_FILES) {
-    fs.copyFileSync(path.join(srcDir, file), path.join(destDir, file));
-  }
-}
-
 const withWirdUpdate = (config) => {
+  config = withMainApplication(config, (config) => {
+    let contents = config.modResults.contents;
+    const importLine = 'import com.heyhadi.wird.update.WirdUpdatePackage';
+    if (!contents.includes(importLine)) {
+      // Insert after the last import.
+      contents = contents.replace(
+        /(^import .+$\n)(?![\s\S]*^import )/m,
+        (match) => `${match}${importLine}\n`,
+      );
+    }
+    // Expo 57 generates: PackageList(this).packages.apply { ... }
+    const anchor = 'PackageList(this).packages.apply {';
+    if (!contents.includes(anchor)) {
+      console.warn(
+        '[withWirdUpdate] PackageList anchor not found; skipping registration',
+      );
+    } else if (!contents.includes('WirdUpdatePackage()')) {
+      contents = contents.replace(
+        anchor,
+        `${anchor}\n          // Wird in-app update module.\n` +
+          '          add(WirdUpdatePackage())',
+      );
+    }
+    config.modResults.contents = contents;
+    return config;
+  });
+
   config = withDangerousMod(config, [
     'android',
     (config) => {
       const androidDir = config.modRequest.platformProjectRoot;
-      copyKotlinSources(config.modRequest.projectRoot, androidDir);
+      const projectRoot = config.modRequest.projectRoot;
+
+      // Copy Kotlin sources
+      const srcDir = path.join(
+        projectRoot, 'native-modules', 'android', 'app', 'src', 'main', 'java', PACKAGE_PATH
+      );
+      const destDir = path.join(
+        androidDir, 'app', 'src', 'main', 'java', PACKAGE_PATH
+      );
+      fs.mkdirSync(destDir, { recursive: true });
+      for (const file of KOTLIN_FILES) {
+        fs.copyFileSync(path.join(srcDir, file), path.join(destDir, file));
+      }
 
       // FileProvider paths for the update APK
       const resDir = path.join(androidDir, 'app', 'src', 'main', 'res', 'xml');
@@ -62,22 +95,6 @@ const withWirdUpdate = (config) => {
       return config;
     },
   ]);
-
-  config = withMainApplication(config, (config) => {
-    let contents = config.modResults.contents;
-    if (!contents.includes('WirdUpdatePackage')) {
-      contents = contents.replace(
-        'import expo.modules.ReactNativeHostWrapper',
-        'import expo.modules.ReactNativeHostWrapper\nimport com.heyhadi.wird.update.WirdUpdatePackage'
-      );
-      contents = contents.replace(
-        'packages.add(',
-        'packages.add(WirdUpdatePackage())\n      packages.add('
-      );
-      config.modResults.contents = contents;
-    }
-    return config;
-  });
 
   return config;
 };
