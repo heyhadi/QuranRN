@@ -166,6 +166,7 @@ prayer times are sample data. The app itself now follows them closely.
 - English translations, tajweed text, word-by-word, the mushaf page line data, other tafsirs and ayah search via [quran.com](https://quran.com); more recitations from [everyayah.com](https://everyayah.com); prayer times and Asmaul Husna from [aladhan.com](https://aladhan.com).
 - [Amiri](https://github.com/aliftype/amiri) typeface by Khaled Hosny, [Reem Kufi](https://github.com/aliftype/reem-kufi) and [Source Sans 3](https://github.com/adobe-fonts/source-sans), all under the SIL Open Font License.
 - Adhan audio (`assets/audio/adhan.mp3`) downloaded from [islamcan.com/audio/adhan](https://www.islamcan.com/audio/adhan/) (free download).
+- Letter name audio for Learn to Read (`assets/audio/learn/names/`) by Ruaa GHAREEB on [Wikimedia Commons](https://commons.wikimedia.org/w/index.php?title=Special:ListFiles/Ruaa_GHAREEB), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); levelled and converted to AAC. These clips stay under CC BY-SA 4.0 (see the folder's `LICENSE.md`).
 
 ---
 

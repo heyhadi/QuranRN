@@ -112,7 +112,7 @@
     "reciter": "Reciter",
     "about": "About",
     "version": "Version {{version}}",
-    "credits": "Quran text, translation, tafsir and audio via equran.id; tajweed, English translations and word-by-word via quran.com; adhkar and English dua from fitrahive/dua-dhikr. Amiri typeface by Khaled Hosny.",
+    "credits": "Quran text, translation, tafsir and audio via equran.id; tajweed, English translations and word-by-word via quran.com; adhkar and English dua from fitrahive/dua-dhikr. Amiri typeface by Khaled Hosny. Letter name audio by Ruaa GHAREEB (Wikimedia Commons, CC BY-SA 4.0).",
     "reciterRow": "Reciter",
     "feedback": "Feedback",
     "reportProblem": "Report a problem",
@@ -416,7 +416,8 @@
     "retry": "Try the quiz again",
     "practiseAgain": "Practise reading again",
     "backToLessons": "Back to lessons",
-    "notFound": "This lesson doesn't exist."
+    "notFound": "This lesson doesn't exist.",
+    "listenName": "Listen to the letter's name, {{name}}"
   },
   "prayer": {
     "title": "Prayer",

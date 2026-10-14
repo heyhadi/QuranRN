@@ -9,26 +9,29 @@ import { OrnateCard } from "@/components/ui/Plate";
 import { useTheme } from "@/components/useTheme";
 import { learnLanguage, type HijaiyahLetter, type LearnLanguage } from "@/constants/hijaiyah";
 import { buildQuiz, hasPassed, LEVEL_1, lessonById, readingRows, seededRandom, type QuizQuestion } from "@/services/learnRead";
-import { fathahClipUri, hasFathahClip } from "@/services/learnReadAudio";
+import { clipUri, hasClip, type ClipKind } from "@/services/learnReadAudio";
 import { useAudioPlayerStore } from "@/store/audioPlayer";
 import { useLearnReadStore } from "@/store/learnRead";
 
 type Step = "letters" | "read" | "quiz" | "result";
 
-/** Plays a syllable's clip, when one is bundled. Lessons show this only where audio exists. */
-function PlayButton({ letter, size = 28 }: { letter: HijaiyahLetter; size?: number }) {
+/**
+ * Plays a letter's clip: its name ("ba'", "jim") or its fathah sound ("ba", "ja").
+ * Shown only where that clip is bundled, so lessons work while recordings are missing.
+ */
+function PlayButton({ letter, kind, language, size = 28 }: { letter: HijaiyahLetter; kind: ClipKind; language: LearnLanguage; size?: number }) {
     const { t } = useTranslation();
     const { colors } = useTheme();
     const toggleClip = useAudioPlayerStore((state) => state.toggleClip);
-    if (!hasFathahClip(letter.id)) return null;
+    if (!hasClip(kind, letter.id)) return null;
     return (
         <Pressable
             onPress={async () => {
-                const uri = await fathahClipUri(letter.id);
+                const uri = await clipUri(kind, letter.id);
                 if (uri) toggleClip(uri);
             }}
             accessibilityRole="button"
-            accessibilityLabel={t("learn.listen", { sound: letter.sound.en })}
+            accessibilityLabel={kind === "name" ? t("learn.listenName", { name: letter.name[language] }) : t("learn.listen", { sound: letter.sound[language] })}
             hitSlop={8}
         >
             <Ionicons name="volume-high" size={size} color={colors.mushaf} />
@@ -43,7 +46,10 @@ function LetterCard({ letter, language }: { letter: HijaiyahLetter; language: Le
         <OrnateCard style={[styles.letterCard, { padding: spacing.lg, gap: spacing.sm }]}>
             <View style={[styles.letterRow, { gap: spacing.md }]}>
                 <View style={styles.flex}>
-                    <AppText variant="title">{letter.name[language]}</AppText>
+                    <View style={[styles.letterRow, { gap: spacing.sm }]}>
+                        <AppText variant="title">{letter.name[language]}</AppText>
+                        <PlayButton letter={letter} kind="name" language={language} size={22} />
+                    </View>
                     <AppText variant="caption" muted>
                         {t("learn.letterAlone")}
                     </AppText>
@@ -51,14 +57,16 @@ function LetterCard({ letter, language }: { letter: HijaiyahLetter; language: Le
                 <AppText style={[styles.bareArabic, { fontFamily: fonts.quran, color: colors.ink2 }]} accessibilityLabel={letter.nameArabic}>
                     {letter.letter}
                 </AppText>
-                <PlayButton letter={letter} />
             </View>
             <AppText style={[styles.bigArabic, { fontFamily: fonts.quran, color: colors.ink }]} accessibilityLabel={letter.sound[language]}>
                 {letter.fathah}
             </AppText>
-            <AppText variant="bodyStrong" color={colors.mushaf} style={styles.center}>
-                {t("learn.readAs", { sound: letter.sound[language] })}
-            </AppText>
+            <View style={[styles.letterRow, styles.centerRow, { gap: spacing.sm }]}>
+                <AppText variant="bodyStrong" color={colors.mushaf}>
+                    {t("learn.readAs", { sound: letter.sound[language] })}
+                </AppText>
+                <PlayButton letter={letter} kind="fathah" language={language} size={22} />
+            </View>
         </OrnateCard>
     );
 }
@@ -107,7 +115,7 @@ function Question({ question, language, onAnswer }: { question: QuizQuestion; la
                 ) : (
                     <View style={[styles.letterRow, styles.centerRow, { gap: spacing.md }]}>
                         <AppText style={[styles.bigSound, { color: colors.ink }]}>{question.answer.sound[language]}</AppText>
-                        <PlayButton letter={question.answer} size={34} />
+                        <PlayButton letter={question.answer} kind="fathah" language={language} size={34} />
                     </View>
                 )}
             </View>

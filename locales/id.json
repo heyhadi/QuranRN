@@ -112,7 +112,7 @@
     "reciter": "Qari",
     "about": "Tentang",
     "version": "Versi {{version}}",
-    "credits": "Teks Quran, terjemahan, tafsir, dan audio dari equran.id; tajwid, terjemahan Inggris, dan kata per kata dari quran.com; zikir dan doa Inggris dari fitrahive/dua-dhikr. Huruf Amiri oleh Khaled Hosny.",
+    "credits": "Teks Quran, terjemahan, tafsir, dan audio dari equran.id; tajwid, terjemahan Inggris, dan kata per kata dari quran.com; zikir dan doa Inggris dari fitrahive/dua-dhikr. Huruf Amiri oleh Khaled Hosny. Audio nama huruf oleh Ruaa GHAREEB (Wikimedia Commons, CC BY-SA 4.0).",
     "reciterRow": "Qari",
     "feedback": "Masukan",
     "reportProblem": "Laporkan masalah",
@@ -416,7 +416,8 @@
     "retry": "Ulangi kuis",
     "practiseAgain": "Latihan membaca lagi",
     "backToLessons": "Kembali ke daftar pelajaran",
-    "notFound": "Pelajaran ini tidak ada."
+    "notFound": "Pelajaran ini tidak ada.",
+    "listenName": "Dengarkan nama hurufnya, {{name}}"
   },
   "prayer": {
     "title": "Salat",
