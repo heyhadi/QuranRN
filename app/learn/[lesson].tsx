@@ -41,13 +41,16 @@ function LetterCard({ letter, language }: { letter: HijaiyahLetter; language: Le
     const { colors, fonts, spacing } = useTheme();
     return (
         <OrnateCard style={[styles.letterCard, { padding: spacing.lg, gap: spacing.sm }]}>
-            <View style={styles.letterRow}>
+            <View style={[styles.letterRow, { gap: spacing.md }]}>
                 <View style={styles.flex}>
                     <AppText variant="title">{letter.name[language]}</AppText>
                     <AppText variant="caption" muted>
-                        {t("learn.letterAlone", { letter: letter.letter })}
+                        {t("learn.letterAlone")}
                     </AppText>
                 </View>
+                <AppText style={[styles.bareArabic, { fontFamily: fonts.quran, color: colors.ink2 }]} accessibilityLabel={letter.nameArabic}>
+                    {letter.letter}
+                </AppText>
                 <PlayButton letter={letter} />
             </View>
             <AppText style={[styles.bigArabic, { fontFamily: fonts.quran, color: colors.ink }]} accessibilityLabel={letter.sound[language]}>
@@ -77,7 +80,7 @@ function ReadingRow({ row, language }: { row: HijaiyahLetter[]; language: LearnL
                         style={[styles.syllable, { backgroundColor: colors.surface, borderColor: colors.line, borderRadius: radius.md }]}
                     >
                         <AppText style={[styles.rowArabic, { fontFamily: fonts.quran, color: colors.ink }]}>{letter.fathah}</AppText>
-                        <AppText variant="caption" color={shown ? colors.mushaf : "transparent"}>
+                        <AppText variant="bodyStrong" color={shown ? colors.mushaf : "transparent"}>
                             {letter.sound[language]}
                         </AppText>
                     </Pressable>
@@ -137,7 +140,7 @@ function Question({ question, language, onAnswer }: { question: QuizQuestion; la
                     <AppText variant="bodyStrong" color={picked === question.answer.id ? colors.mushaf : colors.danger} style={styles.center}>
                         {picked === question.answer.id
                             ? t("learn.correct")
-                            : t("learn.wrong", { syllable: question.answer.fathah, sound: question.answer.sound[language] })}
+                            : t("learn.wrong", { sound: question.answer.sound[language] })}
                     </AppText>
                     <Button mode="contained" onPress={() => onAnswer(picked === question.answer.id)}>
                         {t("learn.next")}
@@ -268,7 +271,8 @@ const styles = StyleSheet.create({
     letterCard: {},
     letterRow: { flexDirection: "row", alignItems: "center" },
     // Amiri's marks sit high above the letter; the generous line height keeps the fathah from clipping.
-    bigArabic: { fontSize: 96, lineHeight: 180, textAlign: "center", writingDirection: "rtl" },
+    bigArabic: { fontSize: 88, lineHeight: 150, textAlign: "center", writingDirection: "rtl" },
+    bareArabic: { fontSize: 34, lineHeight: 64, writingDirection: "rtl" },
     bigSound: { fontSize: 44, lineHeight: 56, fontWeight: "600" },
     promptBox: { alignItems: "center", justifyContent: "center", minHeight: 140 },
     readingRow: { flexDirection: "row-reverse", justifyContent: "center", flexWrap: "wrap" },

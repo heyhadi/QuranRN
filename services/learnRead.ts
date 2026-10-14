@@ -73,6 +73,8 @@ function shuffle<T>(items: readonly T[], random: () => number): T[] {
     return result;
 }
 
+const rowKey = (row: readonly HijaiyahLetter[]) => row.map((letter) => letter.id).join(" ");
+
 /**
  * Reading rows for a lesson, read right to left like the Arabic itself:
  * the new letters in order, then reversed, then mixed with each other, then mixed with earlier letters.
@@ -81,16 +83,21 @@ export function readingRows(lesson: Lesson, random: () => number, rowLength = 4)
     const fresh = lesson.letters;
     const earlier = lesson.known.slice(0, lesson.known.length - fresh.length);
     const rows: HijaiyahLetter[][] = [fresh.slice(0, rowLength), [...fresh].reverse().slice(0, rowLength)];
+    const seen = new Set(rows.map(rowKey));
+    // Reading the same row twice teaches nothing, so reshuffle a few times to get a new one.
+    const addFresh = (make: () => HijaiyahLetter[]) => {
+        let row = make();
+        for (let attempt = 0; attempt < 10 && seen.has(rowKey(row)); attempt++) row = make();
+        seen.add(rowKey(row));
+        rows.push(row);
+    };
 
-    for (let i = 0; i < 2; i++) rows.push(shuffle(fresh, random).slice(0, rowLength));
+    for (let i = 0; i < 2; i++) addFresh(() => shuffle(fresh, random).slice(0, rowLength));
 
     if (earlier.length > 0) {
-        for (let i = 0; i < 2; i++) {
-            // Half new, half review, so every row still practises this lesson's letters.
-            const half = Math.ceil(rowLength / 2);
-            const row = [...shuffle(fresh, random).slice(0, half), ...shuffle(earlier, random).slice(0, rowLength - half)];
-            rows.push(shuffle(row, random));
-        }
+        // Half new, half review, so every row still practises this lesson's letters.
+        const half = Math.ceil(rowLength / 2);
+        for (let i = 0; i < 2; i++) addFresh(() => shuffle([...shuffle(fresh, random).slice(0, half), ...shuffle(earlier, random).slice(0, rowLength - half)], random));
     }
     return rows;
 }
@@ -136,18 +143,46 @@ function distractors(answer: HijaiyahLetter, pool: readonly HijaiyahLetter[], ki
 }
 
 /**
+ * Reorders the answers so the same letter is never asked twice in a row. Each step takes the letter
+ * with the most questions left that differs from the last one (earliest first on a tie, so the
+ * shuffle still decides), which always works while no letter fills more than half the quiz.
+ */
+function spreadRepeats(answers: HijaiyahLetter[]): HijaiyahLetter[] {
+    const remaining = [...answers];
+    const result: HijaiyahLetter[] = [];
+    while (remaining.length > 0) {
+        const last = result[result.length - 1];
+        const left = (id: string) => remaining.filter((letter) => letter.id === id).length;
+        let pick = -1;
+        remaining.forEach((letter, index) => {
+            if (letter.id === last?.id) return;
+            if (pick === -1 || left(letter.id) > left(remaining[pick].id)) pick = index;
+        });
+        result.push(remaining.splice(pick === -1 ? 0 : pick, 1)[0]);
+    }
+    return result;
+}
+
+/** No letter is asked more often than this in one quiz. */
+const MAX_ASKS_PER_LETTER = 2;
+
+/**
  * A quiz on a lesson: every new letter is asked at least once, the rest of the questions review
  * earlier letters, and the two question kinds alternate.
  */
 export function buildQuiz(lesson: Lesson, language: LearnLanguage, random: () => number, length = QUIZ_LENGTH): QuizQuestion[] {
     const earlier = lesson.known.slice(0, lesson.known.length - lesson.letters.length);
     const answers = [...shuffle(lesson.letters, random)];
+    const asked = (letter: HijaiyahLetter) => answers.filter((answer) => answer.id === letter.id).length;
     while (answers.length < length) {
         const source = earlier.length > 0 && random() < 0.5 ? earlier : lesson.letters;
-        answers.push(source[Math.floor(random() * source.length)]);
+        const open = source.filter((letter) => asked(letter) < MAX_ASKS_PER_LETTER);
+        const pool = open.length > 0 ? open : lesson.known.filter((letter) => asked(letter) < MAX_ASKS_PER_LETTER);
+        if (pool.length === 0) break;
+        answers.push(pool[Math.floor(random() * pool.length)]);
     }
 
-    return shuffle(answers.slice(0, length), random).map((answer, index) => {
+    return spreadRepeats(shuffle(answers.slice(0, length), random)).map((answer, index) => {
         const kind: QuestionKind = index % 2 === 0 ? "readSound" : "findLetter";
         return { kind, answer, options: shuffle([answer, ...distractors(answer, lesson.known, kind, language, random)], random) };
     });

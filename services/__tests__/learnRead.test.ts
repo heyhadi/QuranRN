@@ -63,6 +63,15 @@ describe("reading rows", () => {
         expect(readingRows(LEVEL_1[1], seededRandom(1))).toHaveLength(6);
     });
 
+    it("never repeats a row within a lesson", () => {
+        for (const lesson of LEVEL_1) {
+            for (let seed = 0; seed < 30; seed++) {
+                const keys = readingRows(lesson, seededRandom(seed)).map((row) => row.map((letter) => letter.id).join(" "));
+                expect(new Set(keys).size).toBe(keys.length);
+            }
+        }
+    });
+
     it("gives the same rows for the same seed", () => {
         expect(readingRows(LEVEL_1[3], seededRandom(42))).toEqual(readingRows(LEVEL_1[3], seededRandom(42)));
     });
@@ -101,6 +110,25 @@ describe("quiz", () => {
                 if (question.kind !== "readSound") continue;
                 const ids = question.options.map((option) => option.id);
                 expect(ids.includes("ha") && ids.includes("haa")).toBe(false);
+            }
+        }
+    });
+
+    it("never asks the same letter twice in a row", () => {
+        for (const lesson of LEVEL_1) {
+            for (let seed = 0; seed < 50; seed++) {
+                const quiz = buildQuiz(lesson, "en", seededRandom(seed));
+                for (let i = 1; i < quiz.length; i++) expect(quiz[i].answer.id).not.toBe(quiz[i - 1].answer.id);
+            }
+        }
+    });
+
+    it("asks no letter more than twice", () => {
+        for (const lesson of LEVEL_1) {
+            for (let seed = 0; seed < 50; seed++) {
+                const counts = new Map<string, number>();
+                for (const question of buildQuiz(lesson, "en", seededRandom(seed))) counts.set(question.answer.id, (counts.get(question.answer.id) ?? 0) + 1);
+                expect(Math.max(...counts.values())).toBeLessThanOrEqual(2);
             }
         }
     });
