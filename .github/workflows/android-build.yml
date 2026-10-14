@@ -17,6 +17,7 @@ on:
       - 'locales/**'
       - 'i18n/**'
       - 'plugins/**'
+      - 'native-modules/**'
       - 'app.json'
       - 'app.config.js'
       - 'package.json'
