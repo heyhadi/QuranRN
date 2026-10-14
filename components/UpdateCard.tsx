@@ -48,7 +48,9 @@ export function UpdateCard() {
             await installUpdate(update);
             setState("idle"); // Android's installer is open now
         } catch (e) {
-            const code = (e as { code?: string }).code;
+            const { code, message } = e as { code?: string; message?: string };
+            // The card only says "failed"; the log keeps the real reason (bad signature, HTTP error...).
+            console.warn(`[update] install failed: ${code ?? "no code"}: ${message ?? String(e)}`);
             setState(code === "NEEDS_INSTALL_PERMISSION" ? "needs-permission" : "failed");
         } finally {
             unsub();
